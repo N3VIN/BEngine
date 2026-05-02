@@ -2,8 +2,6 @@
 #include <algorithm>
 #include <cstdint>
 #include <functional>
-#include <ostream>
-#include <print>
 #include <vector>
 
 namespace dae {
@@ -15,7 +13,7 @@ namespace dae {
     class DelegateHandle final {
     public:
         constexpr DelegateHandle() noexcept = default;
-        constexpr bool operator==(const DelegateHandle &other) const = default;
+        constexpr bool operator==(const DelegateHandle &other) const noexcept = default;
 
         [[nodiscard]] constexpr bool IsValid() const noexcept {
             return m_id != INVALID_ID;
@@ -31,6 +29,35 @@ namespace dae {
             : m_id(id) {}
     };
 
+    // RAII Unsubscription
+    class ScopedDelegate final {
+    public:
+        constexpr ScopedDelegate() noexcept = default;
+
+        explicit ScopedDelegate(DelegateHandle handle, std::function<void()> cleanup)
+            : m_handle(handle)
+          , m_cleanup(std::move(cleanup)) {}
+
+        ~ScopedDelegate() {
+            if (m_cleanup) {
+                m_cleanup();
+            }
+        }
+
+        ScopedDelegate(const ScopedDelegate &) = delete;
+        ScopedDelegate &operator=(const ScopedDelegate &) = delete;
+        ScopedDelegate(ScopedDelegate &&other) noexcept = default;
+        ScopedDelegate &operator=(ScopedDelegate &&other) noexcept = default;
+
+        [[nodiscard]] DelegateHandle GetHandle() const noexcept {
+            return m_handle;
+        }
+
+    private:
+        DelegateHandle m_handle; // can be used for manual unsubscription
+        std::function<void()> m_cleanup;
+    };
+
     template<typename... Args>
     class MulticastDelegate final {
     public:
@@ -42,44 +69,68 @@ namespace dae {
         MulticastDelegate(MulticastDelegate &&) = delete;
         MulticastDelegate &operator=(MulticastDelegate &&) = delete;
 
-        template<typename Func>
-        DelegateHandle Subscribe(Func &&callback) {
+
+        // IMPORTANT, dont call Subscribe during Broadcast, only in constuctors or during init logic
+        template<typename Fn>
+        [[nodiscard]] ScopedDelegate Subscribe(Fn &&callback) {
             const DelegateHandle handle{++m_handleID};
-            m_listeners.push_back(ListenerHandle{handle, std::forward<Func>(callback), true});
-            return handle;
+            m_listeners.push_back(ListenerHandle{handle, std::forward<Fn>(callback), true});
+            return ScopedDelegate{
+                handle,
+                [this, handle]() {
+                    Unsubscribe(handle); // store in the token
+                }
+            };
         }
 
+        // IMPORTANT, dont call Subscribe during Broadcast, only in constuctors or during init logic
         template<typename Class>
-        DelegateHandle Subscribe(Class *instance, void (Class::*memberFunction)(Args...)) {
+        [[nodiscard]] ScopedDelegate Subscribe(Class *instance, void (Class::*memberFunction)(Args...)) {
             return Subscribe([instance, memberFunction](Args... args) {
                     std::invoke(memberFunction, instance, args...);
                 }
             );
         }
 
-        // for const member function
+
+        // IMPORTANT, dont call Subscribe during Broadcast, only in constuctors or during init logic
         template<typename Class>
-        DelegateHandle Subscribe(Class *instance, void (Class::*memberFunction)(Args...) const) {
+        [[nodiscard]] ScopedDelegate Subscribe(Class *instance, void (Class::*memberFunction)(Args...) const) { // const member function
             return Subscribe([instance, memberFunction](Args... args) {
                     std::invoke(memberFunction, instance, args...);
                 }
             );
         }
 
-        bool Unsubscribe(DelegateHandle handle) { // TODO: dead entries with our current defer approach. FIX IT!!!
+        bool Unsubscribe(DelegateHandle handle) {
             if (!handle.IsValid()) {
                 return false;
             }
 
+            bool foundListener = false;
             for (auto &listener: m_listeners) {
                 if (listener.handle == handle && listener.isAlive) {
                     listener.isAlive = false;
-                    m_isDirty = true; // mark for delete
-                    return true;
+                    foundListener = true;
+                    break;
                 }
             }
 
-            return false;
+            if (!foundListener) {
+                return false;
+            }
+
+            if (m_depth == 0) {
+                std::erase_if(m_listeners, [](ListenerHandle &lh) {
+                                  return !lh.isAlive;
+                              }
+                );
+            }
+            else {
+                m_isDirty = true; // mark for delete
+            }
+
+            return true;
         }
 
         void Broadcast(Args... args) {
@@ -89,8 +140,7 @@ namespace dae {
                     continue;
                 }
 
-                auto callbackFn = listener.callbackFn;
-                std::invoke(callbackFn, args...); // call the subscribed function
+                std::invoke(listener.callbackFn, args...); // call the subscribed function
             }
 
             --m_depth;
@@ -118,7 +168,7 @@ namespace dae {
 
         uint64_t m_handleID{INVALID_ID};
         std::vector<ListenerHandle> m_listeners{};
-        int m_depth{0}; // num of broadcast calls for this delegate
+        int m_depth{0};
         bool m_isDirty{false};
     };
 }

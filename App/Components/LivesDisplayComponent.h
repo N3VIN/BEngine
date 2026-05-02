@@ -8,14 +8,14 @@ namespace dae {
 
     class LivesDisplayComponent final : public Component {
     public:
-        ~LivesDisplayComponent() override;
+        ~LivesDisplayComponent() override = default;
         explicit LivesDisplayComponent(GameObject *owner, HealthComponent* healthComponent);
 
     private:
         TextComponent *m_textComponent;
         HealthComponent *m_healthComponent{nullptr};
-        DelegateHandle m_lambdaHandle;
-        DelegateHandle m_memberHandle;
+        ScopedDelegate m_lambdaToken;
+        // DelegateHandle m_memberHandle;
 
         void OnLifeChanged(int lives) const;
     };

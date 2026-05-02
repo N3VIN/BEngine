@@ -18,8 +18,8 @@ namespace dae {
             //     }
             // );
 
-            // AddMemberFunction subscription
-            m_memberHandle = m_healthComponent->OnLifeChanged.Subscribe(this, &LivesDisplayComponent::OnLifeChanged);
+            // member function subscription
+            m_lambdaToken = m_healthComponent->OnLifeChanged.Subscribe(this, &LivesDisplayComponent::OnLifeChanged);
         }
     }
 
@@ -27,10 +27,4 @@ namespace dae {
         m_textComponent->SetText("Lives: " + std::to_string(lives));
     }
 
-    LivesDisplayComponent::~LivesDisplayComponent() {
-        if (m_healthComponent) {
-            // m_healthComponent->OnLifeChanged.Unsubscribe(m_lambdaHandle);
-            m_healthComponent->OnLifeChanged.Unsubscribe(m_memberHandle);
-        }
-    }
 }

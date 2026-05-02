@@ -4,6 +4,7 @@
 #include <vld.h>
 #endif
 
+#include "utils.h"
 #include "../Core/Engine/Engine.h"
 #include "../Core/SceneGraph/SceneManager.h"
 #include "../Core/Renderer/ResourceManager.h"
@@ -29,12 +30,11 @@
 
 namespace fs = std::filesystem;
 
-
 static void load() {
     auto &scene = dae::SceneManager::GetInstance().CreateScene();
 
     auto &audio = dae::ServiceLocator::GetAudioService();
-    audio.LoadAudio(dae::HashSoundID("damage"), dae::ResourceManager::GetInstance().GetDataPath() / "damage.wav");
+    audio.LoadAudio(utils::Hash("damage"), dae::ResourceManager::GetInstance().GetDataPath() / "damage.wav");
 
     auto go = std::make_unique<dae::GameObject>();
     auto *bg = go->AddComponent<dae::RenderComponent>();
@@ -89,8 +89,8 @@ static void load() {
     player1->AddComponent<dae::RenderComponent>()->SetTexture("bomberman.png");
     player1->SetLocalPosition(glm::vec2(300, 300));
     auto *p1Health = player1->AddComponent<dae::HealthComponent>(startingLives);
-    p1Health->OnLifeChanged.Subscribe([&audio](int) {
-        audio.PlayAudio(dae::HashSoundID("damage"), 1.0f); // subscribe to the audio
+    static auto p1SD = p1Health->OnLifeChanged.Subscribe([&audio](int) {
+        audio.PlayAudio(utils::FNV1a("damage"), 1.0f); // subscribe to the audio
     });
 
     auto *p1Pickup = player1->AddComponent<dae::PickupComponent>();
@@ -124,8 +124,8 @@ static void load() {
     player2->AddComponent<dae::RenderComponent>()->SetTexture("bomberman.png");
     player2->SetLocalPosition(glm::vec2(500, 300));
     auto *p2Health = player2->AddComponent<dae::HealthComponent>(startingLives);
-    p2Health->OnLifeChanged.Subscribe([&audio](int) {
-        audio.PlayAudio(dae::HashSoundID("damage"), 1.0f); // subscribe to the audio
+    static auto p2SD = p2Health->OnLifeChanged.Subscribe([&audio](int) {
+        audio.PlayAudio(utils::Hash("damage"), 1.0f); // subscribe to the audio
     });
 
     auto *p2Pickup = player2->AddComponent<dae::PickupComponent>();
