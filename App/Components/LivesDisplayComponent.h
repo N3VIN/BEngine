@@ -14,7 +14,7 @@ namespace dae {
     private:
         TextComponent *m_textComponent;
         HealthComponent *m_healthComponent{nullptr};
-        ScopedDelegate m_lambdaToken;
+        ScopedDelegate m_lambdaSD;
         // DelegateHandle m_memberHandle;
 
         void OnLifeChanged(int lives) const;

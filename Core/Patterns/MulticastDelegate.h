@@ -78,7 +78,7 @@ namespace dae {
             return ScopedDelegate{
                 handle,
                 [this, handle]() {
-                    Unsubscribe(handle); // store in the token
+                    Unsubscribe(handle);
                 }
             };
         }
@@ -145,6 +145,7 @@ namespace dae {
 
             --m_depth;
             // defer until all the broadcast finishes and only when unsubscribe is called
+            // we do this to enable early unsubscription which is optional
             if (m_depth == 0 && m_isDirty) {
                 std::erase_if(m_listeners, [](ListenerHandle &handle) {
                                   return !handle.isAlive;

@@ -19,7 +19,7 @@ namespace dae {
             // );
 
             // member function subscription
-            m_lambdaToken = m_healthComponent->OnLifeChanged.Subscribe(this, &LivesDisplayComponent::OnLifeChanged);
+            m_lambdaSD = m_healthComponent->OnLifeChanged.Subscribe(this, &LivesDisplayComponent::OnLifeChanged);
         }
     }
 
