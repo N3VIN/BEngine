@@ -32,6 +32,7 @@ add_library(Core STATIC
         Core/Components/TextComponent.cpp
         Core/Components/FPSComponent.cpp
         Core/Components/RotatorComponent.cpp
+        Core/Components/CameraComponent.cpp
         Core/Audio/SDLAudioService.cpp
 )
 
