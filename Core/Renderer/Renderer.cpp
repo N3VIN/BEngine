@@ -1,6 +1,7 @@
 ﻿#include <cstring>
 #include "../Renderer/Renderer.h"
 #include "../SceneGraph/SceneManager.h"
+#include "../Components/CameraComponent.h"
 #include "Texture2D.h"
 
 #include <backends/imgui_impl_sdl3.h>
@@ -79,4 +80,22 @@ void dae::Renderer::RenderTexture(const Texture2D &texture, const SDL_FRect &dst
 
 SDL_Renderer *dae::Renderer::GetSDLRenderer() const {
     return m_renderer;
+}
+
+glm::vec2 dae::Renderer::GetWindowSize() const {
+    int w{}, h{};
+    SDL_GetWindowSize(m_window, &w, &h);
+    return {static_cast<float>(w), static_cast<float>(h)};
+}
+
+glm::vec2 dae::Renderer::WorldToScreen(const glm::vec2 &worldPos) const {
+    if (!m_activeCamera) {
+        return worldPos;
+    }
+
+    const auto center = m_activeCamera->GetViewCenter();
+    const auto zoom = m_activeCamera->GetZoom();
+    const auto screenCenter = GetWindowSize() * 0.5f;
+
+    return (worldPos - center) * zoom + screenCenter;
 }

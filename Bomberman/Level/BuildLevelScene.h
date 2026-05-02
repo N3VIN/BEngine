@@ -1,13 +1,12 @@
 #pragma once
 #include <SDL3/SDL.h>
 #include <array>
-#include <string>
 
 #include "Tileset.h"
 #include "../Components/LevelGridComponent.h"
 #include "../Components/GridRenderComponent.h"
-#include "../Components/GridMovementComponent.h"
 #include "../Commands/GridMoveCommand.h"
+#include "../PlayerFactory.h"
 
 #include "Level.h"
 #include "../../Core/SceneGraph/Scene.h"
@@ -16,18 +15,23 @@
 #include "../../Core/Components/RenderComponent.h"
 #include "../../Core/Components/TextComponent.h"
 #include "../../Core/Components/FPSComponent.h"
+#include "../../Core/Components/CameraComponent.h"
 #include "../../Core/Renderer/ResourceManager.h"
 #include "../../Core/Input/InputManager.h"
+#include "../../Core/Input/Gamepad.h"
+#include "Renderer/Renderer.h"
 
 namespace dae {
-    // free function to avoid inheritance for scene
     inline Scene &BuildLevelScene(std::string_view jsonRelativePath) {
-        constexpr float SCALE = 2.0f; // TODO: replace when camera is added
+        constexpr float SPRITE_SCALE = 2.0f;
 
         auto level = std::make_unique<Level>(ResourceManager::GetInstance().GetDataPath() / jsonRelativePath);
+        const auto levelOrigin = level->GetOrigin();
+        const auto levelSize = glm::vec2(level->GetColumns(), level->GetRows()) * level->GetCellSize();
+
         auto &scene = SceneManager::GetInstance().CreateScene();
 
-        const Tileset &tileset = GetTileset();
+        const auto &tileset = GetTileset();
         const int tileSize = tileset.tileSize;
 
         auto levelGameObject = std::make_unique<GameObject>();
@@ -39,10 +43,18 @@ namespace dae {
             level->GetRows() * tileSize
         };
 
-        levelGameObject->AddComponent<GridRenderComponent>(tileset.texturePath, backgroundSourceRect, SCALE);
+        levelGameObject->AddComponent<GridRenderComponent>(tileset.texturePath, backgroundSourceRect, SPRITE_SCALE);
 
         auto *levelGridComponent = levelGameObject->AddComponent<LevelGridComponent>(std::move(level));
         scene.Add(std::move(levelGameObject));
+
+        auto cameraGo = std::make_unique<GameObject>();
+        auto *cameraComp = cameraGo->AddComponent<CameraComponent>();
+        cameraComp->SetZoom(2.0f);
+        cameraComp->SetLevelBounds(levelOrigin, levelSize);
+        scene.Add(std::move(cameraGo));
+
+        Renderer::GetInstance().SetActiveCamera(cameraComp);
 
         std::array<glm::ivec2, 2> playerSpawnPositions{};
 
@@ -54,7 +66,7 @@ namespace dae {
             auto *renderComponent = tile->AddComponent<RenderComponent>();
             renderComponent->SetTexture(tileset.texturePath);
             renderComponent->SetSourceRect(srcRect);
-            renderComponent->SetScale(SCALE);
+            renderComponent->SetScale(SPRITE_SCALE);
             scene.Add(std::move(tile));
         };
 
@@ -84,27 +96,30 @@ namespace dae {
             }
         }
 
+        auto *p1 = CreatePlayer(scene, {levelGridComponent, playerSpawnPositions[0], "bomberman.png", 4.0f, SPRITE_SCALE});
+        cameraComp->SetTarget(p1);
+
+        GameObject *p2 = CreatePlayer(scene, {levelGridComponent, playerSpawnPositions[1], "bomberman.png", 4.0f, SPRITE_SCALE});
+
         auto fpsGo = std::make_unique<GameObject>();
         auto *fpsText = fpsGo->AddComponent<TextComponent>();
+        fpsGo->GetComponent<RenderComponent>()->SetIgnoreCamera(true);
         fpsText->SetFont(ResourceManager::GetInstance().LoadFont("Lingua.otf", 24));
         fpsText->SetColor({0, 255, 0, 255});
         fpsGo->AddComponent<FPSComponent>();
         fpsGo->SetLocalPosition(glm::vec2(10, 10));
         scene.Add(std::move(fpsGo));
 
-        auto player = std::make_unique<GameObject>();
-        auto *playerRender = player->AddComponent<RenderComponent>();
-        playerRender->SetTexture("bomberman.png");
-        playerRender->SetScale(SCALE);
-        player->AddComponent<GridMovementComponent>(levelGridComponent, playerSpawnPositions[0], 4.f);
-        auto *playerPtr = player.get();
-        scene.Add(std::move(player));
-
         auto &input = InputManager::GetInstance();
-        input.BindCommand(SDL_SCANCODE_W, KeyState::Pressed, std::make_unique<GridMoveCommand>(playerPtr, glm::ivec2{0, -1}));
-        input.BindCommand(SDL_SCANCODE_S, KeyState::Pressed, std::make_unique<GridMoveCommand>(playerPtr, glm::ivec2{0, 1}));
-        input.BindCommand(SDL_SCANCODE_A, KeyState::Pressed, std::make_unique<GridMoveCommand>(playerPtr, glm::ivec2{-1, 0}));
-        input.BindCommand(SDL_SCANCODE_D, KeyState::Pressed, std::make_unique<GridMoveCommand>(playerPtr, glm::ivec2{1, 0}));
+        input.BindCommand(SDL_SCANCODE_W, KeyState::Pressed, std::make_unique<GridMoveCommand>(p1, glm::ivec2{0, -1}));
+        input.BindCommand(SDL_SCANCODE_S, KeyState::Pressed, std::make_unique<GridMoveCommand>(p1, glm::ivec2{0, 1}));
+        input.BindCommand(SDL_SCANCODE_A, KeyState::Pressed, std::make_unique<GridMoveCommand>(p1, glm::ivec2{-1, 0}));
+        input.BindCommand(SDL_SCANCODE_D, KeyState::Pressed, std::make_unique<GridMoveCommand>(p1, glm::ivec2{1, 0}));
+
+        input.BindCommand(0, Gamepad::Button::DpadUp, KeyState::Pressed, std::make_unique<GridMoveCommand>(p2, glm::ivec2{0, -1}));
+        input.BindCommand(0, Gamepad::Button::DpadDown, KeyState::Pressed, std::make_unique<GridMoveCommand>(p2, glm::ivec2{0, 1}));
+        input.BindCommand(0, Gamepad::Button::DpadLeft, KeyState::Pressed, std::make_unique<GridMoveCommand>(p2, glm::ivec2{-1, 0}));
+        input.BindCommand(0, Gamepad::Button::DpadRight, KeyState::Pressed, std::make_unique<GridMoveCommand>(p2, glm::ivec2{1, 0}));
 
         return scene;
     }

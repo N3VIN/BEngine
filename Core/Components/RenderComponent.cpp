@@ -5,6 +5,7 @@
 #include "../Renderer/Renderer.h"
 #include "../Renderer/ResourceManager.h"
 #include "../Renderer/Texture2D.h"
+#include "CameraComponent.h"
 
 dae::RenderComponent::RenderComponent(GameObject *parent)
     : Component(parent) {}
@@ -16,12 +17,23 @@ void dae::RenderComponent::Render() const {
         return;
     }
 
-    const auto pos = GetParent()->GetWorldPosition();
+    const auto &renderer = Renderer::GetInstance();
+    auto worldPos = GetParent()->GetWorldPosition();
+    float scale = m_scale;
+
+    if (!m_ignoreCamera) {
+        if (const auto camera = renderer.GetActiveCamera()) {
+            worldPos = renderer.WorldToScreen(worldPos);
+            scale *= camera->GetZoom();
+        }
+    }
+
     const glm::vec2 sourceSize = m_hasSrcRect ? glm::vec2{static_cast<float>(m_srcRect.w), static_cast<float>(m_srcRect.h)} : m_texture->GetSize();
-    const SDL_FRect dst{pos.x, pos.y, sourceSize.x * m_scale, sourceSize.y * m_scale};
+    const SDL_FRect dst{worldPos.x, worldPos.y, sourceSize.x * scale, sourceSize.y * scale};
     const SDL_Rect *srcPtr = m_hasSrcRect ? &m_srcRect : nullptr;
     const float rotation = glm::degrees(GetParent()->GetWorldRotation());
-    Renderer::GetInstance().RenderTexture(*m_texture, dst, srcPtr, rotation);
+
+    renderer.RenderTexture(*m_texture, dst, srcPtr, rotation);
 }
 
 void dae::RenderComponent::SetTexture(std::string_view filename) {

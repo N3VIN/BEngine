@@ -28,7 +28,7 @@ namespace dae {
         }
 
         const auto windowSize = Renderer::GetInstance().GetWindowSize();
-        const glm::vec2 viewHalf = windowSize / (2.0f * m_zoom);
+        const auto viewHalf = windowSize / (2.0f * m_zoom);
 
         if (m_levelSize.x > viewHalf.x * 2.0f) {
             center.x = glm::clamp(center.x, m_levelOrigin.x + viewHalf.x, m_levelOrigin.x + m_levelSize.x - viewHalf.x); // clamp camera x axis

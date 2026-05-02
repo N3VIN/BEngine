@@ -21,10 +21,15 @@ namespace dae {
         void ClearSourceRect();
         void SetScale(float scale);
 
+        void SetIgnoreCamera(bool ignore) {
+            m_ignoreCamera = ignore;
+        }
+
     private:
         std::shared_ptr<Texture2D> m_texture{};
         SDL_Rect m_srcRect{0, 0, 0, 0};
         bool m_hasSrcRect{false};
         float m_scale{1.f};
+        bool m_ignoreCamera{false};
     };
 }
