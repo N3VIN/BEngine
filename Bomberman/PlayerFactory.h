@@ -6,6 +6,7 @@
 #include "../Core/SceneGraph/Scene.h"
 #include "../Core/Components/RenderComponent.h"
 #include "Components/GridMovementComponent.h"
+#include "Components/HealthComponent.h"
 
 namespace dae {
     class LevelGridComponent;
@@ -24,6 +25,7 @@ namespace dae {
         renderComponent->SetTexture(config.texturePath);
         renderComponent->SetScale(config.scale);
         player->AddComponent<GridMovementComponent>(config.gridComponent, config.spawnCell, config.cellsPerSecond);
+        player->AddComponent<HealthComponent>(4);
         auto *ptr = player.get();
         scene.Add(std::move(player));
 

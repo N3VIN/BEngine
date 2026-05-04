@@ -1,6 +1,9 @@
 {
   "texture": "Sprites/Background.png",
+  "bombTexture": "Sprites/General_Sprites.png",
   "tileSize": 16,
+  "spriteScale": 2.0,
+  "explosionLifetime": 0.5,
   "tiles": {
     "background": {
       "x": 0,
@@ -14,5 +17,14 @@
       "x": 128,
       "y": 208
     }
+  },
+  "bomb": {
+    "col": 0,
+    "row": 3
+  },
+  "explosion": {
+    "centerCol": 7,
+    "centerRow": 11,
+    "sizeCells": 5
   }
 }

@@ -10,10 +10,16 @@
 namespace dae {
     struct Tileset {
         std::string texturePath;
+        std::string bombTexturePath;
         int tileSize{};
+        float spriteScale{};
+        float explosionLifetime{};
         glm::ivec2 backgroundCoord{};
         glm::ivec2 brickCoord{};
         glm::ivec2 exitCoord{};
+        glm::ivec2 bombCoord{};
+        glm::ivec2 explosionCenter{};
+        int explosionCells{};
     };
 
     inline const Tileset &GetTileset() {
@@ -35,10 +41,25 @@ namespace dae {
 
             Tileset t;
             t.texturePath = json.at("texture").get<std::string>();
+            t.bombTexturePath = json.value("bombTexture", "");
             t.tileSize = json.at("tileSize").get<int>();
+            t.spriteScale = json.value("spriteScale", 2.0f);
+            t.explosionLifetime = json.value("explosionLifetime", 0.5f);
             t.backgroundCoord = readCoord("background");
             t.brickCoord = readCoord("brick");
             t.exitCoord = readCoord("exit");
+
+            if (json.contains("bomb")) {
+                const auto &bomb = json.at("bomb");
+                t.bombCoord = glm::ivec2{bomb.at("col").get<int>(), bomb.at("row").get<int>()};
+            }
+
+            if (json.contains("explosion")) {
+                const auto &explosion = json.at("explosion");
+                t.explosionCenter = glm::ivec2{explosion.at("centerCol").get<int>(), explosion.at("centerRow").get<int>()};
+                t.explosionCells = explosion.at("sizeCells").get<int>();
+            }
+
             return t;
         }();
 

@@ -55,7 +55,9 @@ if (NOT EMSCRIPTEN)
             Bomberman/Components/LevelGridComponent.cpp
             Bomberman/Components/GridMovementComponent.cpp
             Bomberman/Components/GridRenderComponent.cpp
-            Bomberman/Level/Level.cpp
+            Bomberman/Components/HealthComponent.cpp
+            Bomberman/Components/BombComponent.cpp
+            Bomberman/Components/BombManagerComponent.cpp
     )
     target_include_directories(bomberman PRIVATE ${CMAKE_SOURCE_DIR}/Bomberman)
 endif ()
