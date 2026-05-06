@@ -7,13 +7,12 @@
 #include "../Core/Engine/Engine.h"
 #include "../Core/SceneGraph/SceneManager.h"
 
-#include "Level/BuildLevelScene.h"
+#include "SceneStates/MainMenuState.h"
 
 namespace fs = std::filesystem;
 
 static void load() {
-    auto &levelScene = dae::BuildLevelScene("Levels/level1.json");
-    dae::SceneManager::GetInstance().SetActiveScene(levelScene);
+    dae::SceneManager::GetInstance().SetState(std::make_unique<dae::MainMenuState>());
 }
 
 int main(int, char *[]) {

@@ -26,8 +26,8 @@ namespace dae {
         m_damageables.push_back(player);
     }
 
-    void BombManagerComponent::RegisterDamageable(GameObject *entity) {
-        m_damageables.push_back(entity);
+    void BombManagerComponent::RegisterDamageable(GameObject *object) {
+        m_damageables.push_back(object);
     }
 
     void BombManagerComponent::PlaceBomb(glm::ivec2 cell, GameObject *owner) {
@@ -192,9 +192,7 @@ namespace dae {
             tileset.explosionCells * tileset.tileSize
         };
 
-        const glm::vec2 explosionOffset(
-            -static_cast<float>(tileset.explosionCells / 2) * m_grid->GetCellSize()
-        );
+        const glm::vec2 explosionOffset(-static_cast<float>(tileset.explosionCells / 2) * m_grid->GetCellSize());
 
         const auto &renderer = Renderer::GetInstance();
         const auto *camera = renderer.GetActiveCamera();

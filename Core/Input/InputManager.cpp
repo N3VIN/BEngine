@@ -93,3 +93,8 @@ void dae::InputManager::UnbindCommand(unsigned int controllerIndex, Gamepad::But
                   }
     );
 }
+
+void dae::InputManager::UnbindAll() {
+    m_keyboardBindings.clear();
+    m_controllerBindings.clear();
+}

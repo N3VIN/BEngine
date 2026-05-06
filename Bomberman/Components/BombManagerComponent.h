@@ -17,7 +17,6 @@ namespace dae {
         Timer timer;
     };
 
-    // the reason it is a component is that we get render and update calls automatically
     class BombManagerComponent final : public Component {
     public:
         BombManagerComponent(GameObject *parent, Scene &scene, LevelGridComponent *gridComponent);
@@ -30,12 +29,12 @@ namespace dae {
         void PlaceBomb(glm::ivec2 cell, GameObject *owner);
         void DetonateBomb(BombComponent *bomb);
         void RegisterPlayer(GameObject *player);
-        void RegisterDamageable(GameObject *entity);
+        void RegisterDamageable(GameObject *object);
 
         MulticastDelegate<glm::ivec2> OnExplosionAt;
 
         float m_fuseTime = 3.0f;
-        int m_maxBombsPerPlayer = 1;
+        int m_maxBombsPerPlayer = 2;
 
     private:
         void SpawnExplosionAt(glm::ivec2 cell);

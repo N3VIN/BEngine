@@ -58,6 +58,9 @@ if (NOT EMSCRIPTEN)
             Bomberman/Components/HealthComponent.cpp
             Bomberman/Components/BombComponent.cpp
             Bomberman/Components/BombManagerComponent.cpp
+            Bomberman/SceneStates/MainMenuState.cpp
+            Bomberman/SceneStates/GameSceneState.cpp
+            Bomberman/SceneStates/GameEndState.cpp
     )
     target_include_directories(bomberman PRIVATE ${CMAKE_SOURCE_DIR}/Bomberman)
 endif ()
