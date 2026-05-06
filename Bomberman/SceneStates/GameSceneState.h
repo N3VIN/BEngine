@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 
-#include "../../Core/SceneGraph/ISceneState.h"
+#include "../../Core/Patterns/ISceneState.h"
 
 namespace dae {
     class Scene;

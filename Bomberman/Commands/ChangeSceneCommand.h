@@ -4,7 +4,7 @@
 #include <utility>
 
 #include "../../Core/Patterns/ICommand.h"
-#include "../../Core/SceneGraph/ISceneState.h"
+#include "../../Core/Patterns/ISceneState.h"
 #include "../../Core/SceneGraph/SceneManager.h"
 
 namespace dae {
