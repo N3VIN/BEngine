@@ -3,7 +3,7 @@
 #include <string>
 #include <memory>
 #include "Scene.h"
-#include "../Patterns/ISceneState.h"
+#include "ISceneState.h"
 #include "../Patterns/Singleton.h"
 
 namespace dae {

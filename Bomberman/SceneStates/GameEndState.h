@@ -1,5 +1,5 @@
 #pragma once
-#include "../../Core/Patterns/ISceneState.h"
+#include "../../Core/SceneGraph/ISceneState.h"
 
 namespace dae {
     class Scene;
