@@ -1,8 +1,8 @@
 #pragma once
 #include <memory>
 
-#include "../Audio/IAudioService.h"
-#include "../Audio/NullAudioService.h"
+#include "Audio/IAudioService.h"
+#include "Audio/NullAudioService.h"
 
 namespace dae {
     class ServiceLocator final {

@@ -1,7 +1,7 @@
 #pragma once
-#include "../../Core/Components/Component.h"
-#include "../../Core/Timer.h"
-#include "../../Core/Patterns/MulticastDelegate.h"
+#include "Components/Component.h"
+#include "Timer.h"
+#include "Patterns/MulticastDelegate.h"
 #include <SDL3/SDL.h>
 #include <glm/glm.hpp>
 #include <unordered_map>

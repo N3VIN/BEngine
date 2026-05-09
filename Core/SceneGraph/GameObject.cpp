@@ -1,5 +1,5 @@
-#include "../SceneGraph/GameObject.h"
-#include "../Components/RenderComponent.h"
+#include "SceneGraph/GameObject.h"
+#include "Components/RenderComponent.h"
 
 
 dae::GameObject::~GameObject() = default;

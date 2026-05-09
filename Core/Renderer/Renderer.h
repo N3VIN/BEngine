@@ -1,7 +1,7 @@
 #pragma once
 #include <SDL3/SDL.h>
 #include <glm/glm.hpp>
-#include "../Patterns/Singleton.h"
+#include "Patterns/Singleton.h"
 
 namespace dae {
     class Texture2D;

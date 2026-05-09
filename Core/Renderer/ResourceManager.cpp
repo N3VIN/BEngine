@@ -1,4 +1,4 @@
-﻿#include "../Renderer/ResourceManager.h"
+#include "Renderer/ResourceManager.h"
 #include "Renderer.h"
 #include "Texture2D.h"
 #include "Font.h"

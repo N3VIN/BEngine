@@ -1,6 +1,6 @@
 #include "GridMovementComponent.h"
 #include "LevelGridComponent.h"
-#include "../../Core/SceneGraph/GameObject.h"
+#include "SceneGraph/GameObject.h"
 
 namespace dae {
     GridMovementComponent::GridMovementComponent(GameObject *parent, LevelGridComponent *levelGridComponent, glm::ivec2 startCell, float cellsPerSecond)

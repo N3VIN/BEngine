@@ -1,4 +1,4 @@
-﻿#include <sstream>
+#include <sstream>
 
 #if WIN32
 #define WIN32_LEAN_AND_MEAN
@@ -15,10 +15,10 @@
 
 #include <thread>
 
-#include "../Input/InputManager.h"
-#include "../SceneGraph/SceneManager.h"
-#include "../Renderer/Renderer.h"
-#include "../Renderer/ResourceManager.h"
+#include "Input/InputManager.h"
+#include "SceneGraph/SceneManager.h"
+#include "Renderer/Renderer.h"
+#include "Renderer/ResourceManager.h"
 #include "TimeManager.h"
 
 SDL_Window *g_window{};

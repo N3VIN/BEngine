@@ -2,9 +2,9 @@
 #include <memory>
 #include <string_view>
 #include <glm/glm.hpp>
-#include "../Core/SceneGraph/GameObject.h"
-#include "../Core/SceneGraph/Scene.h"
-#include "../Core/Components/RenderComponent.h"
+#include "SceneGraph/GameObject.h"
+#include "SceneGraph/Scene.h"
+#include "Components/RenderComponent.h"
 #include "Components/GridMovementComponent.h"
 #include "Components/HealthComponent.h"
 

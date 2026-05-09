@@ -1,6 +1,6 @@
 #pragma once
-#include "../../Core/Components/Component.h"
-#include "../../Core/Timer.h"
+#include "Components/Component.h"
+#include "Timer.h"
 #include <glm/glm.hpp>
 
 namespace dae {

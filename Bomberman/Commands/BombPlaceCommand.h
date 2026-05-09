@@ -1,8 +1,8 @@
 #pragma once
-#include "../../Core/Patterns/ICommand.h"
-#include "../../Core/SceneGraph/GameObject.h"
-#include "../Components/GridMovementComponent.h"
-#include "../Components/BombManagerComponent.h"
+#include "Patterns/ICommand.h"
+#include "SceneGraph/GameObject.h"
+#include "Components/GridMovementComponent.h"
+#include "Components/BombManagerComponent.h"
 
 namespace dae {
     class BombPlaceCommand final : public GameObjectCommand {

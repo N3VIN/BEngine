@@ -8,6 +8,7 @@ namespace dae {
             "Levels/level1.json",
             // more levels here when we add them
         };
+
         return levels;
     }
 }

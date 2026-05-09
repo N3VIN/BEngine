@@ -1,10 +1,10 @@
 #include "RenderComponent.h"
 
 #include <glm/trigonometric.hpp>
-#include "../SceneGraph/GameObject.h"
-#include "../Renderer/Renderer.h"
-#include "../Renderer/ResourceManager.h"
-#include "../Renderer/Texture2D.h"
+#include "SceneGraph/GameObject.h"
+#include "Renderer/Renderer.h"
+#include "Renderer/ResourceManager.h"
+#include "Renderer/Texture2D.h"
 #include "CameraComponent.h"
 
 dae::RenderComponent::RenderComponent(GameObject *parent)

@@ -7,9 +7,6 @@
 namespace dae {
     inline constexpr uint64_t INVALID_ID = 0;
 
-    template<typename...>
-    class MulticastDelegate;
-
     class DelegateHandle final {
     public:
         constexpr DelegateHandle() noexcept = default;
@@ -68,7 +65,6 @@ namespace dae {
         MulticastDelegate &operator=(const MulticastDelegate &) = delete;
         MulticastDelegate(MulticastDelegate &&) = delete;
         MulticastDelegate &operator=(MulticastDelegate &&) = delete;
-
 
         // IMPORTANT, dont call Subscribe during Broadcast, only in constuctors or during init logic
         template<typename Fn>

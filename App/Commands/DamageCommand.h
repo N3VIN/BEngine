@@ -1,7 +1,7 @@
 #pragma once
-#include "../../Core/Patterns/ICommand.h"
-#include "../../Core/SceneGraph/GameObject.h"
-#include "../Components/HealthComponent.h"
+#include "Patterns/ICommand.h"
+#include "SceneGraph/GameObject.h"
+#include "Components/HealthComponent.h"
 
 namespace dae {
     class DamageCommand final : public GameObjectCommand {

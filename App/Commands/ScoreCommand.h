@@ -1,7 +1,7 @@
-﻿#pragma once
-#include "../../Core/Patterns/ICommand.h"
-#include "../../Core/SceneGraph/GameObject.h"
-#include "../Components/PickupComponent.h"
+#pragma once
+#include "Patterns/ICommand.h"
+#include "SceneGraph/GameObject.h"
+#include "Components/PickupComponent.h"
 
 namespace dae {
     class ScoreCommand final : public GameObjectCommand {

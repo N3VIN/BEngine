@@ -1,6 +1,6 @@
 #pragma once
-#include "../../Core/Components/Component.h"
-#include "../../Core/Patterns/MulticastDelegate.h"
+#include "Components/Component.h"
+#include "Patterns/MulticastDelegate.h"
 
 namespace dae {
     class HealthComponent final : public Component { // we have a similar component in the App but I think that will be removed so a similar copy

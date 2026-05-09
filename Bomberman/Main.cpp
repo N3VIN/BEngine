@@ -4,8 +4,8 @@
 #include <vld.h>
 #endif
 
-#include "../Core/Engine/Engine.h"
-#include "../Core/SceneGraph/SceneManager.h"
+#include "Engine/Engine.h"
+#include "SceneGraph/SceneManager.h"
 
 #include "SceneStates/MainMenuState.h"
 

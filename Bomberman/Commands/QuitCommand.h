@@ -1,7 +1,7 @@
 #pragma once
 #include <SDL3/SDL_events.h>
 
-#include "../../Core/Patterns/ICommand.h"
+#include "Patterns/ICommand.h"
 
 namespace dae {
     class QuitCommand final : public ICommand {

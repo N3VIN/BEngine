@@ -1,7 +1,7 @@
 #pragma once
-#include "../../Core/Patterns/ICommand.h"
-#include "../../Core/SceneGraph/GameObject.h"
-#include "../Components/GridMovementComponent.h"
+#include "Patterns/ICommand.h"
+#include "SceneGraph/GameObject.h"
+#include "Components/GridMovementComponent.h"
 #include <glm/glm.hpp>
 
 namespace dae {

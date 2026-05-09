@@ -1,7 +1,7 @@
-﻿#include <cstring>
-#include "../Renderer/Renderer.h"
-#include "../SceneGraph/SceneManager.h"
-#include "../Components/CameraComponent.h"
+#include <cstring>
+#include "Renderer/Renderer.h"
+#include "SceneGraph/SceneManager.h"
+#include "Components/CameraComponent.h"
 #include "Texture2D.h"
 
 #include <backends/imgui_impl_sdl3.h>

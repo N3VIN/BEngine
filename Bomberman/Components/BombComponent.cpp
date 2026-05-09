@@ -1,6 +1,6 @@
 #include "BombComponent.h"
 #include "BombManagerComponent.h"
-#include "../../Core/Engine/TimeManager.h"
+#include "Engine/TimeManager.h"
 
 namespace dae {
     BombComponent::BombComponent(GameObject *parent, BombManagerComponent *bombManagerComponent, LevelGridComponent *grid, glm::ivec2 cell, GameObject *owner, float fuseTime)

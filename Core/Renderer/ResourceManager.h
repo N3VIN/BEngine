@@ -1,9 +1,9 @@
-﻿#pragma once
+#pragma once
 #include <filesystem>
 #include <string>
 #include <memory>
 #include <map>
-#include "../Patterns/Singleton.h"
+#include "Patterns/Singleton.h"
 
 
 namespace fs = std::filesystem;

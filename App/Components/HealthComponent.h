@@ -1,6 +1,6 @@
 #pragma once
 #include "Components/Component.h"
-// #include "../../Core/Patterns/Subject.h"
+// #include "Patterns/Subject.h"
 #include "Patterns/MulticastDelegate.h"
 
 namespace dae {

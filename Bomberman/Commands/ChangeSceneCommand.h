@@ -3,9 +3,9 @@
 #include <memory>
 #include <utility>
 
-#include "../../Core/Patterns/ICommand.h"
-#include "../../Core/SceneGraph/ISceneState.h"
-#include "../../Core/SceneGraph/SceneManager.h"
+#include "Patterns/ICommand.h"
+#include "SceneGraph/ISceneState.h"
+#include "SceneGraph/SceneManager.h"
 
 namespace dae {
     class ChangeSceneCommand final : public ICommand {

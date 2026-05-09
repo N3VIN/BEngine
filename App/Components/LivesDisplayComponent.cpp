@@ -1,5 +1,5 @@
 #include "LivesDisplayComponent.h"
-#include "../../Core/SceneGraph/GameObject.h"
+#include "SceneGraph/GameObject.h"
 #include "HealthComponent.h"
 #include "Components/TextComponent.h"
 

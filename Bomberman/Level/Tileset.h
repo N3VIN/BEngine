@@ -5,7 +5,7 @@
 #include <glm/vec2.hpp>
 #include <nlohmann/json.hpp>
 
-#include "../../Core/Renderer/ResourceManager.h"
+#include "Renderer/ResourceManager.h"
 
 namespace dae {
     struct Tileset {

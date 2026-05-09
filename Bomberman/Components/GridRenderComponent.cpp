@@ -1,6 +1,6 @@
 #include "GridRenderComponent.h"
-#include "../../Core/Components/RenderComponent.h"
-#include "../../Core/SceneGraph/GameObject.h"
+#include "Components/RenderComponent.h"
+#include "SceneGraph/GameObject.h"
 
 namespace dae {
     GridRenderComponent::GridRenderComponent(GameObject *parent, std::string_view texturePath, const SDL_Rect &sourceRect, float scale)

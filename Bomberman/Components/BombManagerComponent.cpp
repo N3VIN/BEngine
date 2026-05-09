@@ -3,14 +3,14 @@
 #include "LevelGridComponent.h"
 #include "GridMovementComponent.h"
 #include "HealthComponent.h"
-#include "../Level/Tileset.h"
-#include "../../Core/SceneGraph/Scene.h"
-#include "../../Core/SceneGraph/GameObject.h"
-#include "../../Core/Components/RenderComponent.h"
-#include "../../Core/Renderer/Renderer.h"
-#include "../../Core/Renderer/Texture2D.h"
-#include "../../Core/Renderer/ResourceManager.h"
-#include "../../Core/Components/CameraComponent.h"
+#include "Level/Tileset.h"
+#include "SceneGraph/Scene.h"
+#include "SceneGraph/GameObject.h"
+#include "Components/RenderComponent.h"
+#include "Renderer/Renderer.h"
+#include "Renderer/Texture2D.h"
+#include "Renderer/ResourceManager.h"
+#include "Components/CameraComponent.h"
 
 namespace dae {
     BombManagerComponent::BombManagerComponent(GameObject *parent, Scene &scene, LevelGridComponent *gridComponent)

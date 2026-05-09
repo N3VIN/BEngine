@@ -1,13 +1,13 @@
 #include "GameSceneState.h"
 
 #include "GameEndState.h"
-#include "../Commands/ChangeSceneCommand.h"
-#include "../Level/BuildLevelScene.h"
+#include "Commands/ChangeSceneCommand.h"
+#include "Level/BuildLevelScene.h"
 
-#include "../../Core/SceneGraph/Scene.h"
-#include "../../Core/SceneGraph/SceneManager.h"
-#include "../../Core/Renderer/Renderer.h"
-#include "../../Core/Input/InputManager.h"
+#include "SceneGraph/Scene.h"
+#include "SceneGraph/SceneManager.h"
+#include "Renderer/Renderer.h"
+#include "Input/InputManager.h"
 
 namespace dae {
     std::unique_ptr<ISceneState> MakeNextState(const std::vector<std::string> &levelPaths, size_t index) {

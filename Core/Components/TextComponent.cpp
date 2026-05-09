@@ -1,9 +1,9 @@
-﻿#include "TextComponent.h"
-#include "../Renderer/Font.h"
-#include "../SceneGraph/GameObject.h"
+#include "TextComponent.h"
+#include "Renderer/Font.h"
+#include "SceneGraph/GameObject.h"
 #include "RenderComponent.h"
-#include "../Renderer/Renderer.h"
-#include "../Renderer/Texture2D.h"
+#include "Renderer/Renderer.h"
+#include "Renderer/Texture2D.h"
 
 namespace dae {
     TextComponent::TextComponent(GameObject *owner)

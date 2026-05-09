@@ -1,5 +1,5 @@
 #include "HealthComponent.h"
-#include "../../Core/SceneGraph/GameObject.h"
+#include "SceneGraph/GameObject.h"
 
 namespace dae {
     HealthComponent::HealthComponent(GameObject *gameObject, int lives)

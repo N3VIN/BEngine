@@ -4,7 +4,7 @@
 #include <memory>
 #include "Scene.h"
 #include "ISceneState.h"
-#include "../Patterns/Singleton.h"
+#include "Patterns/Singleton.h"
 
 namespace dae {
     class Scene;

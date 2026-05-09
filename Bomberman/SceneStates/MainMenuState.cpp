@@ -1,17 +1,17 @@
 #include "MainMenuState.h"
 
 #include "GameSceneState.h"
-#include "../Commands/ChangeSceneCommand.h"
-#include "../Level/LevelList.h"
+#include "Commands/ChangeSceneCommand.h"
+#include "Level/LevelList.h"
 
-#include "../../Core/SceneGraph/Scene.h"
-#include "../../Core/SceneGraph/SceneManager.h"
-#include "../../Core/SceneGraph/GameObject.h"
-#include "../../Core/Components/TextComponent.h"
-#include "../../Core/Components/RenderComponent.h"
-#include "../../Core/Renderer/Renderer.h"
-#include "../../Core/Renderer/ResourceManager.h"
-#include "../../Core/Input/InputManager.h"
+#include "SceneGraph/Scene.h"
+#include "SceneGraph/SceneManager.h"
+#include "SceneGraph/GameObject.h"
+#include "Components/TextComponent.h"
+#include "Components/RenderComponent.h"
+#include "Renderer/Renderer.h"
+#include "Renderer/ResourceManager.h"
+#include "Input/InputManager.h"
 
 namespace dae {
     MainMenuState::MainMenuState() {

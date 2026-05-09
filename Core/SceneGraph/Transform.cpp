@@ -1,4 +1,4 @@
-#include "../SceneGraph/Transform.h"
+#include "SceneGraph/Transform.h"
 
 void dae::Transform::SetLocalPosition(const glm::vec3 &position) {
     m_localPosition = position;

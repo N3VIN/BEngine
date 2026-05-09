@@ -3,9 +3,9 @@
 #include <cstdint>
 #include <vector>
 #include <glm/glm.hpp>
-#include "../../Core/Components/Component.h"
-#include "../../Core/Patterns/MulticastDelegate.h"
-#include "../Level/TileType.h"
+#include "Components/Component.h"
+#include "Patterns/MulticastDelegate.h"
+#include "Level/TileType.h"
 
 namespace fs = std::filesystem;
 

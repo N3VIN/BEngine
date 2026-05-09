@@ -1,6 +1,6 @@
 #include "RotatorComponent.h"
 #include <numbers>
-#include "../SceneGraph/GameObject.h"
+#include "SceneGraph/GameObject.h"
 
 dae::RotatorComponent::RotatorComponent(GameObject *parent)
     : Component(parent) {}

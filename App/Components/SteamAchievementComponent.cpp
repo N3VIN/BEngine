@@ -1,6 +1,6 @@
 #include "SteamAchievementComponent.h"
 #include "PickupComponent.h"
-#include "../../Core/SceneGraph/GameObject.h"
+#include "SceneGraph/GameObject.h"
 
 #if USE_STEAMWORKS
 #pragma warning(push)

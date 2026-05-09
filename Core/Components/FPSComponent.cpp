@@ -1,5 +1,5 @@
-﻿#include "FPSComponent.h"
-#include "../SceneGraph/GameObject.h"
+#include "FPSComponent.h"
+#include "SceneGraph/GameObject.h"
 #include "TextComponent.h"
 
 namespace dae {

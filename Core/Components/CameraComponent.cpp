@@ -1,6 +1,6 @@
 #include "CameraComponent.h"
-#include "../SceneGraph/GameObject.h"
-#include "../Renderer/Renderer.h"
+#include "SceneGraph/GameObject.h"
+#include "Renderer/Renderer.h"
 
 namespace dae {
     CameraComponent::CameraComponent(GameObject *parent)
