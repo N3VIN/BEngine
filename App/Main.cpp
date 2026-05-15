@@ -11,6 +11,7 @@
 #include "SceneGraph/Scene.h"
 #include "Patterns/ServiceLocator.h"
 #include "Audio/SDLAudioService.h"
+#include "GameEvents.h"
 
 #include "Components/RenderComponent.h"
 #include "Components/TextComponent.h"
@@ -87,9 +88,6 @@ static void load() {
     player1->AddComponent<dae::RenderComponent>()->SetTexture("bomberman.png");
     player1->SetLocalPosition(glm::vec2(300, 300));
     auto *p1Health = player1->AddComponent<dae::HealthComponent>(startingLives);
-    static auto p1SD = p1Health->OnLifeChanged.Subscribe([&audio](int) {
-        audio.PlayAudio(utils::FNV1a("damage"), 1.0f); // subscribe to the audio
-    });
 
     auto *p1Pickup = player1->AddComponent<dae::PickupComponent>();
     auto *p1Achievement = player1->AddComponent<dae::SteamAchievementComponent>();
@@ -122,9 +120,6 @@ static void load() {
     player2->AddComponent<dae::RenderComponent>()->SetTexture("bomberman.png");
     player2->SetLocalPosition(glm::vec2(500, 300));
     auto *p2Health = player2->AddComponent<dae::HealthComponent>(startingLives);
-    static auto p2SD = p2Health->OnLifeChanged.Subscribe([&audio](int) {
-        audio.PlayAudio(utils::Hash("damage"), 1.0f); // subscribe to the audio
-    });
 
     auto *p2Pickup = player2->AddComponent<dae::PickupComponent>();
     auto *p2Achievement = player2->AddComponent<dae::SteamAchievementComponent>();
@@ -151,6 +146,12 @@ static void load() {
     p2Pickup->AddObserver(scoreComp2);
     p2Pickup->AddObserver(p2Achievement);
     scene.Add(std::move(scoreDisplay2));
+
+    static auto damageSD = dae::ServiceLocator::GetEventBus().Subscribe<dae::events::PlayerDamaged>(
+        [&audio](const dae::events::PlayerDamaged &) {
+            audio.PlayAudio(utils::Hash("damage"), 1.0f);
+        }
+    );
 
     auto &input = dae::InputManager::GetInstance();
     constexpr float speed1 = 100.f;

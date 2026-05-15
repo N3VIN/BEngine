@@ -3,6 +3,7 @@
 
 #include "Audio/IAudioService.h"
 #include "Audio/NullAudioService.h"
+#include "EventBus.h"
 
 namespace dae {
     class ServiceLocator final {
@@ -19,7 +20,16 @@ namespace dae {
             s_audio = service ? std::move(service) : std::make_unique<NullAudioService>();
         }
 
+        static EventBus &GetEventBus() {
+            if (!s_eventBus) {
+                s_eventBus = std::make_unique<EventBus>();
+            }
+
+            return *s_eventBus;
+        }
+
     private:
         inline static std::unique_ptr<IAudioService> s_audio;
+        inline static std::unique_ptr<EventBus> s_eventBus;
     };
 }

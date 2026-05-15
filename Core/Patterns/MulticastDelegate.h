@@ -88,7 +88,6 @@ namespace dae {
             );
         }
 
-
         // IMPORTANT, dont call Subscribe during Broadcast, only in constuctors or during init logic
         template<typename Class>
         [[nodiscard]] ScopedDelegate Subscribe(Class *instance, void (Class::*memberFunction)(Args...) const) { // const member function
