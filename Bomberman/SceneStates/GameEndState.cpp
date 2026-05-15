@@ -7,12 +7,19 @@
 #include "SceneGraph/GameObject.h"
 #include "Components/TextComponent.h"
 #include "Components/RenderComponent.h"
+#include "UIHelpers.h"
 #include "Renderer/Renderer.h"
 #include "Renderer/ResourceManager.h"
 #include "Input/InputManager.h"
 
 namespace dae {
-    GameEndState::GameEndState() {
+    GameEndState::~GameEndState() {
+        if (m_scene) {
+            SceneManager::GetInstance().DestroyScene(*m_scene);
+        }
+    }
+
+    void GameEndState::OnEnter() {
         Renderer::GetInstance().SetActiveCamera(nullptr);
 
         m_scene = &SceneManager::GetInstance().CreateScene();
@@ -24,8 +31,7 @@ namespace dae {
         titleText->SetText("GAME OVER");
         titleGo->GetComponent<RenderComponent>()->SetIgnoreCamera(true);
 
-        const auto windowSize = Renderer::GetInstance().GetWindowSize();
-        titleGo->SetLocalPosition(glm::vec2(windowSize.x * 0.5f - 170.0f, windowSize.y * 0.35f));
+        titleGo->SetLocalPosition(ScreenFraction(0.5f, 0.35f) + glm::vec2(-170.0f, 0.0f));
         m_scene->Add(std::move(titleGo));
 
         auto quitGo = std::make_unique<GameObject>();
@@ -34,19 +40,11 @@ namespace dae {
         quitText->SetColor({200, 200, 200, 255});
         quitText->SetText("Press ESC to quit");
         quitGo->GetComponent<RenderComponent>()->SetIgnoreCamera(true);
-        quitGo->SetLocalPosition(glm::vec2(windowSize.x * 0.5f - 110.0f, windowSize.y * 0.55f));
+        quitGo->SetLocalPosition(ScreenFraction(0.5f, 0.55f) + glm::vec2(-110.0f, 0.0f));
         m_scene->Add(std::move(quitGo));
 
         SceneManager::GetInstance().SetActiveScene(*m_scene);
-    }
 
-    GameEndState::~GameEndState() {
-        if (m_scene) {
-            SceneManager::GetInstance().DestroyScene(*m_scene);
-        }
-    }
-
-    void GameEndState::OnEnter() {
         InputManager::GetInstance().BindCommand(
             SDL_SCANCODE_ESCAPE, KeyState::Down,
             std::make_unique<QuitCommand>()

@@ -6,7 +6,7 @@ namespace dae {
 
     class GameEndState final : public ISceneState {
     public:
-        GameEndState();
+        GameEndState() = default;
         ~GameEndState() override;
 
         void OnEnter() override;

@@ -9,12 +9,19 @@
 #include "SceneGraph/GameObject.h"
 #include "Components/TextComponent.h"
 #include "Components/RenderComponent.h"
+#include "UIHelpers.h"
 #include "Renderer/Renderer.h"
 #include "Renderer/ResourceManager.h"
 #include "Input/InputManager.h"
 
 namespace dae {
-    MainMenuState::MainMenuState() {
+    MainMenuState::~MainMenuState() {
+        if (m_scene) {
+            SceneManager::GetInstance().DestroyScene(*m_scene);
+        }
+    }
+
+    void MainMenuState::OnEnter() {
         Renderer::GetInstance().SetActiveCamera(nullptr);
 
         m_scene = &SceneManager::GetInstance().CreateScene();
@@ -26,8 +33,7 @@ namespace dae {
         titleText->SetText("BOMBERMAN");
         titleGo->GetComponent<RenderComponent>()->SetIgnoreCamera(true);
 
-        const auto windowSize = Renderer::GetInstance().GetWindowSize();
-        titleGo->SetLocalPosition(glm::vec2(windowSize.x * 0.5f - 180.0f, windowSize.y * 0.3f));
+        titleGo->SetLocalPosition(ScreenFraction(0.5f, 0.3f) + glm::vec2(-180.0f, 0.0f));
         m_scene->Add(std::move(titleGo));
 
         auto startGo = std::make_unique<GameObject>();
@@ -36,19 +42,11 @@ namespace dae {
         startText->SetColor({200, 200, 200, 255});
         startText->SetText("Press F1 to switch scenes (for all scenes).");
         startGo->GetComponent<RenderComponent>()->SetIgnoreCamera(true);
-        startGo->SetLocalPosition(glm::vec2(windowSize.x * 0.5f - 260.0f, windowSize.y * 0.5f));
+        startGo->SetLocalPosition(ScreenFraction(0.5f, 0.5f) + glm::vec2(-260.0f, 0.0f));
         m_scene->Add(std::move(startGo));
 
         SceneManager::GetInstance().SetActiveScene(*m_scene);
-    }
 
-    MainMenuState::~MainMenuState() {
-        if (m_scene) {
-            SceneManager::GetInstance().DestroyScene(*m_scene);
-        }
-    }
-
-    void MainMenuState::OnEnter() {
         InputManager::GetInstance().BindCommand(
             SDL_SCANCODE_F1, KeyState::Down,
             std::make_unique<ChangeSceneCommand>([] {

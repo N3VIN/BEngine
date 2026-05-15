@@ -6,7 +6,7 @@ namespace dae {
 
     class MainMenuState final : public ISceneState {
     public:
-        MainMenuState();
+        MainMenuState() = default;
         ~MainMenuState() override;
 
         void OnEnter() override;
