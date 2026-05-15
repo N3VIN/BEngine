@@ -11,6 +11,14 @@ namespace dae {
     // and adapted to use our existing MulticastDelegate
     class EventBus final {
     public:
+        EventBus() = default;
+        ~EventBus() = default;
+
+        EventBus(const EventBus &) = delete;
+        EventBus &operator=(const EventBus &) = delete;
+        EventBus(EventBus &&) = delete;
+        EventBus &operator=(EventBus &&) = delete;
+
         // IMPORTANT, dont call Subscribe during Broadcast, only in constuctors or during init logic
         template<typename Event, typename Fn>
         [[nodiscard]] ScopedDelegate Subscribe(Fn &&callback) {
