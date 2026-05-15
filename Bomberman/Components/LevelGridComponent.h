@@ -4,7 +4,6 @@
 #include <vector>
 #include <glm/glm.hpp>
 #include "Components/Component.h"
-#include "Patterns/MulticastDelegate.h"
 #include "Level/TileType.h"
 
 namespace fs = std::filesystem;
@@ -21,8 +20,6 @@ namespace dae {
         LevelGridComponent(LevelGridComponent &&) = delete;
         LevelGridComponent &operator=(const LevelGridComponent &) = delete;
         LevelGridComponent &operator=(LevelGridComponent &&) = delete;
-
-        MulticastDelegate<glm::ivec2> OnBrickDestroyed;
 
         [[nodiscard]] bool IsWalkable(glm::ivec2 cell) const;
         [[nodiscard]] bool IsBrick(glm::ivec2 cell) const;

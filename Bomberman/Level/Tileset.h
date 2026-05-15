@@ -8,18 +8,51 @@
 #include "Renderer/ResourceManager.h"
 
 namespace dae {
+    struct SpriteDef {
+        int col{};
+        int row{};
+        int numCols{1};
+        int numRows{1};
+        int frameCount{1};
+        bool autoPlay{false};
+        int frameColumns{0};
+    };
+
+    enum class SpriteType {
+        Brick,
+        Exit,
+        Bomb,
+        Explosion
+    };
+
     struct Tileset {
         std::string texturePath;
-        std::string bombTexturePath;
+        std::string spriteTexturePath;
         int tileSize{};
         float spriteScale{};
         float explosionLifetime{};
         glm::ivec2 backgroundCoord{};
-        glm::ivec2 brickCoord{};
-        glm::ivec2 exitCoord{};
-        glm::ivec2 bombCoord{};
-        glm::ivec2 explosionCenter{};
-        int explosionCells{};
+        SpriteDef brick{};
+        SpriteDef exit{};
+        SpriteDef bomb{};
+        SpriteDef explosion{};
+
+        [[nodiscard]] SpriteDef GetSpriteDefinition(SpriteType type) const {
+            SpriteDef definition;
+            switch (type) {
+                case SpriteType::Brick: definition = brick; break;
+                case SpriteType::Exit: definition = exit; break;
+                case SpriteType::Bomb:
+                    definition = bomb;
+                    definition.autoPlay = true;
+                    break;
+                case SpriteType::Explosion:
+                    definition = explosion;
+                    definition.autoPlay = true;
+                    break;
+            }
+            return definition;
+        }
     };
 
     inline const Tileset &GetTileset() {
@@ -34,33 +67,48 @@ namespace dae {
             nlohmann::json json;
             file >> json;
 
-            const auto readCoord = [&](const char *key) {
+            Tileset tileset;
+            tileset.texturePath = json.at("texture").get<std::string>();
+            tileset.spriteTexturePath = json.value("spriteTexture", "");
+            tileset.tileSize = json.at("tileSize").get<int>();
+            tileset.spriteScale = json.value("spriteScale", 2.0f);
+            tileset.explosionLifetime = json.value("explosionLifetime", 0.5f);
+
+            {
+                const auto &bg = json.at("tiles").at("background");
+                tileset.backgroundCoord = glm::ivec2{bg.at("x").get<int>(), bg.at("y").get<int>()};
+            }
+
+            const auto readSpriteDef = [&](const char *key) {
                 const auto &node = json.at("tiles").at(key);
-                return glm::ivec2{node.at("x").get<int>(), node.at("y").get<int>()};
+                SpriteDef def;
+                def.col = node.at("col").get<int>();
+                def.row = node.at("row").get<int>();
+                def.frameCount = node.value("frameCount", 1);
+                return def;
             };
 
-            Tileset t;
-            t.texturePath = json.at("texture").get<std::string>();
-            t.bombTexturePath = json.value("bombTexture", "");
-            t.tileSize = json.at("tileSize").get<int>();
-            t.spriteScale = json.value("spriteScale", 2.0f);
-            t.explosionLifetime = json.value("explosionLifetime", 0.5f);
-            t.backgroundCoord = readCoord("background");
-            t.brickCoord = readCoord("brick");
-            t.exitCoord = readCoord("exit");
+            tileset.brick = readSpriteDef("brick");
+            tileset.exit = readSpriteDef("exit");
 
             if (json.contains("bomb")) {
-                const auto &bomb = json.at("bomb");
-                t.bombCoord = glm::ivec2{bomb.at("col").get<int>(), bomb.at("row").get<int>()};
+                const auto &node = json.at("bomb");
+                tileset.bomb.col = node.at("col").get<int>();
+                tileset.bomb.row = node.at("row").get<int>();
+                tileset.bomb.frameCount = node.value("frameCount", 1);
             }
 
             if (json.contains("explosion")) {
-                const auto &explosion = json.at("explosion");
-                t.explosionCenter = glm::ivec2{explosion.at("centerCol").get<int>(), explosion.at("centerRow").get<int>()};
-                t.explosionCells = explosion.at("sizeCells").get<int>();
+                const auto &node = json.at("explosion");
+                tileset.explosion.col = node.at("col").get<int>();
+                tileset.explosion.row = node.at("row").get<int>();
+                tileset.explosion.numCols = node.at("numCols").get<int>();
+                tileset.explosion.numRows = node.at("numRows").get<int>();
+                tileset.explosion.frameCount = node.value("frameCount", 1);
+                tileset.explosion.frameColumns = node.value("frameColumns", 0);
             }
 
-            return t;
+            return tileset;
         }();
 
         return tileset;

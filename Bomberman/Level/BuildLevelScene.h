@@ -9,7 +9,8 @@
 #include "Commands/BombPlaceCommand.h"
 #include "Components/BombManagerComponent.h"
 #include "PlayerFactory.h"
-
+#include "Components/SpriteRendererComponent.h"
+#include "Components/BrickComponent.h"
 #include "SceneGraph/Scene.h"
 #include "SceneGraph/SceneManager.h"
 #include "SceneGraph/GameObject.h"
@@ -57,15 +58,10 @@ namespace dae {
 
         std::array<glm::ivec2, 2> playerSpawnPositions{};
 
-        const auto spawnTile = [&scene, levelGridComponent, &tileset, tileSize, spriteScale](glm::ivec2 cell, glm::ivec2 coord) -> GameObject * {
-            const SDL_Rect srcRect{coord.x, coord.y, tileSize, tileSize};
+        const auto spawnTile = [&scene, levelGridComponent](glm::ivec2 cell, SpriteType spriteType) {
             auto tile = std::make_unique<GameObject>();
             tile->SetLocalPosition(levelGridComponent->CellToWorld(cell));
-
-            auto *renderComponent = tile->AddComponent<RenderComponent>();
-            renderComponent->SetTexture(tileset.texturePath);
-            renderComponent->SetSourceRect(srcRect);
-            renderComponent->SetScale(spriteScale);
+            tile->AddComponent<SpriteRendererComponent>(spriteType);
             auto *ptr = tile.get();
             scene.Add(std::move(tile));
 
@@ -81,13 +77,14 @@ namespace dae {
                         levelGridComponent->SetWall(cell, true);
                         break;
                     case TileType::Brick: {
-                        auto *tile = spawnTile(cell, tileset.brickCoord);
+                        auto *tile = spawnTile(cell, SpriteType::Brick);
+                        tile->AddComponent<BrickComponent>(&scene, 0.875f);
                         levelGridComponent->SetWall(cell, true);
                         levelGridComponent->SetTile(tile, cell);
                         break;
                     }
                     case TileType::Exit: {
-                        auto *tile = spawnTile(cell, tileset.exitCoord);
+                        auto *tile = spawnTile(cell, SpriteType::Exit);
                         levelGridComponent->SetTile(tile, cell);
                         break;
                     }
@@ -104,7 +101,7 @@ namespace dae {
         }
 
         auto bombManagerGO = std::make_unique<GameObject>();
-        auto *bombManager = bombManagerGO->AddComponent<BombManagerComponent>(scene, levelGridComponent);
+        auto *bombManager = bombManagerGO->AddComponent<BombManagerComponent>(&scene, levelGridComponent);
         scene.Add(std::move(bombManagerGO));
 
         auto *p1 = CreatePlayer(scene, {levelGridComponent, playerSpawnPositions[0], "bomberman.png", 4.0f, spriteScale});

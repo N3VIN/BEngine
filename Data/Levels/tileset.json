@@ -1,6 +1,6 @@
 {
   "texture": "Sprites/Background.png",
-  "bombTexture": "Sprites/General_Sprites.png",
+  "spriteTexture": "Sprites/General_Sprites.png",
   "tileSize": 16,
   "spriteScale": 2.0,
   "explosionLifetime": 0.5,
@@ -10,21 +10,26 @@
       "y": 0
     },
     "brick": {
-      "x": 32,
-      "y": 208
+      "col": 4,
+      "row": 3,
+      "frameCount": 7
     },
     "exit": {
-      "x": 128,
-      "y": 208
+      "col": 11,
+      "row": 3
     }
   },
   "bomb": {
     "col": 0,
-    "row": 3
+    "row": 3,
+    "frameCount": 3
   },
   "explosion": {
-    "centerCol": 7,
-    "centerRow": 11,
-    "sizeCells": 5
+    "col": 0,
+    "row": 4,
+    "numCols": 5,
+    "numRows": 5,
+    "frameCount": 4,
+    "frameColumns": 2
   }
 }

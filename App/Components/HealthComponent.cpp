@@ -14,7 +14,6 @@ namespace dae {
         }
 
         --m_lives;
-
         ServiceLocator::GetEventBus().Broadcast(events::PlayerDamaged{
                 .player = GetParent(),
                 .newLives = m_lives,

@@ -1,22 +1,20 @@
 #include "BombComponent.h"
-#include "BombManagerComponent.h"
-#include "Engine/TimeManager.h"
+#include "GameEvents.h"
+#include "Patterns/ServiceLocator.h"
+#include "Patterns/EventBus.h"
 
 namespace dae {
-    BombComponent::BombComponent(GameObject *parent, BombManagerComponent *bombManagerComponent, LevelGridComponent *grid, glm::ivec2 cell, GameObject *owner, float fuseTime)
+    BombComponent::BombComponent(GameObject *parent, glm::ivec2 cell, float fuseTime)
         : Component(parent)
-      , m_bombManagerComponent(bombManagerComponent)
-      , m_grid(grid)
       , m_cell(cell)
-      , m_owner(owner)
       , m_fuseTimer(fuseTime) {}
 
-    void BombComponent::FixedUpdate() {
+    void BombComponent::Update(float deltaTime) {
         if (m_detonated) {
             return;
         }
 
-        m_fuseTimer.Update(Time::GetInstance().fixedDeltaTime);
+        m_fuseTimer.Update(deltaTime);
         if (m_fuseTimer.IsExpired()) {
             Detonate();
         }
@@ -27,7 +25,7 @@ namespace dae {
             return;
         }
 
+        ServiceLocator::GetEventBus().Broadcast(events::BombDetonated{m_cell});
         m_detonated = true;
-        m_bombManagerComponent->DetonateBomb(this);
     }
 }

@@ -118,8 +118,6 @@ namespace dae {
         auto *tile = m_tileAtCell[idx];
         m_tileAtCell[idx] = nullptr;
 
-        OnBrickDestroyed.Broadcast(cell);
-
         return tile;
     }
 

@@ -1,0 +1,79 @@
+#include "SpriteRendererComponent.h"
+#include "Components/RenderComponent.h"
+#include "SceneGraph/GameObject.h"
+
+namespace dae {
+    SpriteRendererComponent::SpriteRendererComponent(GameObject *parent, SpriteType spriteType)
+        : Component(parent) {
+        const auto &tileset = GetTileset();
+        const auto definition = tileset.GetSpriteDefinition(spriteType);
+
+        m_col = definition.col;
+        m_row = definition.row;
+        m_numCols = definition.numCols;
+        m_numRows = definition.numRows;
+        m_tileSize = tileset.tileSize;
+        m_frameCount = definition.frameCount;
+        m_frameColumns = definition.frameColumns > 0 ? definition.frameColumns : definition.frameCount;
+
+        if (definition.autoPlay) {
+            m_frameTimer = Timer{1.f / ANIMATION_FPS};
+            m_playing = true;
+        }
+
+        if (!parent->HasComponent<RenderComponent>()) {
+            parent->AddComponent<RenderComponent>();
+        }
+
+        m_renderComponent = parent->GetComponent<RenderComponent>();
+        m_renderComponent->SetTexture(tileset.spriteTexturePath);
+        m_renderComponent->SetScale(tileset.spriteScale);
+        ApplySourceRect(0);
+    }
+
+    void SpriteRendererComponent::Update(float deltaTime) {
+        if (!m_playing || m_frameCount <= 1) {
+            return;
+        }
+
+        m_frameTimer.Update(deltaTime);
+        if (m_frameTimer.IsExpired()) {
+            m_frameTimer.Reset();
+            ++m_currentFrame;
+            if (m_currentFrame >= m_frameCount) {
+                if (m_looping) {
+                    m_currentFrame = 0;
+                }
+                else {
+                    m_currentFrame = m_frameCount - 1;
+                    m_playing = false;
+                }
+            }
+
+            ApplySourceRect(m_currentFrame);
+        }
+    }
+
+    void SpriteRendererComponent::ApplySourceRect(int frame) {
+        const int frameRow = frame / m_frameColumns;
+        const int frameCol = frame % m_frameColumns;
+        const int xPos = (m_col + frameCol * m_numCols) * m_tileSize;
+        const int yPos = (m_row + frameRow * m_numRows) * m_tileSize;
+        const int width = m_numCols * m_tileSize;
+        const int height = m_numRows * m_tileSize;
+
+        m_renderComponent->SetSourceRect(SDL_Rect{xPos, yPos, width, height});
+    }
+
+    void SpriteRendererComponent::PlayOnce(float fps) {
+        m_frameTimer = Timer{1.f / fps};
+        m_currentFrame = 0;
+        m_looping = false;
+        m_playing = true;
+        ApplySourceRect(0);
+    }
+
+    void SpriteRendererComponent::SetIgnoreCamera(bool ignore) const {
+        m_renderComponent->SetIgnoreCamera(ignore);
+    }
+}

@@ -3,16 +3,18 @@
 #include "Patterns/MulticastDelegate.h"
 
 namespace dae {
-    class HealthComponent final : public Component { // we have a similar component in the App but I think that will be removed so a similar copy
+    class GridMovementComponent;
+
+    class HealthComponent final : public Component {
     public:
         HealthComponent(GameObject *parent, int lives);
-
-        MulticastDelegate<int> OnLifeChanged;
+        ~HealthComponent() override = default;
 
         void TakeDamage(int amount);
         [[nodiscard]] int GetLives() const;
 
     private:
         int m_lives;
+        ScopedDelegate m_explosionSub;
     };
 }
