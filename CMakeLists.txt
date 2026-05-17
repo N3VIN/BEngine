@@ -52,6 +52,9 @@ target_include_directories(${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/App)
 if (NOT EMSCRIPTEN)
     add_executable(bomberman ${TARGET_PARAM}
             Bomberman/Main.cpp
+            Bomberman/Level/BuildLevelScene.cpp
+            Bomberman/Level/Tileset.cpp
+            Bomberman/PlayerFactory.cpp
             Bomberman/Components/LevelGridComponent.cpp
             Bomberman/Components/GridMovementComponent.cpp
             Bomberman/Components/GridRenderComponent.cpp
