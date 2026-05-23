@@ -37,7 +37,7 @@ void LogSDLVersion(const std::string &message, int major, int minor, int patch) 
 #include "emscripten.h"
 
 void LoopCallback(void *arg) {
-    static_cast<dae::Engine *>(arg)->RunOneFrame();
+    static_cast<bengine::Engine *>(arg)->RunOneFrame();
 }
 #endif
 
@@ -56,7 +56,7 @@ void PrintSDLVersion() {
     LogSDLVersion("Linked with SDL_ttf ", SDL_VERSIONNUM_MAJOR(version), SDL_VERSIONNUM_MINOR(version), SDL_VERSIONNUM_MICRO(version));
 }
 
-dae::Engine::Engine(const fs::path &dataPath) {
+bengine::Engine::Engine(const fs::path &dataPath) {
 #if USE_STEAMWORKS
     if (!SteamAPI_Init())
         throw std::runtime_error(std::string("Fatal Error - Steam must be running to play this game (SteamAPI_Init() failed)."));
@@ -85,7 +85,7 @@ dae::Engine::Engine(const fs::path &dataPath) {
     ResourceManager::GetInstance().Init(dataPath);
 }
 
-dae::Engine::~Engine() {
+bengine::Engine::~Engine() {
     Renderer::GetInstance().Destroy();
     SDL_DestroyWindow(g_window);
     g_window = nullptr;
@@ -96,7 +96,7 @@ dae::Engine::~Engine() {
 #endif
 }
 
-void dae::Engine::Run(const std::function<void()> &load) {
+void bengine::Engine::Run(const std::function<void()> &load) {
     load();
 
     m_lastTime = std::chrono::high_resolution_clock::now();
@@ -111,7 +111,7 @@ void dae::Engine::Run(const std::function<void()> &load) {
 #endif
 }
 
-void dae::Engine::RunOneFrame() {
+void bengine::Engine::RunOneFrame() {
     const auto currentTime = std::chrono::high_resolution_clock::now();
     Time::GetInstance().deltaTime = std::chrono::duration<float>(currentTime - m_lastTime).count();
     m_lastTime = currentTime;

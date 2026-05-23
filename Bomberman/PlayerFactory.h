@@ -1,10 +1,10 @@
 #pragma once
 #include <string_view>
 #include <glm/glm.hpp>
+#include "SceneGraph/GameObject.h"
+#include "SceneGraph/Scene.h"
 
-namespace dae {
-    class GameObject;
-    class Scene;
+namespace bomberman {
     class LevelGridComponent;
 
     struct PlayerConfig {
@@ -15,5 +15,5 @@ namespace dae {
         float scale{1.0f};
     };
 
-    GameObject *CreatePlayer(Scene &scene, const PlayerConfig &config);
+    bengine::GameObject *CreatePlayer(bengine::Scene &scene, const PlayerConfig &config);
 }

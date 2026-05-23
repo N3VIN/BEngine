@@ -1,14 +1,14 @@
 #pragma once
 #include "Components/Component.h"
 
-namespace dae {
-    class HealthComponent final : public Component {
+namespace app {
+    class HealthComponent final : public bengine::Component {
     public:
-        explicit HealthComponent(GameObject *gameObject, int lives);
+        explicit HealthComponent(bengine::GameObject *gameObject, int lives);
 
         void Die();
         [[nodiscard]] int GetLives() const;
-        [[nodiscard]] GameObject *GetOwner() const;
+        [[nodiscard]] bengine::GameObject *GetOwner() const;
 
     private:
         int m_lives;

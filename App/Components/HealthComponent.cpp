@@ -2,30 +2,27 @@
 #include "SceneGraph/GameObject.h"
 #include "Patterns/ServiceLocator.h"
 #include "GameEvents.h"
+app::HealthComponent::HealthComponent(bengine::GameObject *gameObject, int lives)
+    : bengine::Component(gameObject)
+  , m_lives(lives) {}
 
-namespace dae {
-    HealthComponent::HealthComponent(GameObject *gameObject, int lives)
-        : Component(gameObject)
-      , m_lives(lives) {}
+void app::HealthComponent::Die() {
+    if (m_lives <= 0) {
+        return;
+    }
 
-    void HealthComponent::Die() {
-        if (m_lives <= 0) {
-            return;
+    --m_lives;
+    bengine::ServiceLocator::GetEventBus().Broadcast(events::PlayerDamaged{
+            .player = GetParent(),
+            .newLives = m_lives,
         }
+    );
+}
 
-        --m_lives;
-        ServiceLocator::GetEventBus().Broadcast(events::PlayerDamaged{
-                .player = GetParent(),
-                .newLives = m_lives,
-            }
-        );
-    }
+int app::HealthComponent::GetLives() const {
+    return m_lives;
+}
 
-    int HealthComponent::GetLives() const {
-        return m_lives;
-    }
-
-    GameObject *HealthComponent::GetOwner() const {
-        return GetParent();
-    }
+bengine::GameObject *app::HealthComponent::GetOwner() const {
+    return GetParent();
 }

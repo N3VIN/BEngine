@@ -1,9 +1,8 @@
 #pragma once
 #include <glm/glm.hpp>
+#include "SceneGraph/GameObject.h"
 
-namespace dae {
-    class GameObject;
-
+namespace bomberman {
     namespace events {
         struct ExplosionAt {
             glm::ivec2 cell{};
@@ -11,7 +10,7 @@ namespace dae {
 
         struct BrickDestroyed {
             glm::ivec2 cell{};
-            GameObject *brick{nullptr};
+            bengine::GameObject *brick{nullptr};
         };
 
         struct BombDetonated {
@@ -23,7 +22,7 @@ namespace dae {
         };
 
         struct PlayerDamaged {
-            GameObject *player{nullptr};
+            bengine::GameObject *player{nullptr};
             int newLives{0};
         };
     }

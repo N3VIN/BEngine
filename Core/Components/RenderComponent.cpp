@@ -7,12 +7,12 @@
 #include "Renderer/Texture2D.h"
 #include "CameraComponent.h"
 
-dae::RenderComponent::RenderComponent(GameObject *parent)
+bengine::RenderComponent::RenderComponent(GameObject *parent)
     : Component(parent) {}
 
-void dae::RenderComponent::Update(float /*deltaTime*/) {}
+void bengine::RenderComponent::Update(float /*deltaTime*/) {}
 
-void dae::RenderComponent::Render() const {
+void bengine::RenderComponent::Render() const {
     if (!m_texture) {
         return;
     }
@@ -36,29 +36,29 @@ void dae::RenderComponent::Render() const {
     renderer.RenderTexture(*m_texture, dst, srcPtr, rotation);
 }
 
-void dae::RenderComponent::SetTexture(std::string_view filename) {
+void bengine::RenderComponent::SetTexture(std::string_view filename) {
     m_texture = ResourceManager::GetInstance().LoadTexture(filename);
 }
 
-void dae::RenderComponent::SetTexture(std::shared_ptr<Texture2D> texture) {
+void bengine::RenderComponent::SetTexture(std::shared_ptr<Texture2D> texture) {
     m_texture = std::move(texture);
 }
 
-void dae::RenderComponent::SetSourceRect(int x, int y, int w, int h) {
+void bengine::RenderComponent::SetSourceRect(int x, int y, int w, int h) {
     m_srcRect = {x, y, w, h};
     m_hasSrcRect = true;
 }
 
-void dae::RenderComponent::SetSourceRect(const SDL_Rect &rect) {
+void bengine::RenderComponent::SetSourceRect(const SDL_Rect &rect) {
     m_srcRect = rect;
     m_hasSrcRect = true;
 }
 
-void dae::RenderComponent::ClearSourceRect() {
+void bengine::RenderComponent::ClearSourceRect() {
     m_srcRect = {0, 0, 0, 0};
     m_hasSrcRect = false;
 }
 
-void dae::RenderComponent::SetScale(float scale) {
+void bengine::RenderComponent::SetScale(float scale) {
     m_scale = scale;
 }

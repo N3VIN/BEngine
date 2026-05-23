@@ -2,10 +2,10 @@
 #include "Patterns/Subject.h"
 #include "Components/Component.h"
 
-namespace dae {
-    class PickupComponent final : public Component, public Subject {
+namespace app {
+    class PickupComponent final : public bengine::Component, public bengine::Subject {
     public:
-        explicit PickupComponent(GameObject *gameObject);
+        explicit PickupComponent(bengine::GameObject *gameObject);
 
         void OnPickup(int value);
         [[nodiscard]] int GetScore() const;

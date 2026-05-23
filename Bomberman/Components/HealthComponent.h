@@ -2,12 +2,12 @@
 #include "Components/Component.h"
 #include "Patterns/MulticastDelegate.h"
 
-namespace dae {
+namespace bomberman {
     class GridMovementComponent;
 
-    class HealthComponent final : public Component {
+    class HealthComponent final : public bengine::Component {
     public:
-        HealthComponent(GameObject *parent, int lives);
+        HealthComponent(bengine::GameObject *parent, int lives);
         ~HealthComponent() override = default;
 
         void TakeDamage(int amount);
@@ -15,6 +15,6 @@ namespace dae {
 
     private:
         int m_lives;
-        ScopedDelegate m_explosionSub;
+        bengine::ScopedDelegate m_explosionSub;
     };
 }

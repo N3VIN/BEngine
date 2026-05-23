@@ -3,11 +3,11 @@
 #include "SceneGraph/GameObject.h"
 #include "Components/PickupComponent.h"
 
-namespace dae {
-    class ScoreCommand final : public GameObjectCommand {
+namespace app {
+    class ScoreCommand final : public bengine::GameObjectCommand {
     public:
-        ScoreCommand(GameObject *gameObject, int score)
-            : GameObjectCommand(gameObject)
+        ScoreCommand(bengine::GameObject *gameObject, int score)
+            : bengine::GameObjectCommand(gameObject)
           , m_score(score) {
             m_pickupComponent = gameObject->GetComponent<PickupComponent>();
         }

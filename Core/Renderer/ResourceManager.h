@@ -8,7 +8,7 @@
 
 namespace fs = std::filesystem;
 
-namespace dae {
+namespace bengine {
     class Texture2D;
     class Font;
 

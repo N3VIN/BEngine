@@ -7,7 +7,7 @@
 #include <windows.h>
 #include <XInput.h>
 
-class dae::Gamepad::GamepadImpl {
+class bengine::Gamepad::GamepadImpl {
 public:
     explicit GamepadImpl(unsigned int controllerIndex)
         : m_controllerIndex(controllerIndex) {}
@@ -53,7 +53,7 @@ private:
 // SDL fallback
 #include <SDL3/SDL.h>
 
-class dae::Gamepad::GamepadImpl {
+class bengine::Gamepad::GamepadImpl {
 public:
     explicit GamepadImpl(unsigned int controllerIndex)
         : m_controllerIndex(controllerIndex) {
@@ -152,29 +152,29 @@ private:
 
 #endif
 
-dae::Gamepad::Gamepad(unsigned int controllerIndex)
+bengine::Gamepad::Gamepad(unsigned int controllerIndex)
     : m_pImpl(std::make_unique<GamepadImpl>(controllerIndex)) {}
 
-dae::Gamepad::~Gamepad() = default;
-dae::Gamepad::Gamepad(Gamepad &&) noexcept = default;
-dae::Gamepad &dae::Gamepad::operator=(Gamepad &&) noexcept = default;
+bengine::Gamepad::~Gamepad() = default;
+bengine::Gamepad::Gamepad(Gamepad &&) noexcept = default;
+bengine::Gamepad &bengine::Gamepad::operator=(Gamepad &&) noexcept = default;
 
-void dae::Gamepad::Update() {
+void bengine::Gamepad::Update() {
     m_pImpl->Update();
 }
 
-bool dae::Gamepad::IsDown(Button button) const {
+bool bengine::Gamepad::IsDown(Button button) const {
     return m_pImpl->GetPressed(button);
 }
 
-bool dae::Gamepad::IsUp(Button button) const {
+bool bengine::Gamepad::IsUp(Button button) const {
     return m_pImpl->GetReleased(button);
 }
 
-bool dae::Gamepad::IsPressed(Button button) const {
+bool bengine::Gamepad::IsPressed(Button button) const {
     return m_pImpl->GetCurrent(button);
 }
 
-unsigned int dae::Gamepad::GetIndex() const {
+unsigned int bengine::Gamepad::GetIndex() const {
     return m_pImpl->GetIndex();
 }

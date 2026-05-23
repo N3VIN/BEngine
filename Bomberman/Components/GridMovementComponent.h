@@ -2,12 +2,12 @@
 #include "Components/Component.h"
 #include <glm/glm.hpp>
 
-namespace dae {
+namespace bomberman {
     class LevelGridComponent;
 
-    class GridMovementComponent final : public Component {
+    class GridMovementComponent final : public bengine::Component {
     public:
-        GridMovementComponent(GameObject *parent, LevelGridComponent *levelGridComponent, glm::ivec2 startCell, float cellsPerSecond);
+        GridMovementComponent(bengine::GameObject *parent, LevelGridComponent *levelGridComponent, glm::ivec2 startCell, float cellsPerSecond);
         void Update(float deltaTime) override;
         void SetDesiredDirection(glm::ivec2 direction);
 

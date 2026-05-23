@@ -1,7 +1,7 @@
 #pragma once
 #include "Component.h"
 
-namespace dae {
+namespace bengine {
     class RotatorComponent final : public Component {
     public:
         explicit RotatorComponent(GameObject *parent);

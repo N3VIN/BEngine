@@ -3,7 +3,7 @@
 
 #include "IObserver.h"
 
-namespace dae {
+namespace bengine {
     class Subject {
     public:
         virtual ~Subject() = default;
@@ -25,4 +25,4 @@ namespace dae {
     private:
         std::vector<IObserver *> m_observers;
     };
-} // dae
+} // bengine

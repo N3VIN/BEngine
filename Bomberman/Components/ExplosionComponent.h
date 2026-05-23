@@ -3,10 +3,10 @@
 #include "Timer.h"
 #include <glm/glm.hpp>
 
-namespace dae {
-    class ExplosionComponent final : public Component {
+namespace bomberman {
+    class ExplosionComponent final : public bengine::Component {
     public:
-        ExplosionComponent(GameObject *parent, glm::ivec2 cell, float lifetime);
+        ExplosionComponent(bengine::GameObject *parent, glm::ivec2 cell, float lifetime);
         ~ExplosionComponent() override = default;
 
         void Update(float deltaTime) override;
@@ -18,6 +18,6 @@ namespace dae {
 
     private:
         glm::ivec2 m_cell;
-        Timer m_timer;
+        bengine::Timer m_timer;
     };
 }

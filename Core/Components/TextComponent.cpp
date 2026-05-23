@@ -5,7 +5,7 @@
 #include "Renderer/Renderer.h"
 #include "Renderer/Texture2D.h"
 
-namespace dae {
+namespace bengine {
     TextComponent::TextComponent(GameObject *owner)
         : Component(owner) {
         if (!owner->HasComponent<RenderComponent>()) {
@@ -46,4 +46,4 @@ namespace dae {
         m_color = color;
         m_needsUpdate = true;
     }
-} // dae
+} // bengine

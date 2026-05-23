@@ -2,7 +2,7 @@
 #include "Components/Component.h"
 #include <vector>
 
-namespace dae {
+namespace app {
     struct TransformAlt {
         float matrix[16] = {
             1, 0, 0, 0,
@@ -22,9 +22,9 @@ namespace dae {
         int id;
     };
 
-    class CacheBenchmarkComponent final : public Component {
+    class CacheBenchmarkComponent final : public bengine::Component {
     public:
-        explicit CacheBenchmarkComponent(GameObject *owner);
+        explicit CacheBenchmarkComponent(bengine::GameObject *owner);
 
         void Update(float deltaTime) override;
         void Render() const override;
@@ -52,4 +52,4 @@ namespace dae {
         mutable BenchmarkState m_gameObjectBenchmark;
         mutable BenchmarkState m_intBenchmark;
     };
-} // dae
+} // app

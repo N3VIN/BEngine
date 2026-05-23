@@ -1,6 +1,6 @@
 #pragma once
 
-namespace dae {
+namespace bengine {
     class GameObject;
 
     enum class GameEvent {

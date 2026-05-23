@@ -4,16 +4,15 @@
 #include <vector>
 #include <glm/glm.hpp>
 #include "Components/Component.h"
+#include "SceneGraph/GameObject.h"
 #include "Level/TileType.h"
 
 namespace fs = std::filesystem;
 
-namespace dae {
-    class GameObject;
-
-    class LevelGridComponent final : public Component {
+namespace bomberman {
+    class LevelGridComponent final : public bengine::Component {
     public:
-        explicit LevelGridComponent(GameObject *parent, const fs::path &levelPath);
+        explicit LevelGridComponent(bengine::GameObject *parent, const fs::path &levelPath);
         ~LevelGridComponent() override = default;
 
         LevelGridComponent(const LevelGridComponent &) = delete;
@@ -50,8 +49,8 @@ namespace dae {
         [[nodiscard]] TileType GetTile(int column, int row) const;
 
         void SetWall(glm::ivec2 cell, bool isWall);
-        GameObject *DestroyBrick(glm::ivec2 cell);
-        void SetTile(GameObject *tile, glm::ivec2 cell);
+        bengine::GameObject *DestroyBrick(glm::ivec2 cell);
+        void SetTile(bengine::GameObject *tile, glm::ivec2 cell);
 
     private:
         [[nodiscard]] size_t Index(glm::ivec2 cell) const;
@@ -63,6 +62,6 @@ namespace dae {
         glm::vec2 m_origin{};
         std::vector<TileType> m_tiles{};
         std::vector<uint8_t> m_walls{};
-        std::vector<GameObject *> m_tileAtCell{};
+        std::vector<bengine::GameObject *> m_tileAtCell{};
     };
 }

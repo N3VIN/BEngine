@@ -6,7 +6,7 @@
 
 #include "MulticastDelegate.h"
 
-namespace dae {
+namespace bengine {
     // loosely inspired by the immediate event bus https://docs.vulkan.org/tutorial/latest/Building_a_Simple_Engine/Engine_Architecture/06_event_systems.html
     // and adapted to use our existing MulticastDelegate
     class EventBus final {

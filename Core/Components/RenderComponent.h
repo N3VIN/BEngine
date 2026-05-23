@@ -4,7 +4,7 @@
 #include <SDL3/SDL.h>
 #include "Component.h"
 
-namespace dae {
+namespace bengine {
     class Texture2D;
     class GameObject;
 

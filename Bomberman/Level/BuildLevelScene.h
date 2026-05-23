@@ -2,21 +2,21 @@
 #include <string_view>
 #include <array>
 #include <glm/glm.hpp>
+#include "SceneGraph/Scene.h"
+#include "SceneGraph/GameObject.h"
+#include "Components/CameraComponent.h"
+#include "Input/InputManager.h"
 
-namespace dae {
-    class Scene;
-    class GameObject;
+namespace bomberman {
     class LevelGridComponent;
-    class CameraComponent;
     class BombManagerComponent;
-    class InputManager;
     struct Tileset;
 
-    LevelGridComponent *CreateLevelBackground(Scene &scene, const Tileset &tileset, LevelGridComponent *gridComponent);
-    CameraComponent *CreateCamera(Scene &scene, LevelGridComponent *gridComponent);
-    std::array<glm::ivec2, 2> SpawnLevelTiles(Scene &scene, LevelGridComponent *gridComponent);
-    void CreateFPSDisplay(Scene &scene);
-    void SetupPlayerInput(InputManager &input, GameObject *p1, GameObject *p2, BombManagerComponent *bombManager);
+    LevelGridComponent *CreateLevelBackground(bengine::Scene &scene, const Tileset &tileset, LevelGridComponent *gridComponent);
+    bengine::CameraComponent *CreateCamera(bengine::Scene &scene, LevelGridComponent *gridComponent);
+    std::array<glm::ivec2, 2> SpawnLevelTiles(bengine::Scene &scene, LevelGridComponent *gridComponent);
+    void CreateFPSDisplay(bengine::Scene &scene);
+    void SetupPlayerInput(bengine::InputManager &input, bengine::GameObject *p1, bengine::GameObject *p2, BombManagerComponent *bombManager);
 
-    Scene &BuildLevelScene(std::string_view jsonRelativePath);
+    bengine::Scene &BuildLevelScene(std::string_view jsonRelativePath);
 }

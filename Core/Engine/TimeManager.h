@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "Patterns/Singleton.h"
 
-namespace dae {
+namespace bengine {
     class Time final : public Singleton<Time> {
     public:
         const float TICKS_PER_SECOND{60.f};

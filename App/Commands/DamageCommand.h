@@ -3,11 +3,11 @@
 #include "SceneGraph/GameObject.h"
 #include "Components/HealthComponent.h"
 
-namespace dae {
-    class DamageCommand final : public GameObjectCommand {
+namespace app {
+    class DamageCommand final : public bengine::GameObjectCommand {
     public:
-        explicit DamageCommand(GameObject *gameObject)
-            : GameObjectCommand(gameObject) {
+        explicit DamageCommand(bengine::GameObject *gameObject)
+            : bengine::GameObjectCommand(gameObject) {
             m_healthComponent = gameObject->GetComponent<HealthComponent>();
         }
 

@@ -2,80 +2,80 @@
 #include "Components/RenderComponent.h"
 
 
-dae::GameObject::~GameObject() = default;
+bengine::GameObject::~GameObject() = default;
 
-void dae::GameObject::Update(float deltaTime) {
+void bengine::GameObject::Update(float deltaTime) {
     for (auto &component: m_components) {
         component->Update(deltaTime);
     }
 }
 
-void dae::GameObject::FixedUpdate() {
+void bengine::GameObject::FixedUpdate() {
     for (auto &component: m_components) {
         component->FixedUpdate();
     }
 }
 
-void dae::GameObject::Render() const {
+void bengine::GameObject::Render() const {
     for (const auto &component: m_components) {
         component->Render();
     }
 }
 
-void dae::GameObject::SetLocalPosition(const glm::vec2 &position) {
+void bengine::GameObject::SetLocalPosition(const glm::vec2 &position) {
     m_transform.SetLocalPosition(glm::vec3(position, 0.f));
     SetTransformDirty();
 }
 
-void dae::GameObject::SetLocalRotation(const float radians) {
+void bengine::GameObject::SetLocalRotation(const float radians) {
     m_transform.SetLocalRotation(radians);
     SetTransformDirty();
 }
 
-void dae::GameObject::SetLocalScale(const glm::vec2 &scale) {
+void bengine::GameObject::SetLocalScale(const glm::vec2 &scale) {
     m_transform.SetLocalScale(scale);
     SetTransformDirty();
 }
 
-const glm::vec3 &dae::GameObject::GetLocalPosition() const {
+const glm::vec3 &bengine::GameObject::GetLocalPosition() const {
     return m_transform.GetLocalPosition();
 }
 
-float dae::GameObject::GetLocalRotation() const {
+float bengine::GameObject::GetLocalRotation() const {
     return m_transform.GetLocalRotation();
 }
 
-const glm::vec2 &dae::GameObject::GetLocalScale() const {
+const glm::vec2 &bengine::GameObject::GetLocalScale() const {
     return m_transform.GetLocalScale();
 }
 
-glm::vec2 dae::GameObject::GetWorldPosition() const {
+glm::vec2 bengine::GameObject::GetWorldPosition() const {
     UpdateWorldTransform();
     return m_transform.GetWorldPosition();
 }
 
-float dae::GameObject::GetWorldRotation() const {
+float bengine::GameObject::GetWorldRotation() const {
     UpdateWorldTransform();
     return m_transform.GetWorldRotation();
 }
 
-glm::vec2 dae::GameObject::GetWorldScale() const {
+glm::vec2 bengine::GameObject::GetWorldScale() const {
     return m_transform.GetWorldScale();
 }
 
-const glm::mat3 &dae::GameObject::GetWorldTransform() const {
+const glm::mat3 &bengine::GameObject::GetWorldTransform() const {
     UpdateWorldTransform();
     return m_transform.GetWorldTransform();
 }
 
-void dae::GameObject::SetTransformDirty() const {
+void bengine::GameObject::SetTransformDirty() const {
     m_transform.SetDirty();
     for (auto *child: m_children) {
         child->SetTransformDirty();
     }
 }
 
-void dae::GameObject::RemoveAndSetNewParent(GameObject *parent) {
+void bengine::GameObject::RemoveAndSetNewParent(GameObject *parent) {
     if (m_parent) {
         m_parent->RemoveChild(this);
     }
@@ -87,7 +87,7 @@ void dae::GameObject::RemoveAndSetNewParent(GameObject *parent) {
     }
 }
 
-void dae::GameObject::UpdateWorldTransform() const {
+void bengine::GameObject::UpdateWorldTransform() const {
     if (m_transform.IsDirty()) {
         if (m_parent) {
             m_transform.UpdateWorldTransform(m_parent->GetWorldTransform());
@@ -98,7 +98,7 @@ void dae::GameObject::UpdateWorldTransform() const {
     }
 }
 
-void dae::GameObject::SetParent(GameObject *parent, bool keepWorldPosition) {
+void bengine::GameObject::SetParent(GameObject *parent, bool keepWorldPosition) {
     if (parent == this || m_parent == parent)
         return;
 
@@ -123,19 +123,19 @@ void dae::GameObject::SetParent(GameObject *parent, bool keepWorldPosition) {
     }
 }
 
-dae::GameObject *dae::GameObject::GetParent() const {
+bengine::GameObject *bengine::GameObject::GetParent() const {
     return m_parent;
 }
 
-size_t dae::GameObject::GetChildCount() const {
+size_t bengine::GameObject::GetChildCount() const {
     return m_children.size();
 }
 
-dae::GameObject *dae::GameObject::GetChildAt(size_t index) const {
+bengine::GameObject *bengine::GameObject::GetChildAt(size_t index) const {
     return m_children[index];
 }
 
-void dae::GameObject::AddChild(GameObject *child) {
+void bengine::GameObject::AddChild(GameObject *child) {
     if (!child || child == this) {
         return;
     }
@@ -152,7 +152,7 @@ void dae::GameObject::AddChild(GameObject *child) {
     m_children.emplace_back(child);
 }
 
-void dae::GameObject::RemoveChild(GameObject *child) {
+void bengine::GameObject::RemoveChild(GameObject *child) {
     if (!child)
         return;
 
@@ -164,7 +164,7 @@ void dae::GameObject::RemoveChild(GameObject *child) {
     child->m_parent = nullptr;
 }
 
-bool dae::GameObject::IsChild(const GameObject *object) const {
+bool bengine::GameObject::IsChild(const GameObject *object) const {
     if (object == nullptr)
         return false;
 

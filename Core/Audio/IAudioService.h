@@ -3,7 +3,7 @@
 
 namespace fs = std::filesystem;
 
-namespace dae {
+namespace bengine {
     using SoundID = uint32_t; // this is the 32 bit version of the hashing function
 
     class IAudioService {

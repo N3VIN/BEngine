@@ -1,10 +1,9 @@
 #pragma once
 #include "SceneGraph/ISceneState.h"
+#include "SceneGraph/Scene.h"
 
-namespace dae {
-    class Scene;
-
-    class MainMenuState final : public ISceneState {
+namespace bomberman {
+    class MainMenuState final : public bengine::ISceneState {
     public:
         MainMenuState() = default;
         ~MainMenuState() override;
@@ -13,6 +12,6 @@ namespace dae {
         void OnExit() override;
 
     private:
-        Scene *m_scene{};
+        bengine::Scene *m_scene{};
     };
 }

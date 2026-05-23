@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 
-namespace dae {
+namespace bomberman {
     inline const std::vector<std::string> &GetLevelList() noexcept {
         static const std::vector<std::string> levels{
             "Levels/level1.json",

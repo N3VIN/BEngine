@@ -1,15 +1,14 @@
 #pragma once
 #include <SDL3/SDL.h>
 #include "Components/Component.h"
+#include "Components/RenderComponent.h"
 #include "Level/Tileset.h"
 #include "Timer.h"
 
-namespace dae {
-    class RenderComponent;
-
-    class SpriteRendererComponent final : public Component {
+namespace bomberman {
+    class SpriteRendererComponent final : public bengine::Component {
     public:
-        SpriteRendererComponent(GameObject *parent, SpriteType spriteType);
+        SpriteRendererComponent(bengine::GameObject *parent, SpriteType spriteType);
 
         void Update(float deltaTime) override;
         void SetIgnoreCamera(bool ignore) const;
@@ -25,7 +24,7 @@ namespace dae {
     private:
         void ApplySourceRect(int frame);
 
-        RenderComponent *m_renderComponent{};
+        bengine::RenderComponent *m_renderComponent{};
         int m_col{};
         int m_row{};
         int m_numCols{1};
@@ -36,6 +35,6 @@ namespace dae {
         int m_frameColumns{1};
         bool m_playing{false};
         bool m_looping{true};
-        Timer m_frameTimer{};
+        bengine::Timer m_frameTimer{};
     };
 }

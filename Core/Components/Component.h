@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-namespace dae {
+namespace bengine {
     class GameObject;
 
     class Component {
@@ -26,4 +26,4 @@ namespace dae {
     private:
         GameObject *m_parent = nullptr;
     };
-} // dae
+} // bengine

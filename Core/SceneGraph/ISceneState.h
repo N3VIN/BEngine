@@ -1,6 +1,6 @@
 #pragma once
 
-namespace dae {
+namespace bengine {
     class ISceneState {
     public:
         virtual ~ISceneState() = default;

@@ -3,7 +3,7 @@
 
 struct TTF_Font;
 
-namespace dae {
+namespace bengine {
     /**
      * Simple RAII wrapper for a TTF_Font
      */

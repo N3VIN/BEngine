@@ -1,7 +1,7 @@
 #include "SceneManager.h"
 #include "Scene.h"
 
-void dae::SceneManager::Update(float deltaTime) {
+void bengine::SceneManager::Update(float deltaTime) {
     if (m_pendingState) { // when there is a scene transition
         if (m_currentState) {
             m_currentState->OnExit();
@@ -21,19 +21,19 @@ void dae::SceneManager::Update(float deltaTime) {
     }
 }
 
-void dae::SceneManager::FixedUpdate() {
+void bengine::SceneManager::FixedUpdate() {
     if (m_activeScene) {
         m_activeScene->FixedUpdate();
     }
 }
 
-void dae::SceneManager::Render() const {
+void bengine::SceneManager::Render() const {
     if (m_activeScene) {
         m_activeScene->Render();
     }
 }
 
-dae::Scene &dae::SceneManager::CreateScene() {
+bengine::Scene &bengine::SceneManager::CreateScene() {
     m_scenes.emplace_back(new Scene());
     auto &scene = *m_scenes.back();
     if (!m_activeScene) {
@@ -43,7 +43,7 @@ dae::Scene &dae::SceneManager::CreateScene() {
     return scene;
 }
 
-void dae::SceneManager::DestroyScene(Scene &scene) {
+void bengine::SceneManager::DestroyScene(Scene &scene) {
     if (m_activeScene == &scene) {
         m_activeScene = nullptr;
     }
@@ -54,10 +54,10 @@ void dae::SceneManager::DestroyScene(Scene &scene) {
     );
 }
 
-void dae::SceneManager::SetActiveScene(Scene &scene) {
+void bengine::SceneManager::SetActiveScene(Scene &scene) {
     m_activeScene = &scene;
 }
 
-void dae::SceneManager::SetState(std::unique_ptr<ISceneState> state) {
+void bengine::SceneManager::SetState(std::unique_ptr<ISceneState> state) {
     m_pendingState = std::move(state);
 }

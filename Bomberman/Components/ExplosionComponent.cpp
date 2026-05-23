@@ -3,20 +3,18 @@
 #include "Patterns/ServiceLocator.h"
 #include "Patterns/EventBus.h"
 
-namespace dae {
-    ExplosionComponent::ExplosionComponent(GameObject *parent, glm::ivec2 cell, float lifetime)
-        : Component(parent)
-      , m_cell(cell)
-      , m_timer(lifetime) {}
+bomberman::ExplosionComponent::ExplosionComponent(bengine::GameObject *parent, glm::ivec2 cell, float lifetime)
+    : bengine::Component(parent)
+  , m_cell(cell)
+  , m_timer(lifetime) {}
 
-    void ExplosionComponent::Update(float deltaTime) {
-        m_timer.Update(deltaTime);
-        if (m_timer.IsExpired()) {
-            ServiceLocator::GetEventBus().Broadcast(events::ExplosionExpired{m_cell});
-        }
+void bomberman::ExplosionComponent::Update(float deltaTime) {
+    m_timer.Update(deltaTime);
+    if (m_timer.IsExpired()) {
+        bengine::ServiceLocator::GetEventBus().Broadcast(events::ExplosionExpired{m_cell});
     }
+}
 
-    void ExplosionComponent::ExtendLifetime(float lifetime) {
-        m_timer.SetDuration(lifetime);
-    }
+void bomberman::ExplosionComponent::ExtendLifetime(float lifetime) {
+    m_timer.SetDuration(lifetime);
 }

@@ -4,7 +4,7 @@
 #include "Font.h"
 
 
-void dae::ResourceManager::Init(const fs::path &dataPath) {
+void bengine::ResourceManager::Init(const fs::path &dataPath) {
     m_dataPath = dataPath;
 
     if (!TTF_Init()) {
@@ -12,7 +12,7 @@ void dae::ResourceManager::Init(const fs::path &dataPath) {
     }
 }
 
-std::shared_ptr<dae::Texture2D> dae::ResourceManager::LoadTexture(const std::string_view &file) {
+std::shared_ptr<bengine::Texture2D> bengine::ResourceManager::LoadTexture(const std::string_view &file) {
     const auto fullPath = m_dataPath / file;
     const auto filename = fs::path(fullPath).filename().string();
 
@@ -23,7 +23,7 @@ std::shared_ptr<dae::Texture2D> dae::ResourceManager::LoadTexture(const std::str
     return m_loadedTextures.at(filename);
 }
 
-std::shared_ptr<dae::Font> dae::ResourceManager::LoadFont(const std::string_view &file, uint8_t size) {
+std::shared_ptr<bengine::Font> bengine::ResourceManager::LoadFont(const std::string_view &file, uint8_t size) {
     const auto fullPath = m_dataPath / file;
     const auto filename = fs::path(fullPath).filename().string();
     const auto key = std::pair<std::string, uint8_t>(filename, size);
@@ -35,7 +35,7 @@ std::shared_ptr<dae::Font> dae::ResourceManager::LoadFont(const std::string_view
     return m_loadedFonts.at(key);
 }
 
-void dae::ResourceManager::UnloadUnusedResources() {
+void bengine::ResourceManager::UnloadUnusedResources() {
     for (auto it = m_loadedTextures.begin(); it != m_loadedTextures.end();) {
         if (it->second.use_count() == 1) {
             it = m_loadedTextures.erase(it);

@@ -1,21 +1,21 @@
 #include "Texture2D.h"
 #include "Renderer.h"
 
-dae::Texture2D::~Texture2D() {
+bengine::Texture2D::~Texture2D() {
     SDL_DestroyTexture(m_texture);
 }
 
-glm::vec2 dae::Texture2D::GetSize() const {
+glm::vec2 bengine::Texture2D::GetSize() const {
     float w{}, h{};
     SDL_GetTextureSize(m_texture, &w, &h);
     return {w, h};
 }
 
-SDL_Texture *dae::Texture2D::GetSDLTexture() const {
+SDL_Texture *bengine::Texture2D::GetSDLTexture() const {
     return m_texture;
 }
 
-dae::Texture2D::Texture2D(std::string_view fullPath) {
+bengine::Texture2D::Texture2D(std::string_view fullPath) {
     SDL_Surface *surface = SDL_LoadPNG(fullPath.data());
     if (!surface) {
         throw std::runtime_error(
@@ -37,7 +37,7 @@ dae::Texture2D::Texture2D(std::string_view fullPath) {
     }
 }
 
-dae::Texture2D::Texture2D(SDL_Texture *texture)
+bengine::Texture2D::Texture2D(SDL_Texture *texture)
     : m_texture{texture} {
     assert(m_texture != nullptr);
 }

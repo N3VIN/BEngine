@@ -1,6 +1,6 @@
 #include "SDLAudioService.h"
 
-namespace dae {
+namespace bengine {
     struct LoadEvent {
         SoundID id;
         fs::path path;
@@ -18,7 +18,7 @@ namespace dae {
     using AudioEvent = std::variant<LoadEvent, PlayEvent, StopEvent>;
 }
 
-class dae::SDLAudioService::SDLAudioImpl {
+class bengine::SDLAudioService::SDLAudioImpl {
 public:
     SDLAudioImpl() {
         if (!MIX_Init()) {
@@ -138,21 +138,21 @@ private:
     std::jthread m_thread;
 };
 
-dae::SDLAudioService::SDLAudioService()
+bengine::SDLAudioService::SDLAudioService()
     : pImpl(std::make_unique<SDLAudioImpl>()) {}
 
-dae::SDLAudioService::~SDLAudioService() = default;
-dae::SDLAudioService::SDLAudioService(SDLAudioService &&) noexcept = default;
-dae::SDLAudioService &dae::SDLAudioService::operator=(SDLAudioService &&) noexcept = default;
+bengine::SDLAudioService::~SDLAudioService() = default;
+bengine::SDLAudioService::SDLAudioService(SDLAudioService &&) noexcept = default;
+bengine::SDLAudioService &bengine::SDLAudioService::operator=(SDLAudioService &&) noexcept = default;
 
-void dae::SDLAudioService::LoadAudio(SoundID id, fs::path path) {
+void bengine::SDLAudioService::LoadAudio(SoundID id, fs::path path) {
     pImpl->Enqueue(LoadEvent{id, std::move(path)});
 }
 
-void dae::SDLAudioService::PlayAudio(SoundID id, float volume) {
+void bengine::SDLAudioService::PlayAudio(SoundID id, float volume) {
     pImpl->Enqueue(PlayEvent{id, volume});
 }
 
-void dae::SDLAudioService::StopAudio(SoundID id) {
+void bengine::SDLAudioService::StopAudio(SoundID id) {
     pImpl->Enqueue(StopEvent{id});
 }

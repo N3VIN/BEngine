@@ -3,8 +3,8 @@
 
 #include "Patterns/ICommand.h"
 
-namespace dae {
-    class QuitCommand final : public ICommand {
+namespace bomberman {
+    class QuitCommand final : public bengine::ICommand {
     public:
         void Execute() override {
             SDL_Event event{};

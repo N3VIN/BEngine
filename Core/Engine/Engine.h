@@ -5,7 +5,7 @@
 
 namespace fs = std::filesystem;
 
-namespace dae {
+namespace bengine {
     class Engine final {
         bool m_quit{};
 

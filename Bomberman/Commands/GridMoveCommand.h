@@ -4,11 +4,11 @@
 #include "Components/GridMovementComponent.h"
 #include <glm/glm.hpp>
 
-namespace dae {
-    class GridMoveCommand final : public GameObjectCommand {
+namespace bomberman {
+    class GridMoveCommand final : public bengine::GameObjectCommand {
     public:
-        GridMoveCommand(GameObject *gameObject, glm::ivec2 direction)
-            : GameObjectCommand(gameObject)
+        GridMoveCommand(bengine::GameObject *gameObject, glm::ivec2 direction)
+            : bengine::GameObjectCommand(gameObject)
           , m_direction(direction) {}
 
         void Execute() override {

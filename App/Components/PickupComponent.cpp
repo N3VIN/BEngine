@@ -1,15 +1,12 @@
 ﻿#include "PickupComponent.h"
+app::PickupComponent::PickupComponent(bengine::GameObject *gameObject)
+    : bengine::Component(gameObject) {}
 
-namespace dae {
-    PickupComponent::PickupComponent(GameObject *gameObject)
-        : Component(gameObject) {}
+void app::PickupComponent::OnPickup(int value) {
+    m_score += value;
+    Notify(GetParent(), bengine::GameEvent::PickupPicked);
+}
 
-    void PickupComponent::OnPickup(int value) {
-        m_score += value;
-        Notify(GetParent(), GameEvent::PickupPicked);
-    }
-
-    int PickupComponent::GetScore() const {
-        return m_score;
-    }
+int app::PickupComponent::GetScore() const {
+    return m_score;
 }

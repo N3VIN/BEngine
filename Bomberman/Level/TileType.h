@@ -1,7 +1,7 @@
 #pragma once
 #include <cstdint>
 
-namespace dae {
+namespace bomberman {
     enum class TileType : uint8_t {
         Empty,
         Wall,

@@ -1,20 +1,20 @@
 #pragma once
 #include "Patterns/IObserver.h"
 #include "Components/Component.h"
+#include "Components/TextComponent.h"
 
 
-namespace dae {
-    class TextComponent;
+namespace app {
     class PickupComponent;
 
-    class ScoreDisplayComponent final : public Component, public IObserver {
+    class ScoreDisplayComponent final : public bengine::Component, public bengine::IObserver {
     public:
         ~ScoreDisplayComponent() override;
-        explicit ScoreDisplayComponent(GameObject *owner);
-        void OnNotify(GameObject *gameObject, GameEvent event) override;
+        explicit ScoreDisplayComponent(bengine::GameObject *owner);
+        void OnNotify(bengine::GameObject *gameObject, bengine::GameEvent event) override;
 
     private:
-        TextComponent *m_textComponent;
+        bengine::TextComponent *m_textComponent;
         PickupComponent *m_pickupComponent{nullptr};
     };
 }

@@ -2,7 +2,7 @@
 #include "SceneGraph/GameObject.h"
 #include "Renderer/Renderer.h"
 
-namespace dae {
+namespace bengine {
     CameraComponent::CameraComponent(GameObject *parent)
         : Component(parent) {}
 

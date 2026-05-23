@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "IAudioService.h"
 
-namespace dae {
+namespace bengine {
     class SDLAudioService final : public IAudioService {
     public:
         SDLAudioService();

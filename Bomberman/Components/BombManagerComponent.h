@@ -1,25 +1,25 @@
 #pragma once
 #include "Components/Component.h"
+#include "SceneGraph/GameObject.h"
+#include "SceneGraph/Scene.h"
 #include "Patterns/MulticastDelegate.h"
 #include <glm/glm.hpp>
 #include <unordered_map>
 #include <vector>
 
-namespace dae {
+namespace bomberman {
     class BombComponent;
     class LevelGridComponent;
-    class Scene;
-    class GameObject;
 
-    class BombManagerComponent final : public Component {
+    class BombManagerComponent final : public bengine::Component {
     public:
-        BombManagerComponent(GameObject *parent, Scene *scene, LevelGridComponent *gridComponent);
+        BombManagerComponent(bengine::GameObject *parent, bengine::Scene *scene, LevelGridComponent *gridComponent);
 
         static constexpr int BLAST_RADIUS = 2;
 
-        void PlaceBomb(glm::ivec2 cell, GameObject *owner);
+        void PlaceBomb(glm::ivec2 cell, bengine::GameObject *owner);
         void DetonateBomb(BombComponent *bomb);
-        void RegisterPlayer(GameObject *player);
+        void RegisterPlayer(bengine::GameObject *player);
 
         float m_fuseTime = 3.0f;
         int m_maxBombsPerPlayer = 2;
@@ -30,17 +30,17 @@ namespace dae {
         void ProcessDetonationQueue();
         void OnExplosionCellExpired(glm::ivec2 cell);
 
-        [[nodiscard]] GameObject *BombAt(glm::ivec2 cell) const;
+        [[nodiscard]] bengine::GameObject *BombAt(glm::ivec2 cell) const;
         [[nodiscard]] size_t BombIndex(glm::ivec2 cell) const;
 
-        Scene *m_scene;
+        bengine::Scene *m_scene;
         LevelGridComponent *m_gridComponent;
-        std::vector<GameObject *> m_bombAtCell;
-        std::vector<GameObject *> m_bombOwnerAtCell;
+        std::vector<bengine::GameObject *> m_bombAtCell;
+        std::vector<bengine::GameObject *> m_bombOwnerAtCell;
         std::vector<BombComponent *> m_detonationQueue;
-        std::unordered_map<GameObject *, int> m_playerBombCount;
-        std::vector<GameObject *> m_explosionAtCell;
-        ScopedDelegate m_detonationSub;
-        ScopedDelegate m_explosionExpiredSub;
+        std::unordered_map<bengine::GameObject *, int> m_playerBombCount;
+        std::vector<bengine::GameObject *> m_explosionAtCell;
+        bengine::ScopedDelegate m_detonationSub;
+        bengine::ScopedDelegate m_explosionExpiredSub;
     };
 }

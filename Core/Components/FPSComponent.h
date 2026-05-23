@@ -2,7 +2,7 @@
 #include "Component.h"
 #include "TextComponent.h"
 
-namespace dae {
+namespace bengine {
     constexpr float UPDATE_INTERVAL = 1.0f;
 
     class FPSComponent final : public Component {
@@ -18,4 +18,4 @@ namespace dae {
 
         TextComponent *m_text;
     };
-} // dae
+} // bengine

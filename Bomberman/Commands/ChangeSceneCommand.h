@@ -7,16 +7,16 @@
 #include "SceneGraph/ISceneState.h"
 #include "SceneGraph/SceneManager.h"
 
-namespace dae {
-    class ChangeSceneCommand final : public ICommand {
+namespace bomberman {
+    class ChangeSceneCommand final : public bengine::ICommand {
     public:
-        using Factory = std::function<std::unique_ptr<ISceneState>()>;
+        using Factory = std::function<std::unique_ptr<bengine::ISceneState>()>;
 
         explicit ChangeSceneCommand(Factory factory)
             : m_factory(std::move(factory)) {}
 
         void Execute() override {
-            SceneManager::GetInstance().SetState(m_factory());
+            bengine::SceneManager::GetInstance().SetState(m_factory());
         }
 
     private:

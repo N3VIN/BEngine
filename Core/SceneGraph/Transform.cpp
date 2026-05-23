@@ -1,18 +1,18 @@
 #include "SceneGraph/Transform.h"
 
-void dae::Transform::SetLocalPosition(const glm::vec3 &position) {
+void bengine::Transform::SetLocalPosition(const glm::vec3 &position) {
     m_localPosition = position;
 }
 
-void dae::Transform::SetLocalRotation(const float radians) {
+void bengine::Transform::SetLocalRotation(const float radians) {
     m_localRotation = radians;
 }
 
-void dae::Transform::SetLocalScale(const glm::vec2 &scale) {
+void bengine::Transform::SetLocalScale(const glm::vec2 &scale) {
     m_localScale = scale;
 }
 
-void dae::Transform::SetLocalFromMatrix(const glm::mat3 &matrix) {
+void bengine::Transform::SetLocalFromMatrix(const glm::mat3 &matrix) {
     m_localPosition = glm::vec3(matrix[2][0], matrix[2][1], 0.f);
     m_localRotation = std::atan2(matrix[0][1], matrix[0][0]);
     m_localScale = {
@@ -21,55 +21,55 @@ void dae::Transform::SetLocalFromMatrix(const glm::mat3 &matrix) {
     };
 }
 
-const glm::vec3 &dae::Transform::GetLocalPosition() const {
+const glm::vec3 &bengine::Transform::GetLocalPosition() const {
     return m_localPosition;
 }
 
-float dae::Transform::GetLocalRotation() const {
+float bengine::Transform::GetLocalRotation() const {
     return m_localRotation;
 }
 
-const glm::vec2 &dae::Transform::GetLocalScale() const {
+const glm::vec2 &bengine::Transform::GetLocalScale() const {
     return m_localScale;
 }
 
-void dae::Transform::SetDirty() {
+void bengine::Transform::SetDirty() {
     m_isDirty = true;
 }
 
-bool dae::Transform::IsDirty() const {
+bool bengine::Transform::IsDirty() const {
     return m_isDirty;
 }
 
-void dae::Transform::UpdateWorldTransform(const glm::mat3 &parentWorld) {
+void bengine::Transform::UpdateWorldTransform(const glm::mat3 &parentWorld) {
     m_worldTransform = parentWorld * ComputeLocalTransform();
     m_isDirty = false;
 }
 
-void dae::Transform::UpdateWorldTransform() {
+void bengine::Transform::UpdateWorldTransform() {
     m_worldTransform = ComputeLocalTransform();
     m_isDirty = false;
 }
 
-const glm::mat3 &dae::Transform::GetWorldTransform() const {
+const glm::mat3 &bengine::Transform::GetWorldTransform() const {
     return m_worldTransform;
 }
 
-glm::vec2 dae::Transform::GetWorldPosition() const {
+glm::vec2 bengine::Transform::GetWorldPosition() const {
     return {m_worldTransform[2][0], m_worldTransform[2][1]};
 }
 
-float dae::Transform::GetWorldRotation() const {
+float bengine::Transform::GetWorldRotation() const {
     return std::atan2(m_worldTransform[0][1], m_worldTransform[0][0]);
 }
 
-glm::vec2 dae::Transform::GetWorldScale() const {
+glm::vec2 bengine::Transform::GetWorldScale() const {
     const float sx = glm::length(glm::vec2(m_worldTransform[0][0], m_worldTransform[0][1]));
     const float sy = glm::length(glm::vec2(m_worldTransform[1][0], m_worldTransform[1][1]));
     return {sx, sy};
 }
 
-glm::mat3 dae::Transform::ComputeLocalTransform() const {
+glm::mat3 bengine::Transform::ComputeLocalTransform() const {
     const float cosR = std::cos(m_localRotation);
     const float sinR = std::sin(m_localRotation);
 

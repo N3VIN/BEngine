@@ -1,10 +1,9 @@
 #pragma once
 #include "SceneGraph/ISceneState.h"
+#include "SceneGraph/Scene.h"
 
-namespace dae {
-    class Scene;
-
-    class GameEndState final : public ISceneState {
+namespace bomberman {
+    class GameEndState final : public bengine::ISceneState {
     public:
         GameEndState() = default;
         ~GameEndState() override;
@@ -13,6 +12,6 @@ namespace dae {
         void OnExit() override;
 
     private:
-        Scene *m_scene{};
+        bengine::Scene *m_scene{};
     };
 }

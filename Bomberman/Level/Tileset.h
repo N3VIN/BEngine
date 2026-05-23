@@ -2,7 +2,7 @@
 #include <string>
 #include <glm/vec2.hpp>
 
-namespace dae {
+namespace bomberman {
     struct SpriteDefinition {
         int col{};
         int row{};

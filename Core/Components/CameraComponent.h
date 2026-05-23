@@ -2,7 +2,7 @@
 #include "Component.h"
 #include <glm/glm.hpp>
 
-namespace dae {
+namespace bengine {
     class GameObject;
 
     class CameraComponent final : public Component {

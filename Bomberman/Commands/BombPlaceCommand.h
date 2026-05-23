@@ -4,11 +4,11 @@
 #include "Components/GridMovementComponent.h"
 #include "Components/BombManagerComponent.h"
 
-namespace dae {
-    class BombPlaceCommand final : public GameObjectCommand {
+namespace bomberman {
+    class BombPlaceCommand final : public bengine::GameObjectCommand {
     public:
-        BombPlaceCommand(GameObject *player, BombManagerComponent *bombManager)
-            : GameObjectCommand(player)
+        BombPlaceCommand(bengine::GameObject *player, BombManagerComponent *bombManager)
+            : bengine::GameObjectCommand(player)
           , m_bombManager(bombManager) {}
 
         void Execute() override {

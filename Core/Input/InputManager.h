@@ -9,7 +9,7 @@
 #include <set>
 #include <array>
 
-namespace dae {
+namespace bengine {
     enum class KeyState {
         Down,
         Up,

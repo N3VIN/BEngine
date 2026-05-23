@@ -1,7 +1,7 @@
 #include <backends/imgui_impl_sdl3.h>
 #include "InputManager.h"
 
-bool dae::InputManager::ProcessInput() {
+bool bengine::InputManager::ProcessInput() {
     m_keysDown.clear();
     m_keysUp.clear();
 
@@ -72,29 +72,29 @@ bool dae::InputManager::ProcessInput() {
     return true;
 }
 
-void dae::InputManager::BindCommand(SDL_Scancode key, KeyState state, std::unique_ptr<ICommand> command) {
+void bengine::InputManager::BindCommand(SDL_Scancode key, KeyState state, std::unique_ptr<ICommand> command) {
     m_keyboardBindings.push_back({key, state, std::move(command)});
 }
 
-void dae::InputManager::UnbindCommand(SDL_Scancode key, KeyState state) {
+void bengine::InputManager::UnbindCommand(SDL_Scancode key, KeyState state) {
     std::erase_if(m_keyboardBindings, [key, state](const KeyboardBinding &b) {
                       return b.key == key && b.state == state;
                   }
     );
 }
 
-void dae::InputManager::BindCommand(unsigned int controllerIndex, Gamepad::Button button, KeyState state, std::unique_ptr<ICommand> command) {
+void bengine::InputManager::BindCommand(unsigned int controllerIndex, Gamepad::Button button, KeyState state, std::unique_ptr<ICommand> command) {
     m_controllerBindings.push_back({controllerIndex, button, state, std::move(command)});
 }
 
-void dae::InputManager::UnbindCommand(unsigned int controllerIndex, Gamepad::Button button, KeyState state) {
+void bengine::InputManager::UnbindCommand(unsigned int controllerIndex, Gamepad::Button button, KeyState state) {
     std::erase_if(m_controllerBindings, [controllerIndex, button, state](const ControllerBinding &b) {
                       return b.controllerIndex == controllerIndex && b.button == button && b.state == state;
                   }
     );
 }
 
-void dae::InputManager::UnbindAll() {
+void bengine::InputManager::UnbindAll() {
     m_keyboardBindings.clear();
     m_controllerBindings.clear();
 }

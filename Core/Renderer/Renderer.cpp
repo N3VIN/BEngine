@@ -7,7 +7,7 @@
 #include <backends/imgui_impl_sdl3.h>
 #include <backends/imgui_impl_sdlrenderer3.h>
 
-void dae::Renderer::Init(SDL_Window *window) {
+void bengine::Renderer::Init(SDL_Window *window) {
     m_window = window;
 
     SDL_SetHint(SDL_HINT_RENDER_VSYNC, "1");
@@ -37,7 +37,7 @@ void dae::Renderer::Init(SDL_Window *window) {
     ImGui_ImplSDLRenderer3_Init(m_renderer);
 }
 
-void dae::Renderer::Render() const {
+void bengine::Renderer::Render() const {
     ImGui_ImplSDLRenderer3_NewFrame();
     ImGui_ImplSDL3_NewFrame();
     ImGui::NewFrame();
@@ -53,7 +53,7 @@ void dae::Renderer::Render() const {
     SDL_RenderPresent(m_renderer);
 }
 
-void dae::Renderer::Destroy() {
+void bengine::Renderer::Destroy() {
     ImGui_ImplSDLRenderer3_Shutdown();
     ImGui_ImplSDL3_Shutdown();
     ImGui::DestroyContext();
@@ -64,7 +64,7 @@ void dae::Renderer::Destroy() {
     }
 }
 
-void dae::Renderer::RenderTexture(const Texture2D &texture, const SDL_FRect &dst, const SDL_Rect *src, const float angleDegrees) const {
+void bengine::Renderer::RenderTexture(const Texture2D &texture, const SDL_FRect &dst, const SDL_Rect *src, const float angleDegrees) const {
     SDL_FRect srcF{};
     const SDL_FRect *srcPtr = nullptr;
     if (src != nullptr) {
@@ -78,17 +78,17 @@ void dae::Renderer::RenderTexture(const Texture2D &texture, const SDL_FRect &dst
     SDL_RenderTextureRotated(GetSDLRenderer(), texture.GetSDLTexture(), srcPtr, &dst, angleDegrees, nullptr, SDL_FLIP_NONE);
 }
 
-SDL_Renderer *dae::Renderer::GetSDLRenderer() const {
+SDL_Renderer *bengine::Renderer::GetSDLRenderer() const {
     return m_renderer;
 }
 
-glm::vec2 dae::Renderer::GetWindowSize() const {
+glm::vec2 bengine::Renderer::GetWindowSize() const {
     int w{}, h{};
     SDL_GetWindowSize(m_window, &w, &h);
     return {static_cast<float>(w), static_cast<float>(h)};
 }
 
-glm::vec2 dae::Renderer::WorldToScreen(const glm::vec2 &worldPos) const {
+glm::vec2 bengine::Renderer::WorldToScreen(const glm::vec2 &worldPos) const {
     if (!m_activeCamera) {
         return worldPos;
     }

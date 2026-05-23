@@ -1,7 +1,7 @@
 #include <cassert>
 #include "Scene.h"
 
-using namespace dae;
+using namespace bengine;
 
 
 void Scene::Add(std::unique_ptr<GameObject> object) {

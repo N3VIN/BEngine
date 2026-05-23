@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 #include "Patterns/Singleton.h"
 
-namespace dae {
+namespace bengine {
     class Texture2D;
     class CameraComponent;
 

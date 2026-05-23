@@ -2,15 +2,14 @@
 #include <string>
 #include <SDL3/SDL.h>
 #include "Components/Component.h"
+#include "Components/RenderComponent.h"
 
-namespace dae {
-    class RenderComponent;
-
-    class GridRenderComponent final : public Component {
+namespace bomberman {
+    class GridRenderComponent final : public bengine::Component {
     public:
-        GridRenderComponent(GameObject *parent, std::string_view texturePath, const SDL_Rect &sourceRect, float scale);
+        GridRenderComponent(bengine::GameObject *parent, std::string_view texturePath, const SDL_Rect &sourceRect, float scale);
 
     private:
-        RenderComponent *m_renderComponent{};
+        bengine::RenderComponent *m_renderComponent{};
     };
 }

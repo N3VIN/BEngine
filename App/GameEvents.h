@@ -1,11 +1,10 @@
 #pragma once
+#include "SceneGraph/GameObject.h"
 
-namespace dae {
-    class GameObject;
-
+namespace app {
     namespace events {
         struct PlayerDamaged {
-            GameObject *player{nullptr};
+            bengine::GameObject *player{nullptr};
             int newLives{0};
         };
     }

@@ -1,7 +1,7 @@
 #pragma once
 #include <glm/glm.hpp>
 
-namespace dae {
+namespace bengine {
     class Transform final {
     public:
         void SetLocalPosition(const glm::vec3 &position);

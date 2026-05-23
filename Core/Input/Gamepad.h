@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 
-namespace dae {
+namespace bengine {
     class Gamepad {
     public:
         enum class Button : unsigned int {

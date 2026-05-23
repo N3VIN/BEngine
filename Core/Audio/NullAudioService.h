@@ -3,7 +3,7 @@
 
 #include "IAudioService.h"
 
-namespace dae {
+namespace bengine {
     class NullAudioService final : public IAudioService {
     public:
         void LoadAudio(SoundID /*id*/, fs::path /*path*/) override {

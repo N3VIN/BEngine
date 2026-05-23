@@ -6,7 +6,7 @@
 #include "ISceneState.h"
 #include "Patterns/Singleton.h"
 
-namespace dae {
+namespace bengine {
     class Scene;
 
     class SceneManager final : public Singleton<SceneManager> {

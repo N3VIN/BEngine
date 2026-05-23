@@ -4,7 +4,7 @@
 #include <functional>
 #include <vector>
 
-namespace dae {
+namespace bengine {
     inline constexpr uint64_t INVALID_ID = 0;
 
     class DelegateHandle final {

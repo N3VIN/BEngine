@@ -5,7 +5,7 @@
 
 #include "Component.h"
 
-namespace dae {
+namespace bengine {
     class Font;
     class Texture2D;
 
@@ -26,4 +26,4 @@ namespace dae {
         std::shared_ptr<Font> m_font{};
         std::shared_ptr<Texture2D> m_textTexture{};
     };
-} // dae
+} // bengine

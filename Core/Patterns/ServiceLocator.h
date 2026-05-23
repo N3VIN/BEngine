@@ -5,7 +5,7 @@
 #include "Audio/NullAudioService.h"
 #include "EventBus.h"
 
-namespace dae {
+namespace bengine {
     class ServiceLocator final {
     public:
         static IAudioService &GetAudioService() {

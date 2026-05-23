@@ -2,14 +2,14 @@
 #include "Patterns/IObserver.h"
 #include "Components/Component.h"
 
-namespace dae {
+namespace app {
     class PickupComponent;
 
-    class SteamAchievementComponent final : public Component, public IObserver {
+    class SteamAchievementComponent final : public bengine::Component, public bengine::IObserver {
     public:
         ~SteamAchievementComponent() override;
-        explicit SteamAchievementComponent(GameObject *owner);
-        void OnNotify(GameObject *gameObject, GameEvent event) override;
+        explicit SteamAchievementComponent(bengine::GameObject *owner);
+        void OnNotify(bengine::GameObject *gameObject, bengine::GameEvent event) override;
         static constexpr int SCORE_TO_WIN{500};
 
     private:

@@ -1,10 +1,10 @@
 #include "Font.h"
 
-TTF_Font *dae::Font::GetFont() const {
+TTF_Font *bengine::Font::GetFont() const {
     return m_font;
 }
 
-dae::Font::Font(std::string_view fullPath, float size)
+bengine::Font::Font(std::string_view fullPath, float size)
     : m_font(nullptr) {
     m_font = TTF_OpenFont(fullPath.data(), size);
 
@@ -13,6 +13,6 @@ dae::Font::Font(std::string_view fullPath, float size)
     }
 }
 
-dae::Font::~Font() {
+bengine::Font::~Font() {
     TTF_CloseFont(m_font);
 }

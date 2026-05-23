@@ -2,7 +2,7 @@
 #include "SceneGraph/GameObject.h"
 #include "TextComponent.h"
 
-namespace dae {
+namespace bengine {
     FPSComponent::FPSComponent(GameObject *owner)
         : Component(owner) {
         m_text = owner->GetComponent<TextComponent>();

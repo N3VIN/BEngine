@@ -4,7 +4,7 @@
 #include "Transform.h"
 #include "Components/Component.h"
 
-namespace dae {
+namespace bengine {
     class Texture2D;
 
     class GameObject final {

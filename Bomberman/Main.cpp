@@ -12,7 +12,7 @@
 namespace fs = std::filesystem;
 
 static void load() {
-    dae::SceneManager::GetInstance().SetState(std::make_unique<dae::MainMenuState>());
+    bengine::SceneManager::GetInstance().SetState(std::make_unique<bomberman::MainMenuState>());
 }
 
 int main(int, char *[]) {
@@ -23,7 +23,7 @@ int main(int, char *[]) {
     if (!fs::exists(data_location))
         data_location = "../Data/";
 #endif
-    dae::Engine engine(data_location);
+    bengine::Engine engine(data_location);
     engine.Run(load);
     return 0;
 }

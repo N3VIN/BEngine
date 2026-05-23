@@ -2,20 +2,20 @@
 #include <numbers>
 #include "SceneGraph/GameObject.h"
 
-dae::RotatorComponent::RotatorComponent(GameObject *parent)
+bengine::RotatorComponent::RotatorComponent(GameObject *parent)
     : Component(parent) {}
 
-void dae::RotatorComponent::SetSpeed(float period, bool isClockwise) {
+void bengine::RotatorComponent::SetSpeed(float period, bool isClockwise) {
     auto direction = isClockwise ? 1.f : -1.f;
 
     m_speed = direction * 2 * std::numbers::pi_v<float> / period;
 }
 
-void dae::RotatorComponent::SetRadius(float radius) {
+void bengine::RotatorComponent::SetRadius(float radius) {
     m_radius = radius;
 }
 
-void dae::RotatorComponent::Update(float deltaTime) {
+void bengine::RotatorComponent::Update(float deltaTime) {
     m_angle += m_speed * deltaTime;
 
     m_angle = std::fmod(m_angle, std::numbers::pi_v<float> * 2.0f);

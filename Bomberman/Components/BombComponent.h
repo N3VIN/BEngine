@@ -1,14 +1,13 @@
 #pragma once
 #include "Components/Component.h"
+#include "SceneGraph/GameObject.h"
 #include "Timer.h"
 #include <glm/glm.hpp>
 
-namespace dae {
-    class GameObject;
-
-    class BombComponent final : public Component {
+namespace bomberman {
+    class BombComponent final : public bengine::Component {
     public:
-        BombComponent(GameObject *parent, glm::ivec2 cell, float fuseTime);
+        BombComponent(bengine::GameObject *parent, glm::ivec2 cell, float fuseTime);
 
         void Update(float deltaTime) override;
         void Detonate();
@@ -17,13 +16,13 @@ namespace dae {
             return m_cell;
         }
 
-        [[nodiscard]] GameObject *GetGameObject() const {
+        [[nodiscard]] bengine::GameObject *GetGameObject() const {
             return GetParent();
         }
 
     private:
         glm::ivec2 m_cell;
-        Timer m_fuseTimer;
+        bengine::Timer m_fuseTimer;
         bool m_detonated{false};
     };
 }
