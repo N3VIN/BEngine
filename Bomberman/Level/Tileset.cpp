@@ -7,8 +7,12 @@
 bomberman::SpriteDefinition bomberman::Tileset::GetSpriteDefinition(SpriteType type) const {
     SpriteDefinition definition;
     switch (type) {
-        case SpriteType::Brick: definition = brick; break;
-        case SpriteType::Exit: definition = exit; break;
+        case SpriteType::Brick:
+            definition = brick;
+            break;
+        case SpriteType::Exit:
+            definition = exit;
+            break;
         case SpriteType::Bomb:
             definition = bomb;
             definition.autoPlay = true;
@@ -39,9 +43,7 @@ const bomberman::Tileset &bomberman::GetTileset() {
         ts.spriteTexturePath = json.value("spriteTexture", "");
         ts.tileSize = json.at("tileSize").get<int>();
         ts.spriteScale = json.value("spriteScale", 2.0f);
-        ts.explosionLifetime = json.value("explosionLifetime", 0.5f);
-
-        {
+        ts.explosionLifetime = json.value("explosionLifetime", 0.5f); {
             const auto &background = json.at("tiles").at("background");
             ts.backgroundCoord = glm::ivec2{background.at("x").get<int>(), background.at("y").get<int>()};
         }
@@ -73,6 +75,24 @@ const bomberman::Tileset &bomberman::GetTileset() {
             ts.explosion.numRows = node.at("numRows").get<int>();
             ts.explosion.frameCount = node.value("frameCount", 1);
             ts.explosion.frameColumns = node.value("frameColumns", 0);
+        }
+
+        if (json.contains("player")) {
+            const auto &player = json.at("player");
+            const auto readPlayerClip = [&](const char *key) {
+                const auto &node = player.at(key);
+                SpriteDefinition definition;
+                definition.col = node.at("col").get<int>();
+                definition.row = node.at("row").get<int>();
+                definition.frameCount = node.value("frameCount", 1);
+                return definition;
+            };
+
+            ts.player.walkDown = readPlayerClip("walkDown");
+            ts.player.walkUp = readPlayerClip("walkUp");
+            ts.player.walkLeft = readPlayerClip("walkLeft");
+            ts.player.walkRight = readPlayerClip("walkRight");
+            ts.player.death = readPlayerClip("death");
         }
 
         return ts;

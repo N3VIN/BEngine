@@ -19,6 +19,33 @@
       "row": 3
     }
   },
+  "player": {
+    "walkLeft": {
+      "col": 0,
+      "row": 0,
+      "frameCount": 3
+    },
+    "walkDown": {
+      "col": 3,
+      "row": 0,
+      "frameCount": 3
+    },
+    "walkRight": {
+      "col": 0,
+      "row": 1,
+      "frameCount": 3
+    },
+    "walkUp": {
+      "col": 3,
+      "row": 1,
+      "frameCount": 3
+    },
+    "death": {
+      "col": 0,
+      "row": 2,
+      "frameCount": 7
+    }
+  },
   "bomb": {
     "col": 0,
     "row": 3,

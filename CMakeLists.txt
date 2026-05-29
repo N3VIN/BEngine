@@ -60,10 +60,12 @@ if (NOT EMSCRIPTEN)
             Bomberman/Components/GridRenderComponent.cpp
             Bomberman/Components/SpriteRendererComponent.cpp
             Bomberman/Components/HealthComponent.cpp
+            Bomberman/Components/PlayerStateComponent.cpp
             Bomberman/Components/BombComponent.cpp
             Bomberman/Components/BombManagerComponent.cpp
             Bomberman/Components/BrickComponent.cpp
             Bomberman/Components/ExplosionComponent.cpp
+            Bomberman/States/PlayerStates.cpp
             Bomberman/SceneStates/MainMenuState.cpp
             Bomberman/SceneStates/GameSceneState.cpp
             Bomberman/SceneStates/GameEndState.cpp

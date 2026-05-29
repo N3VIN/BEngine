@@ -14,6 +14,15 @@ void bomberman::GridMovementComponent::SetDesiredDirection(glm::ivec2 direction)
     m_queuedDir = direction;
 }
 
+void bomberman::GridMovementComponent::Respawn(glm::ivec2 cell) {
+    m_cell = cell;
+    m_activeDir = {0, 0};
+    m_queuedDir = {0, 0};
+    m_progress = 0.f;
+    m_facing = {0, 1};
+    ApplyVisualPosition();
+}
+
 void bomberman::GridMovementComponent::Update(float deltaTime) {
     if (!IsMoving()) {
         TryStartMoveInQueuedDir();
@@ -47,6 +56,7 @@ bool bomberman::GridMovementComponent::TryStartMoveInQueuedDir() {
     }
 
     m_activeDir = m_queuedDir;
+    m_facing = m_activeDir;
     return true;
 }
 

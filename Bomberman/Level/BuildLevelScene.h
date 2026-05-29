@@ -13,7 +13,7 @@ namespace bomberman {
     struct Tileset;
 
     LevelGridComponent *CreateLevelBackground(bengine::Scene &scene, const Tileset &tileset, LevelGridComponent *gridComponent);
-    bengine::CameraComponent *CreateCamera(bengine::Scene &scene, LevelGridComponent *gridComponent);
+    bengine::CameraComponent *CreateCamera(bengine::Scene &scene, const LevelGridComponent *gridComponent);
     std::array<glm::ivec2, 2> SpawnLevelTiles(bengine::Scene &scene, LevelGridComponent *gridComponent);
     void CreateFPSDisplay(bengine::Scene &scene);
     void SetupPlayerInput(bengine::InputManager &input, bengine::GameObject *p1, bengine::GameObject *p2, BombManagerComponent *bombManager);

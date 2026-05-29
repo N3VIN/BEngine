@@ -30,6 +30,20 @@ bomberman::SpriteRendererComponent::SpriteRendererComponent(bengine::GameObject 
     ApplySourceRect(0);
 }
 
+bomberman::SpriteRendererComponent::SpriteRendererComponent(bengine::GameObject *parent)
+    : bengine::Component(parent) {
+    const auto &tileset = GetTileset();
+    m_tileSize = tileset.tileSize;
+
+    if (!parent->HasComponent<bengine::RenderComponent>()) {
+        parent->AddComponent<bengine::RenderComponent>();
+    }
+
+    m_renderComponent = parent->GetComponent<bengine::RenderComponent>();
+    m_renderComponent->SetTexture(tileset.spriteTexturePath);
+    m_renderComponent->SetScale(tileset.spriteScale);
+}
+
 void bomberman::SpriteRendererComponent::Update(float deltaTime) {
     if (!m_playing || m_frameCount <= 1) {
         return;
@@ -68,6 +82,20 @@ void bomberman::SpriteRendererComponent::PlayOnce(float fps) {
     m_frameTimer = bengine::Timer{1.f / fps};
     m_currentFrame = 0;
     m_looping = false;
+    m_playing = true;
+    ApplySourceRect(0);
+}
+
+void bomberman::SpriteRendererComponent::Play(const SpriteDefinition &definition, bool loop, float fps) {
+    m_col = definition.col;
+    m_row = definition.row;
+    m_numCols = definition.numCols;
+    m_numRows = definition.numRows;
+    m_frameCount = definition.frameCount;
+    m_frameColumns = definition.frameColumns > 0 ? definition.frameColumns : definition.frameCount;
+    m_looping = loop;
+    m_currentFrame = 0;
+    m_frameTimer = bengine::Timer{1.f / fps};
     m_playing = true;
     ApplySourceRect(0);
 }

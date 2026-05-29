@@ -34,7 +34,7 @@ void bengine::SceneManager::Render() const {
 }
 
 bengine::Scene &bengine::SceneManager::CreateScene() {
-    m_scenes.emplace_back(new Scene());
+    m_scenes.emplace_back(new Scene()); // constructor is private and we use emplace anyway..
     auto &scene = *m_scenes.back();
     if (!m_activeScene) {
         m_activeScene = &scene;

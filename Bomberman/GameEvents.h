@@ -25,5 +25,9 @@ namespace bomberman {
             bengine::GameObject *player{nullptr};
             int newLives{0};
         };
+
+        struct PlayerDied {
+            bengine::GameObject *player{nullptr};
+        };
     }
 }

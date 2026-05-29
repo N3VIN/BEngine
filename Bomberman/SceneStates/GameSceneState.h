@@ -4,6 +4,7 @@
 
 #include "SceneGraph/ISceneState.h"
 #include "SceneGraph/Scene.h"
+#include "Patterns/MulticastDelegate.h"
 
 namespace bomberman {
     std::unique_ptr<bengine::ISceneState> MakeNextState(const std::vector<std::string> &levelPaths, size_t index);
@@ -20,5 +21,6 @@ namespace bomberman {
         std::vector<std::string> m_levelPaths;
         size_t m_currentIndex;
         bengine::Scene *m_scene{};
+        bengine::ScopedDelegate m_playerDiedSub;
     };
 }

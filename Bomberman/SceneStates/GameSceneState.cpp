@@ -1,6 +1,7 @@
 #include "GameSceneState.h"
 
 #include "GameEndState.h"
+#include "GameEvents.h"
 #include "Commands/ChangeSceneCommand.h"
 #include "Level/BuildLevelScene.h"
 
@@ -8,10 +9,12 @@
 #include "SceneGraph/SceneManager.h"
 #include "Renderer/Renderer.h"
 #include "Input/InputManager.h"
+#include "Patterns/ServiceLocator.h"
+#include "Patterns/EventBus.h"
 
 std::unique_ptr<bengine::ISceneState> bomberman::MakeNextState(const std::vector<std::string> &levelPaths, size_t index) {
     if (index + 1 < levelPaths.size()) {
-        return std::make_unique<GameSceneState>(std::move(levelPaths), index + 1);
+        return std::make_unique<GameSceneState>(levelPaths, index + 1);
     }
 
     return std::make_unique<GameEndState>();
@@ -39,6 +42,12 @@ void bomberman::GameSceneState::OnEnter() {
                 return MakeNextState(paths, index);
             }
         )
+    );
+
+    m_playerDiedSub = bengine::ServiceLocator::GetEventBus().Subscribe<events::PlayerDied>(
+        [](const events::PlayerDied &) {
+            bengine::SceneManager::GetInstance().SetState(std::make_unique<GameEndState>());
+        }
     );
 }
 

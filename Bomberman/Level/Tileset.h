@@ -20,6 +20,14 @@ namespace bomberman {
         Explosion
     };
 
+    struct PlayerSprites {
+        SpriteDefinition walkDown{};
+        SpriteDefinition walkUp{};
+        SpriteDefinition walkLeft{};
+        SpriteDefinition walkRight{};
+        SpriteDefinition death{};
+    };
+
     struct Tileset {
         std::string texturePath;
         std::string spriteTexturePath;
@@ -31,6 +39,7 @@ namespace bomberman {
         SpriteDefinition exit{};
         SpriteDefinition bomb{};
         SpriteDefinition explosion{};
+        PlayerSprites player{};
 
         [[nodiscard]] SpriteDefinition GetSpriteDefinition(SpriteType type) const;
     };

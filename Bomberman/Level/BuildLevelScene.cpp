@@ -40,7 +40,7 @@ bomberman::LevelGridComponent *bomberman::CreateLevelBackground(bengine::Scene &
     return gridComponent;
 }
 
-bengine::CameraComponent *bomberman::CreateCamera(bengine::Scene &scene, LevelGridComponent *gridComponent) {
+bengine::CameraComponent *bomberman::CreateCamera(bengine::Scene &scene, const LevelGridComponent *gridComponent) {
     auto cameraGo = std::make_unique<bengine::GameObject>();
     auto *cameraComp = cameraGo->AddComponent<bengine::CameraComponent>();
     cameraComp->SetZoom(2.0f);
@@ -141,16 +141,16 @@ bengine::Scene &bomberman::BuildLevelScene(std::string_view jsonRelativePath) {
 
     auto *cameraComponent = CreateCamera(scene, levelGridComponent);
 
-    auto playerSpawnPositions = SpawnLevelTiles(scene, levelGridComponent);
+    const auto playerSpawnPositions = SpawnLevelTiles(scene, levelGridComponent);
 
     auto bombManagerGO = std::make_unique<bengine::GameObject>();
     auto *bombManager = bombManagerGO->AddComponent<BombManagerComponent>(&scene, levelGridComponent);
     scene.Add(std::move(bombManagerGO));
 
-    auto *p1 = CreatePlayer(scene, {levelGridComponent, playerSpawnPositions[0], "bomberman.png", 4.0f, tileset.spriteScale});
+    auto *p1 = CreatePlayer(scene, {levelGridComponent, playerSpawnPositions[0], 4.0f});
     cameraComponent->SetTarget(p1);
 
-    bengine::GameObject *p2 = CreatePlayer(scene, {levelGridComponent, playerSpawnPositions[1], "bomberman.png", 4.0f, tileset.spriteScale});
+    auto *p2 = CreatePlayer(scene, {levelGridComponent, playerSpawnPositions[1], 4.0f});
 
     bombManager->RegisterPlayer(p1);
     bombManager->RegisterPlayer(p2);

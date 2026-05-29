@@ -9,11 +9,13 @@ namespace bomberman {
     class SpriteRendererComponent final : public bengine::Component {
     public:
         SpriteRendererComponent(bengine::GameObject *parent, SpriteType spriteType);
+        explicit SpriteRendererComponent(bengine::GameObject *parent);
 
         void Update(float deltaTime) override;
         void SetIgnoreCamera(bool ignore) const;
 
         void PlayOnce(float fps);
+        void Play(const SpriteDefinition &definition, bool loop, float fps = ANIMATION_FPS);
 
         [[nodiscard]] bool IsPlaying() const {
             return m_playing;
