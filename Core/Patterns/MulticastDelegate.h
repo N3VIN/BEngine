@@ -1,11 +1,16 @@
 ﻿#pragma once
 #include <algorithm>
+#include <concepts>
 #include <cstdint>
 #include <functional>
+#include <type_traits>
 #include <vector>
 
 namespace bengine {
     inline constexpr uint64_t INVALID_ID = 0;
+
+    template<typename T>
+    concept DelegateArg = std::is_object_v<std::remove_reference_t<T> >;
 
     class DelegateHandle final {
     public:
@@ -19,7 +24,7 @@ namespace bengine {
     private:
         uint64_t m_id{INVALID_ID};
 
-        template<typename...>
+        template<DelegateArg...>
         friend class MulticastDelegate;
 
         constexpr explicit DelegateHandle(uint64_t id) noexcept
@@ -55,7 +60,7 @@ namespace bengine {
         std::function<void()> m_cleanup;
     };
 
-    template<typename... Args>
+    template<DelegateArg... Args>
     class MulticastDelegate final {
     public:
         MulticastDelegate() = default;
@@ -68,6 +73,7 @@ namespace bengine {
 
         // IMPORTANT, dont call Subscribe during Broadcast, only in constuctors or during init logic
         template<typename Fn>
+            requires std::invocable<Fn, Args...>
         [[nodiscard]] ScopedDelegate Subscribe(Fn &&callback) {
             const DelegateHandle handle{++m_handleID};
             m_listeners.push_back(ListenerHandle{handle, std::forward<Fn>(callback), true});

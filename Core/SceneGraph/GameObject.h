@@ -1,4 +1,5 @@
 #pragma once
+#include <concepts>
 #include <memory>
 #include <vector>
 #include "Transform.h"
@@ -6,6 +7,9 @@
 
 namespace bengine {
     class Texture2D;
+
+    template<typename T>
+    concept ComponentType = std::derived_from<T, Component>;
 
     class GameObject final {
     public:
@@ -38,14 +42,13 @@ namespace bengine {
         [[nodiscard]] size_t GetChildCount() const;
         [[nodiscard]] GameObject *GetChildAt(size_t index) const;
 
-        template<typename T, typename... Args>
-        T *AddComponent(Args&&... args) {
-            static_assert(std::is_base_of_v<Component, T>, "T must derive from Component");
+        template<ComponentType T, typename... Args>
+        T *AddComponent(Args &&... args) {
             auto &component = m_components.emplace_back(std::make_unique<T>(this, std::forward<Args>(args)...));
             return static_cast<T *>(component.get());
         }
 
-        template<typename T>
+        template<ComponentType T>
         T *GetComponent() const {
             for (const auto &component: m_components) {
                 if (auto *ptr = dynamic_cast<T *>(component.get())) {
@@ -56,7 +59,7 @@ namespace bengine {
             return nullptr;
         }
 
-        template<typename T>
+        template<ComponentType T>
         bool HasComponent() const {
             for (const auto &component: m_components) {
                 if (dynamic_cast<T *>(component.get())) {
@@ -67,7 +70,7 @@ namespace bengine {
             return false;
         }
 
-        template<typename T>
+        template<ComponentType T>
         void RemoveComponent() {
             for (size_t i = m_components.size(); i-- > 0;) {
                 if (dynamic_cast<T *>(m_components[i].get())) {

@@ -1,5 +1,6 @@
 #pragma once
 #include "Components/Component.h"
+#include <concepts>
 #include <vector>
 
 namespace app {
@@ -36,6 +37,7 @@ namespace app {
         };
 
         template<typename T, typename ModifyFunc>
+            requires std::default_initializable<T> && std::invocable<ModifyFunc, T &>
         std::vector<BenchmarkResult> RunBenchmark(int samples, ModifyFunc modify);
 
         struct BenchmarkState {

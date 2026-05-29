@@ -4,10 +4,12 @@
 #include <numeric>
 
 #include <imgui_plot.h>
+
 app::CacheBenchmarkComponent::CacheBenchmarkComponent(bengine::GameObject *owner)
     : bengine::Component(owner) {}
 
 template<typename T, typename ModifyFunc>
+    requires std::default_initializable<T> && std::invocable<ModifyFunc, T &>
 std::vector<app::CacheBenchmarkComponent::BenchmarkResult> app::CacheBenchmarkComponent::RunBenchmark(int samples, ModifyFunc modify) {
     constexpr int size = 10'000'000;
     const auto buffer = new T[size]{};
