@@ -3,6 +3,7 @@
 
 namespace bomberman {
     class PlayerStateComponent;
+    struct SpriteDefinition;
 
     class IPlayerState {
     public:
@@ -17,6 +18,10 @@ namespace bomberman {
 
         [[nodiscard]] virtual bool IsAlive() const {
             return true;
+        }
+
+        [[nodiscard]] virtual const SpriteDefinition *GetClip() const {
+            return nullptr;
         }
 
     protected:

@@ -16,6 +16,10 @@ namespace bomberman {
         void OnEnter(PlayerStateComponent &state) override;
         std::unique_ptr<IPlayerState> Update(PlayerStateComponent &state, float deltaTime) override;
 
+        [[nodiscard]] const SpriteDefinition *GetClip() const override {
+            return &m_clip;
+        }
+
     private:
         glm::ivec2 m_direction;
         SpriteDefinition m_clip;

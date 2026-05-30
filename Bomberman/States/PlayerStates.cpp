@@ -7,23 +7,9 @@
 #include "Patterns/ServiceLocator.h"
 #include "Patterns/EventBus.h"
 
-static const bomberman::SpriteDefinition &WalkClip(glm::ivec2 facing) {
-    const auto &player = bomberman::GetTileset().player;
-    if (facing.x < 0) {
-        return player.walkLeft;
-    }
-    if (facing.x > 0) {
-        return player.walkRight;
-    }
-    if (facing.y < 0) {
-        return player.walkUp;
-    }
-
-    return player.walkDown;
-}
-
 void bomberman::IdlePlayerState::OnEnter(PlayerStateComponent &state) {
-    SpriteDefinition standing = WalkClip(state.GetMovement()->GetFacing());
+    const auto walkState = MakeWalkState(state.GetMovement()->GetFacing());
+    SpriteDefinition standing = *walkState->GetClip();
     standing.frameCount = 1;
     state.GetSprite()->Play(standing, false);
 }
