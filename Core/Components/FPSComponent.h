@@ -16,6 +16,6 @@ namespace bengine {
         int m_cachedFps{};
         float m_elapsedTime{UPDATE_INTERVAL};
 
-        TextComponent *m_text;
+        TextComponent *m_text{nullptr};
     };
 } // bengine
