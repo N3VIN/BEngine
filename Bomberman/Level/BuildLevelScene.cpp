@@ -4,6 +4,7 @@
 #include "Components/LevelGridComponent.h"
 #include "Components/GridRenderComponent.h"
 #include "Components/BombManagerComponent.h"
+#include "Components/EnemyManagerComponent.h"
 #include "Components/SpriteRendererComponent.h"
 #include "Components/BrickComponent.h"
 #include "Components/RenderComponent.h"
@@ -55,8 +56,8 @@ bengine::CameraComponent *bomberman::CreateCamera(bengine::Scene &scene, const L
     return cameraComp;
 }
 
-std::array<glm::ivec2, 2> bomberman::SpawnLevelTiles(bengine::Scene &scene, LevelGridComponent *gridComponent) {
-    std::array<glm::ivec2, 2> playerSpawnPositions{};
+bomberman::LevelSpawns bomberman::SpawnLevelTiles(bengine::Scene &scene, LevelGridComponent *gridComponent) {
+    LevelSpawns spawns{};
 
     const auto spawnTile = [&scene, gridComponent](glm::ivec2 cell, SpriteType spriteType) {
         auto tile = std::make_unique<bengine::GameObject>();
@@ -89,10 +90,22 @@ std::array<glm::ivec2, 2> bomberman::SpawnLevelTiles(bengine::Scene &scene, Leve
                     break;
                 }
                 case TileType::Player1Spawn:
-                    playerSpawnPositions[0] = cell;
+                    spawns.players[0] = cell;
                     break;
                 case TileType::Player2Spawn:
-                    playerSpawnPositions[1] = cell;
+                    spawns.players[1] = cell;
+                    break;
+                case TileType::BalloomSpawn:
+                    spawns.enemies.emplace_back(EnemyType::Balloom, cell);
+                    break;
+                case TileType::OnilSpawn:
+                    spawns.enemies.emplace_back(EnemyType::Onil, cell);
+                    break;
+                case TileType::DallSpawn:
+                    spawns.enemies.emplace_back(EnemyType::Dall, cell);
+                    break;
+                case TileType::MinvoSpawn:
+                    spawns.enemies.emplace_back(EnemyType::Minvo, cell);
                     break;
                 case TileType::Empty:
                     break;
@@ -100,7 +113,7 @@ std::array<glm::ivec2, 2> bomberman::SpawnLevelTiles(bengine::Scene &scene, Leve
         }
     }
 
-    return playerSpawnPositions;
+    return spawns;
 }
 
 void bomberman::CreateFPSDisplay(bengine::Scene &scene) {
@@ -141,19 +154,30 @@ bengine::Scene &bomberman::BuildLevelScene(std::string_view jsonRelativePath) {
 
     auto *cameraComponent = CreateCamera(scene, levelGridComponent);
 
-    const auto playerSpawnPositions = SpawnLevelTiles(scene, levelGridComponent);
+    const auto spawns = SpawnLevelTiles(scene, levelGridComponent);
 
     auto bombManagerGO = std::make_unique<bengine::GameObject>();
     auto *bombManager = bombManagerGO->AddComponent<BombManagerComponent>(&scene, levelGridComponent);
     scene.Add(std::move(bombManagerGO));
 
-    auto *p1 = CreatePlayer(scene, {levelGridComponent, playerSpawnPositions[0], 4.0f});
+    auto enemyManagerGO = std::make_unique<bengine::GameObject>();
+    auto *enemyManager = enemyManagerGO->AddComponent<EnemyManagerComponent>(&scene, levelGridComponent);
+    scene.Add(std::move(enemyManagerGO));
+
+    auto *p1 = CreatePlayer(scene, {levelGridComponent, spawns.players[0], 4.0f});
     cameraComponent->SetTarget(p1);
 
-    auto *p2 = CreatePlayer(scene, {levelGridComponent, playerSpawnPositions[1], 4.0f});
+    auto *p2 = CreatePlayer(scene, {levelGridComponent, spawns.players[1], 4.0f});
 
     bombManager->RegisterPlayer(p1);
     bombManager->RegisterPlayer(p2);
+
+    enemyManager->RegisterPlayer(p1);
+    enemyManager->RegisterPlayer(p2);
+
+    for (const auto &[type, cell]: spawns.enemies) {
+        enemyManager->SpawnEnemy(type, cell);
+    }
 
     CreateFPSDisplay(scene);
 

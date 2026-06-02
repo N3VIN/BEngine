@@ -15,6 +15,14 @@ bomberman::TileType bomberman::LevelGridComponent::ParseTile(char tile) {
             return TileType::Player1Spawn;
         case '2':
             return TileType::Player2Spawn;
+        case 'a':
+            return TileType::BalloomSpawn;
+        case 'o':
+            return TileType::OnilSpawn;
+        case 'd':
+            return TileType::DallSpawn;
+        case 'm':
+            return TileType::MinvoSpawn;
         default:
             return TileType::Empty;
     }

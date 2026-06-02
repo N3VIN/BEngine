@@ -8,6 +8,10 @@ namespace bomberman {
         Brick,
         Exit,
         Player1Spawn,
-        Player2Spawn
+        Player2Spawn,
+        BalloomSpawn,
+        OnilSpawn,
+        DallSpawn,
+        MinvoSpawn
     };
 }

@@ -55,6 +55,8 @@ if (NOT EMSCRIPTEN)
             Bomberman/Level/BuildLevelScene.cpp
             Bomberman/Level/Tileset.cpp
             Bomberman/PlayerFactory.cpp
+            Bomberman/EnemyFactory.cpp
+            Bomberman/Components/EnemyManagerComponent.cpp
             Bomberman/Components/LevelGridComponent.cpp
             Bomberman/Components/GridMovementComponent.cpp
             Bomberman/Components/GridRenderComponent.cpp

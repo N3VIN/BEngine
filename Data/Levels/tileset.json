@@ -48,71 +48,71 @@
   },
   "enemies": {
     "balloom": {
-      "walkLeft": {
+      "walkRight": {
         "col": 0,
-        "row": 45,
+        "row": 15,
         "frameCount": 3
       },
-      "walkRight": {
+      "walkLeft": {
         "col": 3,
-        "row": 45,
+        "row": 15,
         "frameCount": 3
       },
       "death": {
-        "col": 7,
-        "row": 45,
-        "frameCount": 3
+        "col": 6,
+        "row": 15,
+        "frameCount": 5
       }
     },
     "onil": {
-      "walkLeft": {
+      "walkRight": {
         "col": 0,
-        "row": 46,
+        "row": 16,
         "frameCount": 3
       },
-      "walkRight": {
+      "walkLeft": {
         "col": 3,
-        "row": 46,
+        "row": 16,
         "frameCount": 3
       },
       "death": {
-        "col": 7,
-        "row": 46,
-        "frameCount": 3
+        "col": 6,
+        "row": 16,
+        "frameCount": 5
       }
     },
     "dall": {
-      "walkLeft": {
+      "walkRight": {
         "col": 0,
-        "row": 48,
+        "row": 17,
         "frameCount": 3
       },
-      "walkRight": {
+      "walkLeft": {
         "col": 3,
-        "row": 48,
+        "row": 17,
         "frameCount": 3
       },
       "death": {
-        "col": 7,
-        "row": 48,
-        "frameCount": 3
+        "col": 6,
+        "row": 17,
+        "frameCount": 5
       }
     },
     "minvo": {
-      "walkLeft": {
+      "walkRight": {
         "col": 0,
-        "row": 47,
+        "row": 18,
         "frameCount": 3
       },
-      "walkRight": {
+      "walkLeft": {
         "col": 3,
-        "row": 47,
+        "row": 18,
         "frameCount": 3
       },
       "death": {
-        "col": 7,
-        "row": 47,
-        "frameCount": 3
+        "col": 6,
+        "row": 18,
+        "frameCount": 5
       }
     }
   },
