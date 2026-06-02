@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
+#include <array>
 #include <glm/vec2.hpp>
+#include "EnemyType.h"
 
 namespace bomberman {
     struct SpriteDefinition {
@@ -28,6 +30,12 @@ namespace bomberman {
         SpriteDefinition death{};
     };
 
+    struct EnemySprites {
+        SpriteDefinition walkLeft{};
+        SpriteDefinition walkRight{};
+        SpriteDefinition death{};
+    };
+
     struct Tileset {
         std::string texturePath;
         std::string spriteTexturePath;
@@ -40,8 +48,13 @@ namespace bomberman {
         SpriteDefinition bomb{};
         SpriteDefinition explosion{};
         PlayerSprites player{};
+        std::array<EnemySprites, EnemyTypeCount> enemies{};
 
         [[nodiscard]] SpriteDefinition GetSpriteDefinition(SpriteType type) const;
+
+        [[nodiscard]] const EnemySprites &GetEnemySprites(EnemyType type) const {
+            return enemies[static_cast<size_t>(type)];
+        }
     };
 
     const Tileset &GetTileset();

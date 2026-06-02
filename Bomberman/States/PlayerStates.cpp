@@ -8,7 +8,7 @@
 #include "Patterns/EventBus.h"
 
 void bomberman::IdlePlayerState::OnEnter(PlayerStateComponent &state) {
-    const auto walkState = MakeWalkState(state.GetMovement()->GetFacing());
+    const auto walkState = MakeWalkState(state.GetMovement()->GetFacing()); //TODO: not a fan of this..
     SpriteDefinition standing = *walkState->GetClip();
     standing.frameCount = 1;
     state.GetSprite()->Play(standing, false);

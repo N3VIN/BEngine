@@ -46,6 +46,76 @@
       "frameCount": 7
     }
   },
+  "enemies": {
+    "balloom": {
+      "walkLeft": {
+        "col": 0,
+        "row": 45,
+        "frameCount": 3
+      },
+      "walkRight": {
+        "col": 3,
+        "row": 45,
+        "frameCount": 3
+      },
+      "death": {
+        "col": 7,
+        "row": 45,
+        "frameCount": 3
+      }
+    },
+    "onil": {
+      "walkLeft": {
+        "col": 0,
+        "row": 46,
+        "frameCount": 3
+      },
+      "walkRight": {
+        "col": 3,
+        "row": 46,
+        "frameCount": 3
+      },
+      "death": {
+        "col": 7,
+        "row": 46,
+        "frameCount": 3
+      }
+    },
+    "dall": {
+      "walkLeft": {
+        "col": 0,
+        "row": 48,
+        "frameCount": 3
+      },
+      "walkRight": {
+        "col": 3,
+        "row": 48,
+        "frameCount": 3
+      },
+      "death": {
+        "col": 7,
+        "row": 48,
+        "frameCount": 3
+      }
+    },
+    "minvo": {
+      "walkLeft": {
+        "col": 0,
+        "row": 47,
+        "frameCount": 3
+      },
+      "walkRight": {
+        "col": 3,
+        "row": 47,
+        "frameCount": 3
+      },
+      "death": {
+        "col": 7,
+        "row": 47,
+        "frameCount": 3
+      }
+    }
+  },
   "bomb": {
     "col": 0,
     "row": 3,

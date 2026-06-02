@@ -95,6 +95,36 @@ const bomberman::Tileset &bomberman::GetTileset() {
             ts.player.death = readPlayerClip("death");
         }
 
+        if (json.contains("enemies")) {
+            const auto &enemies = json.at("enemies");
+            const auto readEnemy = [&](const char *key) {
+                EnemySprites sprites;
+                if (!enemies.contains(key)) {
+                    return sprites;
+                }
+
+                const auto &node = enemies.at(key);
+                const auto readClip = [&](const char *clipKey) {
+                    const auto &clip = node.at(clipKey);
+                    SpriteDefinition definition;
+                    definition.col = clip.at("col").get<int>();
+                    definition.row = clip.at("row").get<int>();
+                    definition.frameCount = clip.value("frameCount", 1);
+                    return definition;
+                };
+
+                sprites.walkLeft = readClip("walkLeft");
+                sprites.walkRight = readClip("walkRight");
+                sprites.death = readClip("death");
+                return sprites;
+            };
+
+            ts.enemies[static_cast<size_t>(EnemyType::Balloom)] = readEnemy("balloom");
+            ts.enemies[static_cast<size_t>(EnemyType::Onil)] = readEnemy("onil");
+            ts.enemies[static_cast<size_t>(EnemyType::Dall)] = readEnemy("dall");
+            ts.enemies[static_cast<size_t>(EnemyType::Minvo)] = readEnemy("minvo");
+        }
+
         return ts;
     }();
 
