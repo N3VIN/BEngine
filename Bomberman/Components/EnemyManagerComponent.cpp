@@ -1,14 +1,16 @@
 #include "EnemyManagerComponent.h"
 #include "EnemyFactory.h"
+#include "HazardComponent.h"
 #include "GameEvents.h"
 #include "Patterns/ServiceLocator.h"
 #include "Patterns/EventBus.h"
 #include "SceneGraph/Scene.h"
 
-bomberman::EnemyManagerComponent::EnemyManagerComponent(bengine::GameObject *parent, bengine::Scene *scene, LevelGridComponent *gridComponent)
+bomberman::EnemyManagerComponent::EnemyManagerComponent(bengine::GameObject *parent, bengine::Scene *scene, LevelGridComponent *gridComponent, HazardComponent *hazardComponent)
     : bengine::Component(parent)
   , m_scene(scene)
-  , m_gridComponent(gridComponent) {
+  , m_gridComponent(gridComponent)
+  , m_hazardComponent(hazardComponent) {
     m_killedSub = bengine::ServiceLocator::GetEventBus().Subscribe<events::EnemyKilled>(
         [this](const events::EnemyKilled &event) {
             std::erase(m_enemies, event.enemy);
@@ -21,5 +23,7 @@ void bomberman::EnemyManagerComponent::RegisterPlayer(bengine::GameObject *playe
 }
 
 void bomberman::EnemyManagerComponent::SpawnEnemy(EnemyType type, glm::ivec2 cell) {
-    m_enemies.push_back(CreateEnemy(*m_scene, {m_gridComponent, type, cell, &m_players}));
+    auto *enemy = CreateEnemy(*m_scene, {m_gridComponent, type, cell, &m_players});
+    m_enemies.push_back(enemy);
+    m_hazardComponent->RegisterEnemy(enemy);
 }

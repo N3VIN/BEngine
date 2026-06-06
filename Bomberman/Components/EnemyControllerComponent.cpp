@@ -1,6 +1,7 @@
 #include "EnemyControllerComponent.h"
 #include "GridMovementComponent.h"
 #include "SpriteRendererComponent.h"
+#include "HealthComponent.h"
 #include "States/EnemyStates.h"
 #include "GameEvents.h"
 #include "Level/Tileset.h"
@@ -14,16 +15,15 @@ bomberman::EnemyControllerComponent::EnemyControllerComponent(bengine::GameObjec
   , m_scene(scene)
   , m_movement(parent->GetComponent<GridMovementComponent>())
   , m_sprite(parent->GetComponent<SpriteRendererComponent>())
+  , m_health(parent->GetComponent<HealthComponent>())
   , m_sprites(&GetTileset().GetEnemySprites(type))
   , m_points(GetEnemyStats(type).points) {
     m_currentState = MakeEnemyWalkState(m_movement->GetFacing());
     m_currentState->OnEnter(*this);
 
-    m_explosionSub = bengine::ServiceLocator::GetEventBus().Subscribe<events::ExplosionAt>(
-        [this](const events::ExplosionAt &event) {
-            if (m_movement->GetCell() == event.cell) {
-                m_killed = true;
-            }
+    m_damagedSub = m_health->SubscribeDamaged(
+        [this](int) {
+            m_killed = true;
         }
     );
 }
@@ -66,7 +66,7 @@ void bomberman::EnemyControllerComponent::PlayDeathAnimation() const {
     m_sprite->Play(m_sprites->death, false);
 }
 
-void bomberman::EnemyControllerComponent::Die() {
+void bomberman::EnemyControllerComponent::Die() const {
     bengine::ServiceLocator::GetEventBus().Broadcast(events::EnemyKilled{
             .enemy = GetParent(),
             .cell = m_movement->GetCell(),

@@ -13,6 +13,7 @@ namespace bengine {
 namespace bomberman {
     class GridMovementComponent;
     class SpriteRendererComponent;
+    class HealthComponent;
     struct EnemySprites;
 
     class EnemyControllerComponent final : public bengine::Component {
@@ -26,16 +27,17 @@ namespace bomberman {
 
         void PlayWalkAnimation(bool facingLeft) const;
         void PlayDeathAnimation() const;
-        void Die();
+        void Die() const;
 
     private:
         bengine::Scene *m_scene{};
         GridMovementComponent *m_movement{};
         SpriteRendererComponent *m_sprite{};
+        HealthComponent *m_health{};
         const EnemySprites *m_sprites{};
         int m_points{};
         std::unique_ptr<IEnemyState> m_currentState;
         bool m_killed{false};
-        bengine::ScopedDelegate m_explosionSub;
+        bengine::ScopedDelegate m_damagedSub;
     };
 }

@@ -1,25 +1,15 @@
 #include "HealthComponent.h"
-#include "GridMovementComponent.h"
-#include "GameEvents.h"
-#include "Patterns/ServiceLocator.h"
-#include "Patterns/EventBus.h"
-#include "SceneGraph/GameObject.h"
 
 bomberman::HealthComponent::HealthComponent(bengine::GameObject *parent, int lives)
     : bengine::Component(parent)
-  , m_lives(lives) {
-    auto *movement = parent->GetComponent<GridMovementComponent>();
-    m_explosionSub = bengine::ServiceLocator::GetEventBus().Subscribe<events::ExplosionAt>(
-        [this, movement](const events::ExplosionAt &event) {
-            if (movement && movement->GetCell() == event.cell) {
-                TakeDamage(1);
-            }
-        }
-    );
+  , m_lives(lives) {}
+
+void bomberman::HealthComponent::Update(float deltaTime) {
+    m_iframes.Update(deltaTime);
 }
 
 void bomberman::HealthComponent::TakeDamage(int amount) {
-    if (amount <= 0 || m_lives <= 0) {
+    if (amount <= 0 || m_lives <= 0 || !m_iframes.IsExpired()) {
         return;
     }
 
@@ -28,12 +18,14 @@ void bomberman::HealthComponent::TakeDamage(int amount) {
         m_lives = 0;
     }
 
-    bengine::ServiceLocator::GetEventBus().Broadcast(events::PlayerDamaged{
-        .player = GetParent(),
-        .newLives = m_lives,
-    });
+    m_iframes.SetDuration(IFRAME_DURATION);
+    m_onDamaged.Broadcast(m_lives);
 }
 
 int bomberman::HealthComponent::GetLives() const {
     return m_lives;
+}
+
+bool bomberman::HealthComponent::IsAlive() const {
+    return m_lives > 0;
 }

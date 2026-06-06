@@ -17,11 +17,9 @@ bomberman::PlayerControllerComponent::PlayerControllerComponent(bengine::GameObj
     m_currentState = std::make_unique<IdlePlayerState>();
     m_currentState->OnEnter(*this);
 
-    m_damagedSub = bengine::ServiceLocator::GetEventBus().Subscribe<events::PlayerDamaged>(
-        [this](const events::PlayerDamaged &event) {
-            if (event.player == GetParent()) {
-                m_damaged = true;
-            }
+    m_damagedSub = m_health->SubscribeDamaged(
+        [this](int) {
+            m_damaged = true;
         }
     );
 }

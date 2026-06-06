@@ -11,10 +11,11 @@ namespace bengine {
 
 namespace bomberman {
     class LevelGridComponent;
+    class HazardComponent;
 
     class EnemyManagerComponent final : public bengine::Component {
     public:
-        EnemyManagerComponent(bengine::GameObject *parent, bengine::Scene *scene, LevelGridComponent *gridComponent);
+        EnemyManagerComponent(bengine::GameObject *parent, bengine::Scene *scene, LevelGridComponent *gridComponent, HazardComponent *hazardComponent);
 
         void RegisterPlayer(bengine::GameObject *player);
         void SpawnEnemy(EnemyType type, glm::ivec2 cell);
@@ -22,6 +23,7 @@ namespace bomberman {
     private:
         bengine::Scene *m_scene{};
         LevelGridComponent *m_gridComponent{};
+        HazardComponent *m_hazardComponent{};
         std::vector<bengine::GameObject *> m_enemies{};
         std::vector<bengine::GameObject *> m_players{};
         bengine::ScopedDelegate m_killedSub;

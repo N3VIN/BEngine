@@ -5,6 +5,7 @@
 #include "Components/GridRenderComponent.h"
 #include "Components/BombManagerComponent.h"
 #include "Components/EnemyManagerComponent.h"
+#include "Components/HazardComponent.h"
 #include "Components/SpriteRendererComponent.h"
 #include "Components/BrickComponent.h"
 #include "Components/RenderComponent.h"
@@ -70,7 +71,7 @@ bomberman::LevelSpawns bomberman::SpawnLevelTiles(bengine::Scene &scene, LevelGr
         return pTile;
     };
 
-    const glm::ivec2 dims = gridComponent->GetDimensions();
+    const auto dims = gridComponent->GetDimensions();
     for (int column = 0; column < dims.x; ++column) {
         for (int row = 0; row < dims.y; ++row) {
             const glm::ivec2 cell{column, row};
@@ -164,8 +165,11 @@ bengine::Scene &bomberman::BuildLevelScene(std::string_view jsonRelativePath) {
     auto *bombManager = bombManagerGO->AddComponent<BombManagerComponent>(&scene, levelGridComponent);
     scene.Add(std::move(bombManagerGO));
 
+    auto hazardManagerGO = std::make_unique<bengine::GameObject>();
+    auto *hazardManager = hazardManagerGO->AddComponent<HazardComponent>(levelGridComponent);
+
     auto enemyManagerGO = std::make_unique<bengine::GameObject>();
-    auto *enemyManager = enemyManagerGO->AddComponent<EnemyManagerComponent>(&scene, levelGridComponent);
+    auto *enemyManager = enemyManagerGO->AddComponent<EnemyManagerComponent>(&scene, levelGridComponent, hazardManager);
     scene.Add(std::move(enemyManagerGO));
 
     auto *p1 = CreatePlayer(scene, {levelGridComponent, spawns.players[0], 4.0f});
@@ -179,9 +183,14 @@ bengine::Scene &bomberman::BuildLevelScene(std::string_view jsonRelativePath) {
     enemyManager->RegisterPlayer(p1);
     enemyManager->RegisterPlayer(p2);
 
+    hazardManager->RegisterPlayer(p1);
+    hazardManager->RegisterPlayer(p2);
+
     for (const auto &[type, cell]: spawns.enemies) {
         enemyManager->SpawnEnemy(type, cell);
     }
+
+    scene.Add(std::move(hazardManagerGO));
 
     CreateFPSDisplay(scene);
 
