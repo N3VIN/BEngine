@@ -1,7 +1,6 @@
 #pragma once
 #include "Components/Component.h"
 #include "SceneGraph/Scene.h"
-#include "Patterns/MulticastDelegate.h"
 #include "Timer.h"
 
 namespace bomberman {
@@ -17,6 +16,5 @@ namespace bomberman {
         bengine::Scene *m_scene;
         bengine::Timer m_timer;
         bool m_destroyed{false};
-        bengine::ScopedDelegate m_destroySub;
     };
 }

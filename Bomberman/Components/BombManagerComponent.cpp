@@ -1,6 +1,7 @@
 #include "BombManagerComponent.h"
 #include "BombComponent.h"
 #include "ExplosionComponent.h"
+#include "BrickComponent.h"
 #include "LevelGridComponent.h"
 #include "SpriteRendererComponent.h"
 #include "Level/Tileset.h"
@@ -17,23 +18,21 @@ bomberman::BombManagerComponent::BombManagerComponent(bengine::GameObject *paren
     const auto dims = m_gridComponent->GetDimensions();
     m_bombAtCell.resize(static_cast<size_t>(dims.x) * static_cast<size_t>(dims.y), nullptr);
     m_bombOwnerAtCell.resize(static_cast<size_t>(dims.x) * static_cast<size_t>(dims.y), nullptr);
-    m_explosionAtCell.resize(static_cast<size_t>(dims.x) * static_cast<size_t>(dims.y), nullptr);
+}
 
-    m_detonationSub = bengine::ServiceLocator::GetEventBus().Subscribe<events::BombDetonated>(
-        [this](const events::BombDetonated &event) {
-            if (auto *bombGO = BombAt(event.cell)) {
-                if (auto *bomb = bombGO->GetComponent<BombComponent>()) {
-                    DetonateBomb(bomb);
-                }
-            }
+void bomberman::BombManagerComponent::Update(float deltaTime) {
+    std::vector<BombComponent *> expired;
+    for (auto *bomb: m_activeBombs) {
+        if (bomb->AdvanceFuse(deltaTime)) {
+            expired.push_back(bomb);
         }
-    );
+    }
 
-    m_explosionExpiredSub = bengine::ServiceLocator::GetEventBus().Subscribe<events::ExplosionExpired>(
-        [this](const events::ExplosionExpired &event) {
-            OnExplosionCellExpired(event.cell);
+    for (auto *bomb: expired) {
+        if (!bomb->IsDetonated()) {
+            DetonateBomb(bomb);
         }
-    );
+    }
 }
 
 void bomberman::BombManagerComponent::RegisterPlayer(bengine::GameObject *player) {
@@ -64,17 +63,26 @@ void bomberman::BombManagerComponent::PlaceBomb(glm::ivec2 cell, bengine::GameOb
 
     bombGO->AddComponent<SpriteRendererComponent>(SpriteType::Bomb);
 
-    bombGO->AddComponent<BombComponent>(cell, m_fuseTime);
+    auto *bomb = bombGO->AddComponent<BombComponent>(cell, m_fuseTime, m_blastRadius);
 
     m_gridComponent->SetWall(cell, true);
     const auto idx = BombIndex(cell);
     m_bombAtCell[idx] = bombGO.get();
     m_bombOwnerAtCell[idx] = owner;
+    m_activeBombs.push_back(bomb);
     m_scene->Add(std::move(bombGO));
 }
 
 void bomberman::BombManagerComponent::DetonateBomb(BombComponent *bomb) {
+    if (bomb->IsDetonated()) {
+        return;
+    }
+
+    bomb->MarkDetonated();
+    std::erase(m_activeBombs, bomb);
+
     const glm::ivec2 cell = bomb->GetCell();
+    const int radius = bomb->GetRadius();
     const auto idx = BombIndex(cell);
     auto *owner = m_bombOwnerAtCell[idx];
 
@@ -88,11 +96,14 @@ void bomberman::BombManagerComponent::DetonateBomb(BombComponent *bomb) {
     }
 
     SpawnExplosionAt(cell);
+    bengine::ServiceLocator::GetEventBus().Broadcast(events::ExplosionAt{cell});
 
-    SpreadInDirection(cell, {0, -1}, BLAST_RADIUS);
-    SpreadInDirection(cell, {0, 1}, BLAST_RADIUS);
-    SpreadInDirection(cell, {-1, 0}, BLAST_RADIUS);
-    SpreadInDirection(cell, {1, 0}, BLAST_RADIUS);
+    SpreadInDirection(cell, {0, -1}, radius);
+    SpreadInDirection(cell, {0, 1}, radius);
+    SpreadInDirection(cell, {-1, 0}, radius);
+    SpreadInDirection(cell, {1, 0}, radius);
+
+    bengine::ServiceLocator::GetEventBus().Broadcast(events::BombDetonated{cell});
 
     ProcessDetonationQueue();
 }
@@ -121,11 +132,11 @@ void bomberman::BombManagerComponent::SpreadInDirection(glm::ivec2 origin, glm::
 
         if (m_gridComponent->IsBrick(cell)) {
             if (auto *tile = m_gridComponent->DestroyBrick(cell)) {
-                bus.Broadcast(events::BrickDestroyed{
-                        .cell = cell,
-                        .brick = tile,
-                    }
-                );
+                if (auto *brick = tile->GetComponent<BrickComponent>()) {
+                    brick->Destroy();
+                }
+
+                bus.Broadcast(events::BrickDestroyed{cell});
             }
 
             break;
@@ -140,15 +151,6 @@ void bomberman::BombManagerComponent::SpawnExplosionAt(glm::ivec2 cell) {
         return;
     }
 
-    const auto idx = BombIndex(cell);
-    if (auto *existing = m_explosionAtCell[idx]) {
-        if (auto *comp = existing->GetComponent<ExplosionComponent>()) {
-            comp->ExtendLifetime(GetTileset().explosionLifetime);
-        }
-
-        return;
-    }
-
     const auto &tileset = GetTileset();
     const float lifetime = tileset.explosionLifetime;
 
@@ -159,11 +161,9 @@ void bomberman::BombManagerComponent::SpawnExplosionAt(glm::ivec2 cell) {
     explosionGO->SetLocalPosition(m_gridComponent->CellToWorld(cell) + glm::vec2{offsetX, offsetY});
 
     explosionGO->AddComponent<SpriteRendererComponent>(SpriteType::Explosion);
-    explosionGO->AddComponent<ExplosionComponent>(cell, lifetime);
+    explosionGO->AddComponent<ExplosionComponent>(m_scene, lifetime);
 
-    auto *pExplosion = explosionGO.get();
     m_scene->Add(std::move(explosionGO));
-    m_explosionAtCell[idx] = pExplosion;
 }
 
 void bomberman::BombManagerComponent::ProcessDetonationQueue() {
@@ -184,14 +184,4 @@ bengine::GameObject *bomberman::BombManagerComponent::BombAt(glm::ivec2 cell) co
     }
 
     return m_bombAtCell[BombIndex(cell)];
-}
-
-void bomberman::BombManagerComponent::OnExplosionCellExpired(glm::ivec2 cell) {
-    const auto idx = BombIndex(cell);
-    if (idx < m_explosionAtCell.size()) {
-        if (auto *explosionGO = m_explosionAtCell[idx]) {
-            m_scene->Remove(explosionGO);
-            m_explosionAtCell[idx] = nullptr;
-        }
-    }
 }

@@ -7,22 +7,20 @@
 namespace bomberman {
     class BombComponent final : public bengine::Component {
     public:
-        BombComponent(bengine::GameObject *parent, glm::ivec2 cell, float fuseTime);
+        BombComponent(bengine::GameObject *parent, glm::ivec2 cell, float fuseTime, int blastRadius);
 
-        void Update(float deltaTime) override;
-        void Detonate();
+        bool AdvanceFuse(float deltaTime);
+        void MarkDetonated();
 
-        [[nodiscard]] glm::ivec2 GetCell() const {
-            return m_cell;
-        }
-
-        [[nodiscard]] bengine::GameObject *GetGameObject() const {
-            return GetParent();
-        }
+        [[nodiscard]] bool IsDetonated() const;
+        [[nodiscard]] glm::ivec2 GetCell() const;
+        [[nodiscard]] int GetRadius() const;
+        [[nodiscard]] bengine::GameObject *GetGameObject() const;
 
     private:
         glm::ivec2 m_cell;
         bengine::Timer m_fuseTimer;
+        int m_blastRadius;
         bool m_detonated{false};
     };
 }

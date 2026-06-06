@@ -1,20 +1,16 @@
 #include "ExplosionComponent.h"
-#include "GameEvents.h"
-#include "Patterns/ServiceLocator.h"
-#include "Patterns/EventBus.h"
+#include "SceneGraph/Scene.h"
+#include "SceneGraph/GameObject.h"
 
-bomberman::ExplosionComponent::ExplosionComponent(bengine::GameObject *parent, glm::ivec2 cell, float lifetime)
+bomberman::ExplosionComponent::ExplosionComponent(bengine::GameObject *parent, bengine::Scene *scene, float lifetime)
     : bengine::Component(parent)
-  , m_cell(cell)
+  , m_scene(scene)
   , m_timer(lifetime) {}
 
 void bomberman::ExplosionComponent::Update(float deltaTime) {
     m_timer.Update(deltaTime);
-    if (m_timer.IsExpired()) {
-        bengine::ServiceLocator::GetEventBus().Broadcast(events::ExplosionExpired{m_cell});
+    if (m_timer.IsExpired() && !m_removed) {
+        m_removed = true;
+        m_scene->Remove(GetParent());
     }
-}
-
-void bomberman::ExplosionComponent::ExtendLifetime(float lifetime) {
-    m_timer.SetDuration(lifetime);
 }

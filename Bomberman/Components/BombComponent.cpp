@@ -1,29 +1,36 @@
 #include "BombComponent.h"
-#include "GameEvents.h"
-#include "Patterns/ServiceLocator.h"
-#include "Patterns/EventBus.h"
 
-bomberman::BombComponent::BombComponent(bengine::GameObject *parent, glm::ivec2 cell, float fuseTime)
+bomberman::BombComponent::BombComponent(bengine::GameObject *parent, glm::ivec2 cell, float fuseTime, int blastRadius)
     : bengine::Component(parent)
   , m_cell(cell)
-  , m_fuseTimer(fuseTime) {}
+  , m_fuseTimer(fuseTime)
+  , m_blastRadius(blastRadius) {}
 
-void bomberman::BombComponent::Update(float deltaTime) {
+bool bomberman::BombComponent::AdvanceFuse(float deltaTime) {
     if (m_detonated) {
-        return;
+        return false;
     }
 
     m_fuseTimer.Update(deltaTime);
-    if (m_fuseTimer.IsExpired()) {
-        Detonate();
-    }
+    return m_fuseTimer.IsExpired();
 }
 
-void bomberman::BombComponent::Detonate() {
-    if (m_detonated) {
-        return;
-    }
-
-    bengine::ServiceLocator::GetEventBus().Broadcast(events::BombDetonated{m_cell});
+void bomberman::BombComponent::MarkDetonated() {
     m_detonated = true;
+}
+
+bool bomberman::BombComponent::IsDetonated() const {
+    return m_detonated;
+}
+
+glm::ivec2 bomberman::BombComponent::GetCell() const {
+    return m_cell;
+}
+
+int bomberman::BombComponent::GetRadius() const {
+    return m_blastRadius;
+}
+
+bengine::GameObject *bomberman::BombComponent::GetGameObject() const {
+    return GetParent();
 }

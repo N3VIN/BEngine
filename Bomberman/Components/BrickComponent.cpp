@@ -1,23 +1,12 @@
 #include "BrickComponent.h"
 #include "SpriteRendererComponent.h"
-#include "GameEvents.h"
-#include "Patterns/ServiceLocator.h"
-#include "Patterns/EventBus.h"
 #include "SceneGraph/Scene.h"
 #include "SceneGraph/GameObject.h"
 
 bomberman::BrickComponent::BrickComponent(bengine::GameObject *parent, bengine::Scene *scene, float destroyTime)
     : bengine::Component(parent)
   , m_scene(scene)
-  , m_timer(destroyTime) {
-    m_destroySub = bengine::ServiceLocator::GetEventBus().Subscribe<events::BrickDestroyed>(
-        [this, parent](const events::BrickDestroyed &event) {
-            if (event.brick == parent) {
-                Destroy();
-            }
-        }
-    );
-}
+  , m_timer(destroyTime) {}
 
 void bomberman::BrickComponent::Update(float deltaTime) {
     if (!m_destroyed) {

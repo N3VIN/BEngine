@@ -10,14 +10,9 @@ namespace bomberman {
 
         struct BrickDestroyed {
             glm::ivec2 cell{};
-            bengine::GameObject *brick{nullptr};
         };
 
         struct BombDetonated {
-            glm::ivec2 cell{};
-        };
-
-        struct ExplosionExpired {
             glm::ivec2 cell{};
         };
 
