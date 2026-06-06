@@ -4,9 +4,9 @@
 using namespace bengine;
 
 
-void Scene::Add(std::unique_ptr<GameObject> object) {
+GameObject *Scene::Add(std::unique_ptr<GameObject> object) {
     assert(object != nullptr && "Cannot add a null GameObject to the scene.");
-    m_objects.emplace_back(std::move(object));
+    return m_objects.emplace_back(std::move(object)).get();
 }
 
 void Scene::Remove(GameObject *object) {

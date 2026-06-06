@@ -1,5 +1,4 @@
 #pragma once
-#include <cstddef>
 #include <cstdint>
 #include <array>
 
@@ -40,10 +39,10 @@ namespace bomberman {
     [[nodiscard]] inline const EnemyStats &GetEnemyStats(EnemyType type) {
         static constexpr std::array<EnemyStats, EnemyTypeCount> table{
             {
-                {3.0f, 100, SightAxes::None, 2.0f, 4.0f},
-                {4.0f, 200, SightAxes::Vertical, 0.8f, 3.2f},
-                {4.0f, 400, SightAxes::Horizontal, 0.8f, 3.2f},
-                {6.0f, 800, SightAxes::Both, 0.5f, 2.0f},
+                {3.0f, 100, SightAxes::None, 2.0f, 4.0f},       // ballom
+                {4.0f, 200, SightAxes::Vertical, 0.8f, 3.2f},   // onil
+                {4.0f, 400, SightAxes::Horizontal, 0.8f, 3.2f}, // dall
+                {6.0f, 800, SightAxes::Both, 0.5f, 2.0f},       // minvo
             }
         };
 

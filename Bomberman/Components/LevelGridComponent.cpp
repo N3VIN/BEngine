@@ -78,6 +78,17 @@ bool bomberman::LevelGridComponent::IsWalkable(glm::ivec2 cell) const {
     return m_walls[Index(cell)] == 0;
 }
 
+bool bomberman::LevelGridComponent::HasClearPath(glm::ivec2 origin, glm::ivec2 target) const {
+    const auto stepDirection = glm::sign(target - origin);
+    for (auto current = origin + stepDirection; current != target; current += stepDirection) {
+        if (!IsWalkable(current)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 void bomberman::LevelGridComponent::SetWall(glm::ivec2 cell, bool isWall) {
     if (!InBounds(cell)) {
         return;

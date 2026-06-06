@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 #include "Components/Component.h"
 #include "Patterns/MulticastDelegate.h"
-#include "States/IPlayerState.h"
+#include "States/IState.h"
 
 namespace bomberman {
     class GridMovementComponent;

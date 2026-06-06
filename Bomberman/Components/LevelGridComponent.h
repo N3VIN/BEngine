@@ -21,6 +21,7 @@ namespace bomberman {
         LevelGridComponent &operator=(LevelGridComponent &&) = delete;
 
         [[nodiscard]] bool IsWalkable(glm::ivec2 cell) const;
+        [[nodiscard]] bool HasClearPath(glm::ivec2 origin, glm::ivec2 target) const;
         [[nodiscard]] bool IsBrick(glm::ivec2 cell) const;
         [[nodiscard]] bool HasWall(glm::ivec2 cell) const;
         [[nodiscard]] bool InBounds(glm::ivec2 cell) const;

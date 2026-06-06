@@ -1,6 +1,6 @@
 #pragma once
 #include <glm/glm.hpp>
-#include "IPlayerState.h"
+#include "IState.h"
 #include "Level/Tileset.h"
 
 namespace bomberman {

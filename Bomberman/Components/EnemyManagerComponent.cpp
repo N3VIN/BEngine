@@ -12,5 +12,5 @@ void bomberman::EnemyManagerComponent::RegisterPlayer(bengine::GameObject *playe
 }
 
 void bomberman::EnemyManagerComponent::SpawnEnemy(EnemyType type, glm::ivec2 cell) {
-    m_enemies.push_back(CreateEnemy(*m_scene, m_gridComponent, type, cell));
+    m_enemies.push_back(CreateEnemy(*m_scene, {m_gridComponent, type, cell, m_players}));
 }

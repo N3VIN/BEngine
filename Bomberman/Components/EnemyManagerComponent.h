@@ -5,7 +5,6 @@
 #include "EnemyType.h"
 
 namespace bengine {
-    class GameObject;
     class Scene;
 }
 
