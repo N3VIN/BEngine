@@ -63,7 +63,7 @@ if (NOT EMSCRIPTEN)
             Bomberman/Components/GridRenderComponent.cpp
             Bomberman/Components/SpriteRendererComponent.cpp
             Bomberman/Components/HealthComponent.cpp
-            Bomberman/Components/PlayerStateComponent.cpp
+            Bomberman/Components/PlayerControllerComponent.cpp
             Bomberman/Components/BombComponent.cpp
             Bomberman/Components/BombManagerComponent.cpp
             Bomberman/Components/BrickComponent.cpp

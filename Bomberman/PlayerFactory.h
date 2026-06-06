@@ -6,7 +6,7 @@
 #include "Components/GridMovementComponent.h"
 #include "Components/SpriteRendererComponent.h"
 #include "Components/HealthComponent.h"
-#include "Components/PlayerStateComponent.h"
+#include "Components/PlayerControllerComponent.h"
 
 namespace bomberman {
     struct PlayerConfig {
@@ -20,7 +20,7 @@ namespace bomberman {
         player->AddComponent<GridMovementComponent>(config.gridComponent, config.spawnCell, config.cellsPerSecond);
         player->AddComponent<SpriteRendererComponent>();
         player->AddComponent<HealthComponent>(4);
-        player->AddComponent<PlayerStateComponent>();
+        player->AddComponent<PlayerControllerComponent>();
 
         return player;
     }

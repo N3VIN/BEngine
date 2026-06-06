@@ -1,22 +1,15 @@
 #include "PlayerStates.h"
-#include "Components/PlayerStateComponent.h"
-#include "Components/GridMovementComponent.h"
-#include "Components/SpriteRendererComponent.h"
-#include "Components/HealthComponent.h"
-#include "GameEvents.h"
-#include "Patterns/ServiceLocator.h"
-#include "Patterns/EventBus.h"
+#include "Components/PlayerControllerComponent.h"
 
-void bomberman::IdlePlayerState::OnEnter(PlayerStateComponent &state) {
-    const auto walkState = MakeWalkState(state.GetMovement()->GetFacing()); //TODO: not a fan of this..
-    auto standing = *walkState->GetClip();
+void bomberman::IdlePlayerState::OnEnter(PlayerControllerComponent &controller) {
+    auto standing = GetWalkClip(controller.GetFacing());
     standing.frameCount = 1;
-    state.GetSprite()->Play(standing, false);
+    controller.PlayAnimation(standing, false);
 }
 
-std::unique_ptr<bomberman::IPlayerState> bomberman::IdlePlayerState::Update(PlayerStateComponent &state, float /*deltaTime*/) {
-    if (const auto *movement = state.GetMovement(); movement->IsMoving()) {
-        return MakeWalkState(movement->GetFacing());
+std::unique_ptr<bomberman::IPlayerState> bomberman::IdlePlayerState::Update(PlayerControllerComponent &controller, float /*deltaTime*/) {
+    if (controller.IsMoving()) {
+        return MakeWalkState(controller.GetFacing());
     }
 
     return nullptr;
@@ -26,67 +19,63 @@ bomberman::DirectionalWalkState::DirectionalWalkState(glm::ivec2 direction, cons
     : m_direction(direction)
   , m_clip(clip) {}
 
-void bomberman::DirectionalWalkState::OnEnter(PlayerStateComponent &state) {
-    state.GetSprite()->Play(m_clip, true);
+void bomberman::DirectionalWalkState::OnEnter(PlayerControllerComponent &controller) {
+    controller.PlayAnimation(m_clip, true);
 }
 
-std::unique_ptr<bomberman::IPlayerState> bomberman::DirectionalWalkState::Update(PlayerStateComponent &state, float /*deltaTime*/) {
-    const auto *movement = state.GetMovement();
-    if (!movement->IsMoving()) {
+std::unique_ptr<bomberman::IPlayerState> bomberman::DirectionalWalkState::Update(PlayerControllerComponent &controller, float /*deltaTime*/) {
+    if (!controller.IsMoving()) {
         return std::make_unique<IdlePlayerState>();
     }
 
-    if (movement->GetFacing() != m_direction) {
-        return MakeWalkState(movement->GetFacing());
+    if (controller.GetFacing() != m_direction) {
+        return MakeWalkState(controller.GetFacing());
     }
 
     return nullptr;
 }
 
-bomberman::WalkUpState::WalkUpState()
-    : DirectionalWalkState({0, -1}, GetTileset().player.walkUp) {}
-
-bomberman::WalkDownState::WalkDownState()
-    : DirectionalWalkState({0, 1}, GetTileset().player.walkDown) {}
-
-bomberman::WalkLeftState::WalkLeftState()
-    : DirectionalWalkState({-1, 0}, GetTileset().player.walkLeft) {}
-
-bomberman::WalkRightState::WalkRightState()
-    : DirectionalWalkState({1, 0}, GetTileset().player.walkRight) {}
-
-void bomberman::DyingPlayerState::OnEnter(PlayerStateComponent &state) {
-    state.GetSprite()->Play(GetTileset().player.death, false);
+void bomberman::DyingPlayerState::OnEnter(PlayerControllerComponent &controller) {
+    controller.PlayAnimation(GetTileset().player.death, false);
 }
 
-std::unique_ptr<bomberman::IPlayerState> bomberman::DyingPlayerState::Update(PlayerStateComponent &state, float /*deltaTime*/) {
-    if (state.GetSprite()->IsPlaying()) {
+std::unique_ptr<bomberman::IPlayerState> bomberman::DyingPlayerState::Update(PlayerControllerComponent &controller, float /*deltaTime*/) {
+    if (controller.IsAnimationPlaying()) {
         return nullptr;
     }
 
-    if (state.GetHealth()->GetLives() > 0) {
-        state.GetMovement()->Respawn(state.GetSpawnCell());
+    if (controller.GetLives() > 0) {
+        controller.Respawn();
         return std::make_unique<IdlePlayerState>();
     }
 
-    bengine::ServiceLocator::GetEventBus().Broadcast(events::PlayerDied{
-            .player = state.GetPlayerObject(),
-        }
-    );
-
+    controller.NotifyDied();
     return std::make_unique<DeadPlayerState>();
 }
 
-std::unique_ptr<bomberman::IPlayerState> bomberman::MakeWalkState(glm::ivec2 facing) {
+bool bomberman::DyingPlayerState::IsAlive() const {
+    return false;
+}
+
+bool bomberman::DeadPlayerState::IsAlive() const {
+    return false;
+}
+
+bomberman::SpriteDefinition bomberman::GetWalkClip(glm::ivec2 facing) {
+    const auto &player = GetTileset().player;
     if (facing.x < 0) {
-        return std::make_unique<WalkLeftState>();
+        return player.walkLeft;
     }
     if (facing.x > 0) {
-        return std::make_unique<WalkRightState>();
+        return player.walkRight;
     }
     if (facing.y < 0) {
-        return std::make_unique<WalkUpState>();
+        return player.walkUp;
     }
 
-    return std::make_unique<WalkDownState>();
+    return player.walkDown;
+}
+
+std::unique_ptr<bomberman::IPlayerState> bomberman::MakeWalkState(glm::ivec2 facing) {
+    return std::make_unique<DirectionalWalkState>(facing, GetWalkClip(facing));
 }

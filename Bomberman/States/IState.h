@@ -4,7 +4,6 @@
 
 namespace bomberman {
     struct SpriteDefinition;
-    class PlayerStateComponent;
     class EnemyStateComponent;
 
     template<typename StateComponent>
@@ -34,6 +33,5 @@ namespace bomberman {
         IState() = default;
     };
 
-    using IPlayerState = IState<PlayerStateComponent>;
     using IEnemyState = IState<EnemyStateComponent>;
 }
