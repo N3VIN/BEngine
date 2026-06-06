@@ -12,7 +12,7 @@ namespace bomberman {
 
     class BombManagerComponent final : public bengine::Component {
     public:
-        BombManagerComponent(bengine::GameObject *parent, bengine::Scene *scene, LevelGridComponent *gridComponent);
+        BombManagerComponent(bengine::GameObject *parent, LevelGridComponent *gridComponent);
 
         void PlaceBomb(glm::ivec2 cell, bengine::GameObject *owner);
         void DetonateBomb(BombComponent *bomb);
@@ -30,7 +30,6 @@ namespace bomberman {
         [[nodiscard]] bengine::GameObject *BombAt(glm::ivec2 cell) const;
         [[nodiscard]] size_t BombIndex(glm::ivec2 cell) const;
 
-        bengine::Scene *m_scene;
         LevelGridComponent *m_gridComponent;
         std::vector<bengine::GameObject *> m_bombAtCell;
         std::vector<BombComponent *> m_activeBombs;

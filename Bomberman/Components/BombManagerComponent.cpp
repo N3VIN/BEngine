@@ -9,11 +9,11 @@
 #include "Patterns/ServiceLocator.h"
 #include "Patterns/EventBus.h"
 #include "SceneGraph/Scene.h"
+#include "SceneGraph/SceneManager.h"
 #include "SceneGraph/GameObject.h"
 
-bomberman::BombManagerComponent::BombManagerComponent(bengine::GameObject *parent, bengine::Scene *scene, LevelGridComponent *gridComponent)
+bomberman::BombManagerComponent::BombManagerComponent(bengine::GameObject *parent, LevelGridComponent *gridComponent)
     : bengine::Component(parent)
-  , m_scene(scene)
   , m_gridComponent(gridComponent) {
     const auto dims = m_gridComponent->GetDimensions();
     m_bombAtCell.resize(static_cast<size_t>(dims.x) * static_cast<size_t>(dims.y), nullptr);
@@ -51,9 +51,8 @@ void bomberman::BombManagerComponent::PlaceBomb(glm::ivec2 cell, bengine::GameOb
 
     m_gridComponent->SetWall(cell, true);
     const auto idx = BombIndex(cell);
-    m_bombAtCell[idx] = bombGO.get();
     m_activeBombs.push_back(bomb);
-    m_scene->Add(std::move(bombGO));
+    m_bombAtCell[idx] = bengine::GetActiveScene()->Add(std::move(bombGO));
 }
 
 void bomberman::BombManagerComponent::DetonateBomb(BombComponent *bomb) {
@@ -71,7 +70,7 @@ void bomberman::BombManagerComponent::DetonateBomb(BombComponent *bomb) {
 
     m_gridComponent->SetWall(cell, false);
     m_bombAtCell[idx] = nullptr;
-    m_scene->Remove(bomb->GetGameObject());
+    bengine::GetActiveScene()->Remove(bomb->GetGameObject());
 
     const auto it = m_playerBombCount.find(owner);
     if (it != m_playerBombCount.end() && it->second > 0) {
@@ -153,9 +152,9 @@ void bomberman::BombManagerComponent::SpawnExplosionAt(glm::ivec2 cell) {
     explosionGO->SetLocalPosition(m_gridComponent->CellToWorld(cell) + glm::vec2{offsetX, offsetY});
 
     explosionGO->AddComponent<SpriteRendererComponent>(SpriteType::Explosion);
-    explosionGO->AddComponent<ExplosionComponent>(m_scene, lifetime);
+    explosionGO->AddComponent<ExplosionComponent>(lifetime);
 
-    m_scene->Add(std::move(explosionGO));
+    bengine::GetActiveScene()->Add(std::move(explosionGO));
 }
 
 void bomberman::BombManagerComponent::ProcessDetonationQueue() {

@@ -1,11 +1,11 @@
 #include "BrickComponent.h"
 #include "SpriteRendererComponent.h"
 #include "SceneGraph/Scene.h"
+#include "SceneGraph/SceneManager.h"
 #include "SceneGraph/GameObject.h"
 
-bomberman::BrickComponent::BrickComponent(bengine::GameObject *parent, bengine::Scene *scene, float destroyTime)
+bomberman::BrickComponent::BrickComponent(bengine::GameObject *parent, float destroyTime)
     : bengine::Component(parent)
-  , m_scene(scene)
   , m_timer(destroyTime) {}
 
 void bomberman::BrickComponent::Update(float deltaTime) {
@@ -15,7 +15,7 @@ void bomberman::BrickComponent::Update(float deltaTime) {
 
     m_timer.Update(deltaTime);
     if (m_timer.IsExpired()) {
-        m_scene->Remove(GetParent());
+        bengine::GetActiveScene()->Remove(GetParent());
     }
 }
 

@@ -28,7 +28,7 @@ bomberman::LevelGridComponent *bomberman::CreateLevelBackground(bengine::Scene &
     const auto levelOrigin = gridComponent->GetOrigin();
     const int tileSize = tileset.tileSize;
 
-    auto levelGameObject = std::make_unique<bengine::GameObject>();
+    auto *levelGameObject = scene.Add(std::make_unique<bengine::GameObject>());
     levelGameObject->SetLocalPosition(levelOrigin);
 
     const SDL_Rect backgroundSourceRect{
@@ -38,21 +38,18 @@ bomberman::LevelGridComponent *bomberman::CreateLevelBackground(bengine::Scene &
     };
 
     levelGameObject->AddComponent<GridRenderComponent>(tileset.texturePath, backgroundSourceRect, tileset.spriteScale);
-    scene.Add(std::move(levelGameObject));
 
     return gridComponent;
 }
 
 bengine::CameraComponent *bomberman::CreateCamera(bengine::Scene &scene, const LevelGridComponent *gridComponent) {
-    auto cameraGo = std::make_unique<bengine::GameObject>();
+    auto *cameraGo = scene.Add(std::make_unique<bengine::GameObject>());
     auto *cameraComp = cameraGo->AddComponent<bengine::CameraComponent>();
     cameraComp->SetZoom(2.0f);
     cameraComp->SetLevelBounds(
         gridComponent->GetOrigin(),
         glm::vec2(gridComponent->GetColumns(), gridComponent->GetRows()) * gridComponent->GetCellSize()
     );
-
-    scene.Add(std::move(cameraGo));
 
     bengine::Renderer::GetInstance().SetActiveCamera(cameraComp);
     return cameraComp;
@@ -62,13 +59,11 @@ bomberman::LevelSpawns bomberman::SpawnLevelTiles(bengine::Scene &scene, LevelGr
     LevelSpawns spawns{};
 
     const auto spawnTile = [&scene, gridComponent](glm::ivec2 cell, SpriteType spriteType) {
-        auto tile = std::make_unique<bengine::GameObject>();
+        auto *tile = scene.Add(std::make_unique<bengine::GameObject>());
         tile->SetLocalPosition(gridComponent->CellToWorld(cell));
         tile->AddComponent<SpriteRendererComponent>(spriteType);
-        auto *pTile = tile.get();
-        scene.Add(std::move(tile));
 
-        return pTile;
+        return tile;
     };
 
     const auto dims = gridComponent->GetDimensions();
@@ -81,7 +76,7 @@ bomberman::LevelSpawns bomberman::SpawnLevelTiles(bengine::Scene &scene, LevelGr
                     break;
                 case TileType::Brick: {
                     auto *tile = spawnTile(cell, SpriteType::Brick);
-                    tile->AddComponent<BrickComponent>(&scene, 0.875f);
+                    tile->AddComponent<BrickComponent>(0.875f);
                     gridComponent->SetWall(cell, true);
                     gridComponent->SetTile(tile, cell);
                     break;
@@ -119,14 +114,13 @@ bomberman::LevelSpawns bomberman::SpawnLevelTiles(bengine::Scene &scene, LevelGr
 }
 
 void bomberman::CreateFPSDisplay(bengine::Scene &scene) {
-    auto fpsGo = std::make_unique<bengine::GameObject>();
+    auto *fpsGo = scene.Add(std::make_unique<bengine::GameObject>());
     auto *fpsText = fpsGo->AddComponent<bengine::TextComponent>();
     fpsGo->GetComponent<bengine::RenderComponent>()->SetIgnoreCamera(true);
     fpsText->SetFont(bengine::ResourceManager::GetInstance().LoadFont("Lingua.otf", 24));
     fpsText->SetColor({0, 255, 0, 255});
     fpsGo->AddComponent<bengine::FPSComponent>();
     fpsGo->SetLocalPosition(bengine::ScreenFraction(0.01f, 0.01f));
-    scene.Add(std::move(fpsGo));
 }
 
 void bomberman::SetupPlayerInput(bengine::InputManager &input, bengine::GameObject *p1, bengine::GameObject *p2, BombManagerComponent *bombManager) {
@@ -151,9 +145,8 @@ bengine::Scene &bomberman::BuildLevelScene(std::string_view jsonRelativePath) {
     const auto &tileset = GetTileset();
 
     auto &scene = bengine::SceneManager::GetInstance().CreateScene();
-    auto levelGameObject = std::make_unique<bengine::GameObject>();
+    auto *levelGameObject = scene.Add(std::make_unique<bengine::GameObject>());
     auto *levelGridComponent = levelGameObject->AddComponent<LevelGridComponent>(bengine::ResourceManager::GetInstance().GetDataPath() / jsonRelativePath);
-    scene.Add(std::move(levelGameObject));
 
     CreateLevelBackground(scene, tileset, levelGridComponent);
 
@@ -161,16 +154,14 @@ bengine::Scene &bomberman::BuildLevelScene(std::string_view jsonRelativePath) {
 
     const auto spawns = SpawnLevelTiles(scene, levelGridComponent);
 
-    auto bombManagerGO = std::make_unique<bengine::GameObject>();
-    auto *bombManager = bombManagerGO->AddComponent<BombManagerComponent>(&scene, levelGridComponent);
-    scene.Add(std::move(bombManagerGO));
+    auto *bombManagerGO = scene.Add(std::make_unique<bengine::GameObject>());
+    auto *bombManager = bombManagerGO->AddComponent<BombManagerComponent>(levelGridComponent);
 
     auto hazardManagerGO = std::make_unique<bengine::GameObject>();
     auto *hazardManager = hazardManagerGO->AddComponent<HazardComponent>(levelGridComponent);
 
-    auto enemyManagerGO = std::make_unique<bengine::GameObject>();
-    auto *enemyManager = enemyManagerGO->AddComponent<EnemyManagerComponent>(&scene, levelGridComponent, hazardManager);
-    scene.Add(std::move(enemyManagerGO));
+    auto *enemyManagerGO = scene.Add(std::make_unique<bengine::GameObject>());
+    auto *enemyManager = enemyManagerGO->AddComponent<EnemyManagerComponent>(levelGridComponent, hazardManager);
 
     auto *p1 = CreatePlayer(scene, {levelGridComponent, spawns.players[0], 4.0f});
     cameraComponent->SetTarget(p1);

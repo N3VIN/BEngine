@@ -26,7 +26,7 @@ namespace bomberman {
         enemy->AddComponent<GridMovementComponent>(config.gridComponent, config.spawnCell, stats.cellsPerSecond);
         enemy->AddComponent<SpriteRendererComponent>();
         enemy->AddComponent<HealthComponent>(1);
-        enemy->AddComponent<EnemyControllerComponent>(&scene, config.type);
+        enemy->AddComponent<EnemyControllerComponent>(config.type);
         enemy->AddComponent<EnemyAIComponent>(config.gridComponent, config.type, config.players);
 
         return enemy;

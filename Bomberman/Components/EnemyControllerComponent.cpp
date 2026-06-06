@@ -8,11 +8,11 @@
 #include "Patterns/ServiceLocator.h"
 #include "Patterns/EventBus.h"
 #include "SceneGraph/Scene.h"
+#include "SceneGraph/SceneManager.h"
 #include "SceneGraph/GameObject.h"
 
-bomberman::EnemyControllerComponent::EnemyControllerComponent(bengine::GameObject *parent, bengine::Scene *scene, EnemyType type)
+bomberman::EnemyControllerComponent::EnemyControllerComponent(bengine::GameObject *parent, EnemyType type)
     : bengine::Component(parent)
-  , m_scene(scene)
   , m_movement(parent->GetComponent<GridMovementComponent>())
   , m_sprite(parent->GetComponent<SpriteRendererComponent>())
   , m_health(parent->GetComponent<HealthComponent>())
@@ -74,5 +74,5 @@ void bomberman::EnemyControllerComponent::Die() const {
         }
     );
 
-    m_scene->Remove(GetParent());
+    bengine::GetActiveScene()->Remove(GetParent());
 }

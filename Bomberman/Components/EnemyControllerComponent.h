@@ -6,10 +6,6 @@
 #include "EnemyType.h"
 #include "States/IEnemyState.h"
 
-namespace bengine {
-    class Scene;
-}
-
 namespace bomberman {
     class GridMovementComponent;
     class SpriteRendererComponent;
@@ -18,7 +14,7 @@ namespace bomberman {
 
     class EnemyControllerComponent final : public bengine::Component {
     public:
-        EnemyControllerComponent(bengine::GameObject *parent, bengine::Scene *scene, EnemyType type);
+        EnemyControllerComponent(bengine::GameObject *parent, EnemyType type);
         void Update(float deltaTime) override;
 
         [[nodiscard]] bool IsAlive() const;
@@ -30,7 +26,6 @@ namespace bomberman {
         void Die() const;
 
     private:
-        bengine::Scene *m_scene{};
         GridMovementComponent *m_movement{};
         SpriteRendererComponent *m_sprite{};
         HealthComponent *m_health{};

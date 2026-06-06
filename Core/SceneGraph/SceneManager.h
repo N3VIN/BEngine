@@ -33,4 +33,8 @@ namespace bengine {
         std::unique_ptr<ISceneState> m_currentState{};
         std::unique_ptr<ISceneState> m_pendingState{};
     };
+
+    [[nodiscard]] inline Scene *GetActiveScene() {
+        return SceneManager::GetInstance().GetActiveScene();
+    }
 }

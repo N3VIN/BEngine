@@ -5,10 +5,10 @@
 #include "Patterns/ServiceLocator.h"
 #include "Patterns/EventBus.h"
 #include "SceneGraph/Scene.h"
+#include "SceneGraph/SceneManager.h"
 
-bomberman::EnemyManagerComponent::EnemyManagerComponent(bengine::GameObject *parent, bengine::Scene *scene, LevelGridComponent *gridComponent, HazardComponent *hazardComponent)
+bomberman::EnemyManagerComponent::EnemyManagerComponent(bengine::GameObject *parent, LevelGridComponent *gridComponent, HazardComponent *hazardComponent)
     : bengine::Component(parent)
-  , m_scene(scene)
   , m_gridComponent(gridComponent)
   , m_hazardComponent(hazardComponent) {
     m_killedSub = bengine::ServiceLocator::GetEventBus().Subscribe<events::EnemyKilled>(
@@ -23,7 +23,7 @@ void bomberman::EnemyManagerComponent::RegisterPlayer(bengine::GameObject *playe
 }
 
 void bomberman::EnemyManagerComponent::SpawnEnemy(EnemyType type, glm::ivec2 cell) {
-    auto *enemy = CreateEnemy(*m_scene, {m_gridComponent, type, cell, &m_players});
+    auto *enemy = CreateEnemy(*bengine::GetActiveScene(), {m_gridComponent, type, cell, &m_players});
     m_enemies.push_back(enemy);
     m_hazardComponent->RegisterEnemy(enemy);
 }
