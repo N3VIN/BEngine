@@ -1,16 +1,25 @@
 #include "EnemyManagerComponent.h"
 #include "EnemyFactory.h"
+#include "GameEvents.h"
+#include "Patterns/ServiceLocator.h"
+#include "Patterns/EventBus.h"
 #include "SceneGraph/Scene.h"
 
 bomberman::EnemyManagerComponent::EnemyManagerComponent(bengine::GameObject *parent, bengine::Scene *scene, LevelGridComponent *gridComponent)
     : bengine::Component(parent)
   , m_scene(scene)
-  , m_gridComponent(gridComponent) {}
+  , m_gridComponent(gridComponent) {
+    m_killedSub = bengine::ServiceLocator::GetEventBus().Subscribe<events::EnemyKilled>(
+        [this](const events::EnemyKilled &event) {
+            std::erase(m_enemies, event.enemy);
+        }
+    );
+}
 
 void bomberman::EnemyManagerComponent::RegisterPlayer(bengine::GameObject *player) {
     m_players.push_back(player); // teachers, you will see this a lot. we are not passing ownership. its just a pointer to the player.
 }
 
 void bomberman::EnemyManagerComponent::SpawnEnemy(EnemyType type, glm::ivec2 cell) {
-    m_enemies.push_back(CreateEnemy(*m_scene, {m_gridComponent, type, cell, m_players}));
+    m_enemies.push_back(CreateEnemy(*m_scene, {m_gridComponent, type, cell, &m_players}));
 }

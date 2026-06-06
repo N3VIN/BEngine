@@ -2,6 +2,7 @@
 #include <vector>
 #include <glm/glm.hpp>
 #include "Components/Component.h"
+#include "Patterns/MulticastDelegate.h"
 #include "EnemyType.h"
 
 namespace bengine {
@@ -23,5 +24,6 @@ namespace bomberman {
         LevelGridComponent *m_gridComponent{};
         std::vector<bengine::GameObject *> m_enemies{};
         std::vector<bengine::GameObject *> m_players{};
+        bengine::ScopedDelegate m_killedSub;
     };
 }

@@ -1,6 +1,6 @@
 #pragma once
 #include <memory>
-#include <span>
+#include <vector>
 #include <glm/glm.hpp>
 #include "SceneGraph/GameObject.h"
 #include "SceneGraph/Scene.h"
@@ -15,7 +15,7 @@ namespace bomberman {
         LevelGridComponent *gridComponent{};
         EnemyType type{};
         glm::ivec2 spawnCell{};
-        std::span<bengine::GameObject *const> players{};
+        const std::vector<bengine::GameObject *> *players{nullptr};
     };
 
     inline bengine::GameObject *CreateEnemy(bengine::Scene &scene, const EnemyConfig &config) {
@@ -24,7 +24,7 @@ namespace bomberman {
         auto *enemy = scene.Add(std::make_unique<bengine::GameObject>());
         enemy->AddComponent<GridMovementComponent>(config.gridComponent, config.spawnCell, stats.cellsPerSecond);
         enemy->AddComponent<SpriteRendererComponent>();
-        enemy->AddComponent<EnemyStateComponent>(config.type);
+        enemy->AddComponent<EnemyStateComponent>(&scene, config.type);
         enemy->AddComponent<EnemyAIComponent>(config.gridComponent, config.type, config.players);
 
         return enemy;

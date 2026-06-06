@@ -23,6 +23,19 @@ std::unique_ptr<bomberman::IEnemyState> bomberman::EnemyWalkState::Update(EnemyS
     return MakeEnemyWalkState(facing, state.GetSprites());
 }
 
+void bomberman::EnemyDyingState::OnEnter(EnemyStateComponent &state) {
+    state.GetSprite()->Play(state.GetSprites().death, false);
+}
+
+std::unique_ptr<bomberman::IEnemyState> bomberman::EnemyDyingState::Update(EnemyStateComponent &state, float /*deltaTime*/) {
+    if (state.GetSprite()->IsPlaying()) {
+        return nullptr;
+    }
+
+    state.Die();
+    return nullptr;
+}
+
 std::unique_ptr<bomberman::IEnemyState> bomberman::MakeEnemyWalkState(glm::ivec2 facing, const EnemySprites &sprites) {
     const bool facingLeft = facing.x < 0;
     return std::make_unique<EnemyWalkState>(facingLeft, facingLeft ? sprites.walkLeft : sprites.walkRight);

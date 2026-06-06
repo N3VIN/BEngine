@@ -29,5 +29,11 @@ namespace bomberman {
         struct PlayerDied {
             bengine::GameObject *player{nullptr};
         };
+
+        struct EnemyKilled {
+            bengine::GameObject *enemy{nullptr};
+            glm::ivec2 cell{};
+            int points{0};
+        };
     }
 }

@@ -19,5 +19,15 @@ namespace bomberman {
         SpriteDefinition m_clip;
     };
 
+    class EnemyDyingState final : public IEnemyState {
+    public:
+        void OnEnter(EnemyStateComponent &state) override;
+        std::unique_ptr<IEnemyState> Update(EnemyStateComponent &state, float deltaTime) override;
+
+        [[nodiscard]] bool IsAlive() const override {
+            return false;
+        }
+    };
+
     std::unique_ptr<IEnemyState> MakeEnemyWalkState(glm::ivec2 facing, const EnemySprites &sprites);
 }

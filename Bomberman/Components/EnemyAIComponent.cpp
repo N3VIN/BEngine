@@ -1,19 +1,25 @@
 #include "EnemyAIComponent.h"
 #include "LevelGridComponent.h"
 #include "GridMovementComponent.h"
+#include "EnemyStateComponent.h"
 #include "SceneGraph/GameObject.h"
 #include "Random.h"
 
-bomberman::EnemyAIComponent::EnemyAIComponent(bengine::GameObject *parent, LevelGridComponent *grid, EnemyType type, std::span<bengine::GameObject *const> players)
+bomberman::EnemyAIComponent::EnemyAIComponent(bengine::GameObject *parent, LevelGridComponent *grid, EnemyType type, const std::vector<bengine::GameObject *> *players)
     : bengine::Component(parent)
   , m_grid(grid)
   , m_movement(parent->GetComponent<GridMovementComponent>())
+  , m_state(parent->GetComponent<EnemyStateComponent>())
   , m_players(players)
   , m_stats(&GetEnemyStats(type)) {
     Turn();
 }
 
 void bomberman::EnemyAIComponent::Update(float deltaTime) {
+    if (!m_state->IsAlive()) {
+        return;
+    }
+
     Wander(deltaTime);
     LookForPlayer();
     m_movement->SetDesiredDirection(m_direction);
@@ -35,13 +41,13 @@ void bomberman::EnemyAIComponent::Turn() {
 }
 
 void bomberman::EnemyAIComponent::LookForPlayer() {
-    if (m_stats->sight == SightAxes::None) {
+    if (m_stats->sight == SightAxes::None || m_players == nullptr) {
         return;
     }
 
     const auto cell = m_movement->IsMoving() ? m_movement->GetCell() + m_movement->GetFacing() : m_movement->GetCell();
 
-    for (const auto *player: m_players) {
+    for (const auto *player: *m_players) {
         const auto *movement = player->GetComponent<GridMovementComponent>();
         if (movement == nullptr) {
             continue;
