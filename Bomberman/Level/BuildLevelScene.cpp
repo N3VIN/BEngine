@@ -13,6 +13,7 @@
 #include "Components/CameraComponent.h"
 #include "Commands/GridMoveCommand.h"
 #include "Commands/BombPlaceCommand.h"
+#include "Commands/DetonateCommand.h"
 #include "PlayerFactory.h"
 #include "SceneGraph/Scene.h"
 #include "SceneGraph/SceneManager.h"
@@ -140,6 +141,9 @@ void bomberman::SetupPlayerInput(bengine::InputManager &input, bengine::GameObje
 
     input.BindCommand(SDL_SCANCODE_SPACE, bengine::KeyState::Down, std::make_unique<BombPlaceCommand>(p1, bombManager));
     input.BindCommand(0, bengine::Gamepad::Button::A, bengine::KeyState::Down, std::make_unique<BombPlaceCommand>(p2, bombManager));
+
+    input.BindCommand(SDL_SCANCODE_LSHIFT, bengine::KeyState::Down, std::make_unique<DetonateCommand>(p1, bombManager));
+    input.BindCommand(0, bengine::Gamepad::Button::B, bengine::KeyState::Down, std::make_unique<DetonateCommand>(p2, bombManager));
 }
 
 bengine::Scene &bomberman::BuildLevelScene(std::string_view jsonRelativePath) {

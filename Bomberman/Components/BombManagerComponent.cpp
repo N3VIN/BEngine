@@ -17,22 +17,6 @@ bomberman::BombManagerComponent::BombManagerComponent(bengine::GameObject *paren
   , m_gridComponent(gridComponent) {
     const auto dims = m_gridComponent->GetDimensions();
     m_bombAtCell.resize(static_cast<size_t>(dims.x) * static_cast<size_t>(dims.y), nullptr);
-    m_bombOwnerAtCell.resize(static_cast<size_t>(dims.x) * static_cast<size_t>(dims.y), nullptr);
-}
-
-void bomberman::BombManagerComponent::Update(float deltaTime) {
-    std::vector<BombComponent *> expired;
-    for (auto *bomb: m_activeBombs) {
-        if (bomb->AdvanceFuse(deltaTime)) {
-            expired.push_back(bomb);
-        }
-    }
-
-    for (auto *bomb: expired) {
-        if (!bomb->IsDetonated()) {
-            DetonateBomb(bomb);
-        }
-    }
 }
 
 void bomberman::BombManagerComponent::RegisterPlayer(bengine::GameObject *player) {
@@ -63,12 +47,11 @@ void bomberman::BombManagerComponent::PlaceBomb(glm::ivec2 cell, bengine::GameOb
 
     bombGO->AddComponent<SpriteRendererComponent>(SpriteType::Bomb);
 
-    auto *bomb = bombGO->AddComponent<BombComponent>(cell, m_fuseTime, m_blastRadius);
+    auto *bomb = bombGO->AddComponent<BombComponent>(cell, m_blastRadius, owner);
 
     m_gridComponent->SetWall(cell, true);
     const auto idx = BombIndex(cell);
     m_bombAtCell[idx] = bombGO.get();
-    m_bombOwnerAtCell[idx] = owner;
     m_activeBombs.push_back(bomb);
     m_scene->Add(std::move(bombGO));
 }
@@ -83,8 +66,8 @@ void bomberman::BombManagerComponent::DetonateBomb(BombComponent *bomb) {
 
     const glm::ivec2 cell = bomb->GetCell();
     const int radius = bomb->GetRadius();
+    auto *owner = bomb->GetOwner();
     const auto idx = BombIndex(cell);
-    auto *owner = m_bombOwnerAtCell[idx];
 
     m_gridComponent->SetWall(cell, false);
     m_bombAtCell[idx] = nullptr;
@@ -106,6 +89,15 @@ void bomberman::BombManagerComponent::DetonateBomb(BombComponent *bomb) {
     bengine::ServiceLocator::GetEventBus().Broadcast(events::BombDetonated{cell});
 
     ProcessDetonationQueue();
+}
+
+void bomberman::BombManagerComponent::DetonateOldestBomb(bengine::GameObject *owner) {
+    for (auto *bomb: m_activeBombs) {
+        if (bomb->GetOwner() == owner) {
+            DetonateBomb(bomb);
+            return;
+        }
+    }
 }
 
 void bomberman::BombManagerComponent::SpreadInDirection(glm::ivec2 origin, glm::ivec2 direction, int range) {

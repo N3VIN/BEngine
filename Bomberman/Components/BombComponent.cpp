@@ -1,19 +1,10 @@
 #include "BombComponent.h"
 
-bomberman::BombComponent::BombComponent(bengine::GameObject *parent, glm::ivec2 cell, float fuseTime, int blastRadius)
+bomberman::BombComponent::BombComponent(bengine::GameObject *parent, glm::ivec2 cell, int blastRadius, bengine::GameObject *owner)
     : bengine::Component(parent)
   , m_cell(cell)
-  , m_fuseTimer(fuseTime)
-  , m_blastRadius(blastRadius) {}
-
-bool bomberman::BombComponent::AdvanceFuse(float deltaTime) {
-    if (m_detonated) {
-        return false;
-    }
-
-    m_fuseTimer.Update(deltaTime);
-    return m_fuseTimer.IsExpired();
-}
+  , m_blastRadius(blastRadius)
+  , m_owner(owner) {}
 
 void bomberman::BombComponent::MarkDetonated() {
     m_detonated = true;
@@ -29,6 +20,10 @@ glm::ivec2 bomberman::BombComponent::GetCell() const {
 
 int bomberman::BombComponent::GetRadius() const {
     return m_blastRadius;
+}
+
+bengine::GameObject *bomberman::BombComponent::GetOwner() const {
+    return m_owner;
 }
 
 bengine::GameObject *bomberman::BombComponent::GetGameObject() const {

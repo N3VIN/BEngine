@@ -14,13 +14,11 @@ namespace bomberman {
     public:
         BombManagerComponent(bengine::GameObject *parent, bengine::Scene *scene, LevelGridComponent *gridComponent);
 
-        void Update(float deltaTime) override;
-
         void PlaceBomb(glm::ivec2 cell, bengine::GameObject *owner);
         void DetonateBomb(BombComponent *bomb);
+        void DetonateOldestBomb(bengine::GameObject *owner);
         void RegisterPlayer(bengine::GameObject *player);
 
-        float m_fuseTime = 3.0f;
         int m_maxBombsPerPlayer = 2;
         int m_blastRadius = 2;
 
@@ -35,7 +33,6 @@ namespace bomberman {
         bengine::Scene *m_scene;
         LevelGridComponent *m_gridComponent;
         std::vector<bengine::GameObject *> m_bombAtCell;
-        std::vector<bengine::GameObject *> m_bombOwnerAtCell;
         std::vector<BombComponent *> m_activeBombs;
         std::vector<BombComponent *> m_detonationQueue;
         std::unordered_map<bengine::GameObject *, int> m_playerBombCount;
