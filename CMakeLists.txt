@@ -56,7 +56,7 @@ if (NOT EMSCRIPTEN)
             Bomberman/Level/Tileset.cpp
             Bomberman/Components/EnemyManagerComponent.cpp
             Bomberman/Components/EnemyAIComponent.cpp
-            Bomberman/Components/EnemyStateComponent.cpp
+            Bomberman/Components/EnemyControllerComponent.cpp
             Bomberman/States/EnemyStates.cpp
             Bomberman/Components/LevelGridComponent.cpp
             Bomberman/Components/GridMovementComponent.cpp

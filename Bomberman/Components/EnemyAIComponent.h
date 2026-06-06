@@ -9,7 +9,7 @@
 namespace bomberman {
     class LevelGridComponent;
     class GridMovementComponent;
-    class EnemyStateComponent;
+    class EnemyControllerComponent;
 
     constexpr std::array<glm::ivec2, 4> DIRECTIONS{
         {
@@ -32,7 +32,7 @@ namespace bomberman {
 
         LevelGridComponent *m_grid;
         GridMovementComponent *m_movement;
-        EnemyStateComponent *m_state;
+        EnemyControllerComponent *m_controller;
         const std::vector<bengine::GameObject *> *m_players;
         const EnemyStats *m_stats;
         glm::ivec2 m_direction{0, 0};

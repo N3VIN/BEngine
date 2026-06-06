@@ -1,33 +1,25 @@
 #pragma once
 #include <glm/glm.hpp>
-#include "IState.h"
-#include "Level/Tileset.h"
+#include "IEnemyState.h"
 
 namespace bomberman {
     class EnemyWalkState final : public IEnemyState {
     public:
-        EnemyWalkState(bool facingLeft, const SpriteDefinition &clip);
-        void OnEnter(EnemyStateComponent &state) override;
-        std::unique_ptr<IEnemyState> Update(EnemyStateComponent &state, float deltaTime) override;
-
-        [[nodiscard]] const SpriteDefinition *GetClip() const override {
-            return &m_clip;
-        }
+        explicit EnemyWalkState(bool facingLeft);
+        void OnEnter(EnemyControllerComponent &controller) override;
+        std::unique_ptr<IEnemyState> Update(EnemyControllerComponent &controller, float deltaTime) override;
 
     private:
         bool m_facingLeft;
-        SpriteDefinition m_clip;
     };
 
     class EnemyDyingState final : public IEnemyState {
     public:
-        void OnEnter(EnemyStateComponent &state) override;
-        std::unique_ptr<IEnemyState> Update(EnemyStateComponent &state, float deltaTime) override;
+        void OnEnter(EnemyControllerComponent &controller) override;
+        std::unique_ptr<IEnemyState> Update(EnemyControllerComponent &controller, float deltaTime) override;
 
-        [[nodiscard]] bool IsAlive() const override {
-            return false;
-        }
+        [[nodiscard]] bool IsAlive() const override;
     };
 
-    std::unique_ptr<IEnemyState> MakeEnemyWalkState(glm::ivec2 facing, const EnemySprites &sprites);
+    std::unique_ptr<IEnemyState> MakeEnemyWalkState(glm::ivec2 facing);
 }

@@ -7,7 +7,7 @@
 #include "EnemyType.h"
 #include "Components/GridMovementComponent.h"
 #include "Components/SpriteRendererComponent.h"
-#include "Components/EnemyStateComponent.h"
+#include "Components/EnemyControllerComponent.h"
 #include "Components/EnemyAIComponent.h"
 
 namespace bomberman {
@@ -24,7 +24,7 @@ namespace bomberman {
         auto *enemy = scene.Add(std::make_unique<bengine::GameObject>());
         enemy->AddComponent<GridMovementComponent>(config.gridComponent, config.spawnCell, stats.cellsPerSecond);
         enemy->AddComponent<SpriteRendererComponent>();
-        enemy->AddComponent<EnemyStateComponent>(&scene, config.type);
+        enemy->AddComponent<EnemyControllerComponent>(&scene, config.type);
         enemy->AddComponent<EnemyAIComponent>(config.gridComponent, config.type, config.players);
 
         return enemy;

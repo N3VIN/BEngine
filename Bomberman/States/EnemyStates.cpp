@@ -1,42 +1,44 @@
 #include "EnemyStates.h"
-#include "Components/EnemyStateComponent.h"
-#include "Components/GridMovementComponent.h"
-#include "Components/SpriteRendererComponent.h"
+#include "Components/EnemyControllerComponent.h"
 
-bomberman::EnemyWalkState::EnemyWalkState(bool facingLeft, const SpriteDefinition &clip)
-    : m_facingLeft(facingLeft)
-  , m_clip(clip) {}
+bomberman::EnemyWalkState::EnemyWalkState(bool facingLeft)
+    : m_facingLeft(facingLeft) {}
 
-void bomberman::EnemyWalkState::OnEnter(EnemyStateComponent &state) {
-    state.GetSprite()->Play(m_clip, true);
+void bomberman::EnemyWalkState::OnEnter(EnemyControllerComponent &controller) {
+    controller.PlayWalkAnimation(m_facingLeft);
 }
 
-std::unique_ptr<bomberman::IEnemyState> bomberman::EnemyWalkState::Update(EnemyStateComponent &state, float /*deltaTime*/) {
-    const auto facing = state.GetMovement()->GetFacing();
+std::unique_ptr<bomberman::IEnemyState> bomberman::EnemyWalkState::Update(EnemyControllerComponent &controller, float /*deltaTime*/) {
+    const auto facing = controller.GetFacing();
     if (facing.x == 0) {
         return nullptr;
     }
-    if (facing.x < 0 == m_facingLeft) {
+
+    const bool facingLeft = facing.x < 0;
+    if (facingLeft == m_facingLeft) {
         return nullptr;
     }
 
-    return MakeEnemyWalkState(facing, state.GetSprites());
+    return MakeEnemyWalkState(facing);
 }
 
-void bomberman::EnemyDyingState::OnEnter(EnemyStateComponent &state) {
-    state.GetSprite()->Play(state.GetSprites().death, false);
+void bomberman::EnemyDyingState::OnEnter(EnemyControllerComponent &controller) {
+    controller.PlayDeathAnimation();
 }
 
-std::unique_ptr<bomberman::IEnemyState> bomberman::EnemyDyingState::Update(EnemyStateComponent &state, float /*deltaTime*/) {
-    if (state.GetSprite()->IsPlaying()) {
+std::unique_ptr<bomberman::IEnemyState> bomberman::EnemyDyingState::Update(EnemyControllerComponent &controller, float /*deltaTime*/) {
+    if (controller.IsAnimationPlaying()) {
         return nullptr;
     }
 
-    state.Die();
+    controller.Die();
     return nullptr;
 }
 
-std::unique_ptr<bomberman::IEnemyState> bomberman::MakeEnemyWalkState(glm::ivec2 facing, const EnemySprites &sprites) {
-    const bool facingLeft = facing.x < 0;
-    return std::make_unique<EnemyWalkState>(facingLeft, facingLeft ? sprites.walkLeft : sprites.walkRight);
+bool bomberman::EnemyDyingState::IsAlive() const {
+    return false;
+}
+
+std::unique_ptr<bomberman::IEnemyState> bomberman::MakeEnemyWalkState(glm::ivec2 facing) {
+    return std::make_unique<EnemyWalkState>(facing.x < 0);
 }

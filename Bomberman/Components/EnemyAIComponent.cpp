@@ -1,7 +1,7 @@
 #include "EnemyAIComponent.h"
 #include "LevelGridComponent.h"
 #include "GridMovementComponent.h"
-#include "EnemyStateComponent.h"
+#include "EnemyControllerComponent.h"
 #include "SceneGraph/GameObject.h"
 #include "Random.h"
 
@@ -9,14 +9,14 @@ bomberman::EnemyAIComponent::EnemyAIComponent(bengine::GameObject *parent, Level
     : bengine::Component(parent)
   , m_grid(grid)
   , m_movement(parent->GetComponent<GridMovementComponent>())
-  , m_state(parent->GetComponent<EnemyStateComponent>())
+  , m_controller(parent->GetComponent<EnemyControllerComponent>())
   , m_players(players)
   , m_stats(&GetEnemyStats(type)) {
     Turn();
 }
 
 void bomberman::EnemyAIComponent::Update(float deltaTime) {
-    if (!m_state->IsAlive()) {
+    if (!m_controller->IsAlive()) {
         return;
     }
 
