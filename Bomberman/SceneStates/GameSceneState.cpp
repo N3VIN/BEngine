@@ -49,6 +49,12 @@ void bomberman::GameSceneState::OnEnter() {
             bengine::SceneManager::GetInstance().SetState(std::make_unique<GameEndState>());
         }
     );
+
+    m_levelCompletedSub = bengine::ServiceLocator::GetEventBus().Subscribe<events::LevelCompleted>(
+        [paths = m_levelPaths, index = m_currentIndex](const events::LevelCompleted &) {
+            bengine::SceneManager::GetInstance().SetState(MakeNextState(paths, index));
+        }
+    );
 }
 
 void bomberman::GameSceneState::OnExit() {

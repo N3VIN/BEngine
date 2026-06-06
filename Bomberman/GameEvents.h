@@ -25,5 +25,9 @@ namespace bomberman {
             glm::ivec2 cell{};
             int points{0};
         };
+
+        struct AllEnemiesDefeated {};
+
+        struct LevelCompleted {};
     }
 }

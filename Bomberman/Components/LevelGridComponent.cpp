@@ -8,6 +8,8 @@ bomberman::TileType bomberman::LevelGridComponent::ParseTile(char tile) {
         case '#':
             return TileType::Wall;
         case 'B':
+        case 'X':
+        case 'P':
             return TileType::Brick;
         case 'E':
             return TileType::Exit;
@@ -55,10 +57,17 @@ bomberman::LevelGridComponent::LevelGridComponent(bengine::GameObject *parent, c
     const size_t expectedSize = static_cast<size_t>(m_columns) * static_cast<size_t>(m_rows);
     m_tiles.reserve(expectedSize);
 
+    int rowIndex = 0;
     for (const auto &row: tiles) {
+        int columnIndex = 0;
         for (const std::string rowString = row.get<std::string>(); const char c: rowString) {
+            if (c == 'X') {
+                m_exitCell = {columnIndex, rowIndex};
+            }
             m_tiles.push_back(ParseTile(c));
+            ++columnIndex;
         }
+        ++rowIndex;
     }
 
     if (m_tiles.size() != expectedSize) {

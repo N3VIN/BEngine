@@ -22,5 +22,6 @@ namespace bomberman {
         size_t m_currentIndex;
         bengine::Scene *m_scene{};
         bengine::ScopedDelegate m_playerDiedSub;
+        bengine::ScopedDelegate m_levelCompletedSub;
     };
 }

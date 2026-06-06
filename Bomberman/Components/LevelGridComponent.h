@@ -49,6 +49,10 @@ namespace bomberman {
 
         [[nodiscard]] TileType GetTile(int column, int row) const;
 
+        [[nodiscard]] glm::ivec2 GetExitCell() const {
+            return m_exitCell;
+        }
+
         void SetWall(glm::ivec2 cell, bool isWall);
         bengine::GameObject *DestroyBrick(glm::ivec2 cell);
         void SetTile(bengine::GameObject *tile, glm::ivec2 cell);
@@ -61,6 +65,7 @@ namespace bomberman {
         int m_rows{};
         float m_cellSize{};
         glm::vec2 m_origin{};
+        glm::ivec2 m_exitCell{-1, -1};
         std::vector<TileType> m_tiles{};
         std::vector<uint8_t> m_walls{};
         std::vector<bengine::GameObject *> m_tileAtCell{};

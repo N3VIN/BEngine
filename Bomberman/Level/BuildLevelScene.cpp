@@ -6,6 +6,7 @@
 #include "Components/BombManagerComponent.h"
 #include "Components/EnemyManagerComponent.h"
 #include "Components/HazardComponent.h"
+#include "Components/ExitComponent.h"
 #include "Components/SpriteRendererComponent.h"
 #include "Components/BrickComponent.h"
 #include "Components/RenderComponent.h"
@@ -176,6 +177,11 @@ bengine::Scene &bomberman::BuildLevelScene(std::string_view jsonRelativePath) {
 
     hazardManager->RegisterPlayer(p1);
     hazardManager->RegisterPlayer(p2);
+
+    auto *exitManagerGO = scene.Add(std::make_unique<bengine::GameObject>());
+    auto *exitManager = exitManagerGO->AddComponent<ExitComponent>(levelGridComponent);
+    exitManager->RegisterPlayer(p1);
+    exitManager->RegisterPlayer(p2);
 
     for (const auto &[type, cell]: spawns.enemies) {
         enemyManager->SpawnEnemy(type, cell);

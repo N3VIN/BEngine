@@ -4,7 +4,6 @@
 #include "GameEvents.h"
 #include "Patterns/ServiceLocator.h"
 #include "Patterns/EventBus.h"
-#include "SceneGraph/Scene.h"
 #include "SceneGraph/SceneManager.h"
 
 bomberman::EnemyManagerComponent::EnemyManagerComponent(bengine::GameObject *parent, LevelGridComponent *gridComponent, HazardComponent *hazardComponent)
@@ -14,6 +13,9 @@ bomberman::EnemyManagerComponent::EnemyManagerComponent(bengine::GameObject *par
     m_killedSub = bengine::ServiceLocator::GetEventBus().Subscribe<events::EnemyKilled>(
         [this](const events::EnemyKilled &event) {
             std::erase(m_enemies, event.enemy);
+            if (m_enemies.empty()) {
+                bengine::ServiceLocator::GetEventBus().Broadcast(events::AllEnemiesDefeated{});
+            }
         }
     );
 }
