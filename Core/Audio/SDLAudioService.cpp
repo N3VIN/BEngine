@@ -11,6 +11,7 @@ namespace bengine {
     struct PlayEvent {
         SoundID id;
         float volume;
+        int loops{0};
     };
 
     struct StopEvent {
@@ -135,6 +136,15 @@ private:
         }
 
         MIX_SetTrackGain(it->second, event.volume);
+
+        if (event.loops != 0) {
+            const SDL_PropertiesID options = SDL_CreateProperties();
+            SDL_SetNumberProperty(options, MIX_PROP_PLAY_LOOPS_NUMBER, event.loops);
+            MIX_PlayTrack(it->second, options);
+            SDL_DestroyProperties(options);
+            return;
+        }
+
         MIX_PlayTrack(it->second, 0);
     }
 
@@ -174,8 +184,8 @@ void bengine::SDLAudioService::LoadAudio(SoundID id, fs::path path) {
     pImpl->Enqueue(LoadEvent{id, std::move(path)});
 }
 
-void bengine::SDLAudioService::PlayAudio(SoundID id, float volume) {
-    pImpl->Enqueue(PlayEvent{id, volume});
+void bengine::SDLAudioService::PlayAudio(SoundID id, float volume, int loops) {
+    pImpl->Enqueue(PlayEvent{id, volume, loops});
 }
 
 void bengine::SDLAudioService::StopAudio(SoundID id) {

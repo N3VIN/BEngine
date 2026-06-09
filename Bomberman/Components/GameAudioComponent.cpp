@@ -15,6 +15,10 @@ bomberman::GameAudioComponent::GameAudioComponent(bengine::GameObject *parent)
         audio.LoadAudio(id, dataPath / file);
     }
 
+    audio.LoadAudio(BGM.id, dataPath / BGM.file);
+    audio.PlayAudio(BGM.id, BGM_VOLUME, -1);
+    Play(utils::Hash("stage_start"));
+
     auto &bus = bengine::ServiceLocator::GetEventBus();
 
     m_bombPlacedSub = bus.Subscribe<events::BombPlaced>(
@@ -26,4 +30,14 @@ bomberman::GameAudioComponent::GameAudioComponent(bengine::GameObject *parent)
     m_pickupCollectedSub = bus.Subscribe<events::PickupCollected>(
         [](const events::PickupCollected &) { Play(utils::Hash("pickup")); }
     );
+    m_levelCompletedSub = bus.Subscribe<events::LevelCompleted>(
+        [](const events::LevelCompleted &) { Play(utils::Hash("stage_clear")); }
+    );
+    m_playerDiedSub = bus.Subscribe<events::PlayerDied>(
+        [](const events::PlayerDied &) { Play(utils::Hash("game_over")); }
+    );
+}
+
+bomberman::GameAudioComponent::~GameAudioComponent() {
+    bengine::ServiceLocator::GetAudioService().StopAudio(BGM.id);
 }

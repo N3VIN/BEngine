@@ -13,7 +13,7 @@ namespace bengine {
         SDLAudioService &operator=(SDLAudioService &&) noexcept;
 
         void LoadAudio(SoundID id, fs::path path) override;
-        void PlayAudio(SoundID id, float volume) override;
+        void PlayAudio(SoundID id, float volume, int loops) override;
         void StopAudio(SoundID id) override;
 
         void SetMuted(bool muted) override;

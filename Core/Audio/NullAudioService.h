@@ -10,7 +10,7 @@ namespace bengine {
             std::println("Load Audio but this is null!!");
         }
 
-        void PlayAudio(SoundID /*id*/, float /*volume*/) override {
+        void PlayAudio(SoundID /*id*/, float /*volume*/, int /*loops*/) override {
             std::println("Play Audio but this is null!!");
         }
 
@@ -18,7 +18,7 @@ namespace bengine {
             std::println("Stop Audio but this is null!!");
         }
 
-        void SetMuted(bool muted) override {
+        void SetMuted(bool /*muted*/) override {
             std::println("Set Muted but this is null!!");
         }
 
