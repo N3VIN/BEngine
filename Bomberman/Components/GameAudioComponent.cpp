@@ -24,15 +24,19 @@ bomberman::GameAudioComponent::GameAudioComponent(bengine::GameObject *parent)
     m_bombPlacedSub = bus.Subscribe<events::BombPlaced>(
         [](const events::BombPlaced &) { Play(utils::Hash("bomb_place")); }
     );
+
     m_bombDetonatedSub = bus.Subscribe<events::BombDetonated>(
         [](const events::BombDetonated &) { Play(utils::Hash("explosion")); }
     );
+
     m_pickupCollectedSub = bus.Subscribe<events::PickupCollected>(
         [](const events::PickupCollected &) { Play(utils::Hash("pickup")); }
     );
+
     m_levelCompletedSub = bus.Subscribe<events::LevelCompleted>(
         [](const events::LevelCompleted &) { Play(utils::Hash("stage_clear")); }
     );
+
     m_playerDiedSub = bus.Subscribe<events::PlayerDied>(
         [](const events::PlayerDied &) { Play(utils::Hash("game_over")); }
     );

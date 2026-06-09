@@ -13,17 +13,18 @@
 #include "Patterns/ServiceLocator.h"
 #include "Patterns/EventBus.h"
 
-std::unique_ptr<bengine::ISceneState> bomberman::MakeNextState(const std::vector<std::string> &levelPaths, size_t index) {
+std::unique_ptr<bengine::ISceneState> bomberman::MakeNextState(const std::vector<std::string> &levelPaths, size_t index, GameMode mode) {
     if (index + 1 < levelPaths.size()) {
-        return std::make_unique<GameSceneState>(levelPaths, index + 1);
+        return std::make_unique<GameSceneState>(levelPaths, index + 1, mode);
     }
 
     return std::make_unique<GameEndState>();
 }
 
-bomberman::GameSceneState::GameSceneState(std::vector<std::string> levelPaths, size_t currentIndex)
+bomberman::GameSceneState::GameSceneState(std::vector<std::string> levelPaths, size_t currentIndex, GameMode mode)
     : m_levelPaths(std::move(levelPaths))
-  , m_currentIndex(currentIndex) {}
+  , m_currentIndex(currentIndex)
+  , m_mode(mode) {}
 
 bomberman::GameSceneState::~GameSceneState() {
     bengine::Renderer::GetInstance().SetActiveCamera(nullptr);
@@ -39,8 +40,8 @@ void bomberman::GameSceneState::OnEnter() {
     bengine::InputManager::GetInstance().BindCommand(
         SDL_SCANCODE_F1, bengine::KeyState::Down,
         std::make_unique<ChangeSceneCommand>(
-            [paths = m_levelPaths, index = m_currentIndex] {
-                return MakeNextState(paths, index);
+            [paths = m_levelPaths, index = m_currentIndex, mode = m_mode] {
+                return MakeNextState(paths, index, mode);
             }
         )
     );
@@ -57,8 +58,8 @@ void bomberman::GameSceneState::OnEnter() {
     );
 
     m_levelCompletedSub = bengine::ServiceLocator::GetEventBus().Subscribe<events::LevelCompleted>(
-        [paths = m_levelPaths, index = m_currentIndex](const events::LevelCompleted &) {
-            bengine::SceneManager::GetInstance().SetState(MakeNextState(paths, index));
+        [paths = m_levelPaths, index = m_currentIndex, mode = m_mode](const events::LevelCompleted &) {
+            bengine::SceneManager::GetInstance().SetState(MakeNextState(paths, index, mode));
         }
     );
 }

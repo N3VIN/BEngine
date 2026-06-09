@@ -1,61 +1,71 @@
-#include "MainMenuState.h"
-
 #include "ModeSelectState.h"
+
+#include "MainMenuState.h"
+#include "GameSceneState.h"
+#include "GameMode.h"
 #include "MenuUI.h"
+#include "Level/LevelList.h"
 #include "Components/MenuComponent.h"
 #include "Commands/MenuNavigateCommand.h"
 #include "Commands/MenuConfirmCommand.h"
-#include "Commands/QuitCommand.h"
 
 #include "SceneGraph/Scene.h"
 #include "SceneGraph/SceneManager.h"
 #include "SceneGraph/GameObject.h"
 #include "UIHelpers.h"
 #include "Renderer/Renderer.h"
-#include "Renderer/ResourceManager.h"
 #include "Input/InputManager.h"
 #include "Input/Gamepad.h"
 #include "Audio/IAudioService.h"
 #include "Patterns/ServiceLocator.h"
 #include "utils.h"
 
-bomberman::MainMenuState::~MainMenuState() {
+bomberman::ModeSelectState::~ModeSelectState() {
     if (m_scene) {
         bengine::SceneManager::GetInstance().DestroyScene(*m_scene);
     }
 }
 
-void bomberman::MainMenuState::OnEnter() {
+void bomberman::ModeSelectState::OnEnter() {
     bengine::Renderer::GetInstance().SetActiveCamera(nullptr);
 
     m_scene = &bengine::SceneManager::GetInstance().CreateScene();
 
-    auto &audio = bengine::ServiceLocator::GetAudioService();
-    const auto &dataPath = bengine::ResourceManager::GetInstance().GetDataPath();
-    audio.LoadAudio(utils::Hash("title_screen"), dataPath / "Audio/title_screen.wav");
-    audio.StopAudio(utils::Hash("title_screen"));
-    audio.PlayAudio(utils::Hash("title_screen"), 0.5f, -1);
-
-    CreateMenuLabel(*m_scene, "BOMBERMAN", 48, {255, 255, 255, 255},
-                    bengine::ScreenFraction(0.5f, 0.25f) + glm::vec2(-180.0f, 0.0f)
-    );
+    CreateMenuLabel(*m_scene, "SELECT MODE", 48, {255, 255, 255, 255}, bengine::ScreenFraction(0.5f, 0.25f) + glm::vec2(-180.0f, 0.0f));
 
     auto *menuGo = m_scene->Add(std::make_unique<bengine::GameObject>());
     auto *menu = menuGo->AddComponent<MenuComponent>();
 
-    constexpr float startY = 0.5f;
-    constexpr float stepY = 0.09f;
-    constexpr glm::vec2 itemOffset{-60.0f, 0.0f};
+    const auto launch = [](GameMode mode) {
+        bengine::ServiceLocator::GetAudioService().StopAudio(utils::Hash("title_screen"));
+        bengine::SceneManager::GetInstance().SetState(std::make_unique<GameSceneState>(GetLevelList(), 0, mode));
+    };
 
-    menu->AddItem(CreateMenuLabel(*m_scene, "Start", 28, {180, 180, 180, 255}, bengine::ScreenFraction(0.5f, startY) + itemOffset),
-                  [] {
-                      bengine::SceneManager::GetInstance().SetState(std::make_unique<ModeSelectState>());
+    constexpr float startY = 0.45f;
+    constexpr float stepY = 0.09f;
+    constexpr glm::vec2 itemOffset{-90.0f, 0.0f};
+
+    menu->AddItem(CreateMenuLabel(*m_scene, "Solo", 28, {180, 180, 180, 255}, bengine::ScreenFraction(0.5f, startY) + itemOffset),
+                  [launch] {
+                      launch(GameMode::Solo);
                   }
     );
 
-    menu->AddItem(CreateMenuLabel(*m_scene, "Quit", 28, {180, 180, 180, 255}, bengine::ScreenFraction(0.5f, startY + stepY) + itemOffset),
+    menu->AddItem(CreateMenuLabel(*m_scene, "Co-op", 28, {180, 180, 180, 255}, bengine::ScreenFraction(0.5f, startY + stepY) + itemOffset),
+                  [launch] {
+                      launch(GameMode::Coop);
+                  }
+    );
+
+    menu->AddItem(CreateMenuLabel(*m_scene, "Versus", 28, {180, 180, 180, 255}, bengine::ScreenFraction(0.5f, startY + stepY * 2.0f) + itemOffset),
+                  [launch] {
+                      launch(GameMode::Versus);
+                  }
+    );
+
+    menu->AddItem(CreateMenuLabel(*m_scene, "Back", 28, {180, 180, 180, 255}, bengine::ScreenFraction(0.5f, startY + stepY * 3.0f) + itemOffset),
                   [] {
-                      QuitCommand{}.Execute();
+                      bengine::SceneManager::GetInstance().SetState(std::make_unique<MainMenuState>());
                   }
     );
 
@@ -73,6 +83,6 @@ void bomberman::MainMenuState::OnEnter() {
     input.BindCommand(0, bengine::Gamepad::Button::Start, bengine::KeyState::Down, std::make_unique<MenuConfirmCommand>(menu));
 }
 
-void bomberman::MainMenuState::OnExit() {
+void bomberman::ModeSelectState::OnExit() {
     bengine::InputManager::GetInstance().UnbindAll();
 }
