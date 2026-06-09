@@ -69,6 +69,7 @@ if (NOT EMSCRIPTEN)
             Bomberman/Components/HazardComponent.cpp
             Bomberman/Components/ExitComponent.cpp
             Bomberman/Components/PickupComponent.cpp
+            Bomberman/Components/GameAudioComponent.cpp
             Bomberman/Pickups.cpp
             Bomberman/Components/BrickComponent.cpp
             Bomberman/Components/ExplosionComponent.cpp

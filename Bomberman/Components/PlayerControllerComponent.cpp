@@ -7,6 +7,7 @@
 #include "Patterns/ServiceLocator.h"
 #include "Patterns/EventBus.h"
 #include "SceneGraph/GameObject.h"
+#include "utils.h"
 
 bomberman::PlayerControllerComponent::PlayerControllerComponent(bengine::GameObject *parent)
     : bengine::Component(parent)
@@ -28,6 +29,7 @@ void bomberman::PlayerControllerComponent::Update(float deltaTime) {
     if (m_damaged) {
         m_damaged = false;
         if (m_currentState->IsAlive()) {
+            bengine::ServiceLocator::GetAudioService().PlayAudio(utils::Hash("player_death"), 1.0f);
             m_currentState->OnExit(*this);
             m_currentState = std::make_unique<DyingPlayerState>();
             m_currentState->OnEnter(*this);

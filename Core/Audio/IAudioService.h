@@ -13,5 +13,8 @@ namespace bengine {
         virtual void LoadAudio(SoundID id, fs::path path) = 0;
         virtual void PlayAudio(SoundID id, float volume) = 0;
         virtual void StopAudio(SoundID id) = 0;
+
+        virtual void SetMuted(bool muted) = 0;
+        [[nodiscard]] virtual bool IsMuted() const = 0;
     };
 }

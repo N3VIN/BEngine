@@ -17,5 +17,14 @@ namespace bengine {
         void StopAudio(SoundID /*id*/) override {
             std::println("Stop Audio but this is null!!");
         }
+
+        void SetMuted(bool muted) override {
+            std::println("Set Muted but this is null!!");
+        }
+
+        [[nodiscard]] bool IsMuted() const override {
+            std::println("Is Muted but this is null!!");
+            return true;
+        }
     };
 }

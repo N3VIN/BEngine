@@ -1,5 +1,7 @@
 #include "SDLAudioService.h"
 
+#include <atomic>
+
 namespace bengine {
     struct LoadEvent {
         SoundID id;
@@ -15,7 +17,11 @@ namespace bengine {
         SoundID id;
     };
 
-    using AudioEvent = std::variant<LoadEvent, PlayEvent, StopEvent>;
+    struct MuteEvent {
+        bool muted;
+    };
+
+    using AudioEvent = std::variant<LoadEvent, PlayEvent, StopEvent, MuteEvent>;
 }
 
 class bengine::SDLAudioService::SDLAudioImpl {
@@ -32,8 +38,9 @@ public:
         }
 
         m_thread = std::jthread([this](const std::stop_token &token) {
-            Execute(token);
-        });
+                Execute(token);
+            }
+        );
     }
 
     ~SDLAudioImpl() {
@@ -61,8 +68,17 @@ public:
             std::lock_guard lock(m_mutex);
             m_queue.push(std::move(event));
         }
-        
+
         m_cv.notify_one();
+    }
+
+    void SetMuted(bool muted) {
+        m_muted.store(muted);
+        Enqueue(MuteEvent{muted});
+    }
+
+    [[nodiscard]] bool IsMuted() const {
+        return m_muted.load();
     }
 
 private:
@@ -71,8 +87,9 @@ private:
             AudioEvent event; {
                 std::unique_lock lock(m_mutex);
                 m_cv.wait(lock, token, [this] {
-                    return !m_queue.empty();
-                });
+                              return !m_queue.empty();
+                          }
+                );
 
                 if (token.stop_requested() && m_queue.empty()) {
                     return;
@@ -83,8 +100,9 @@ private:
             }
 
             std::visit([this](auto &&e) {
-                Process(e);
-            }, event);
+                           Process(e);
+                       }, event
+            );
         }
     }
 
@@ -129,6 +147,13 @@ private:
         MIX_StopTrack(it->second, 0);
     }
 
+    void Process(const MuteEvent &event) {
+        if (m_pMixer) {
+            MIX_SetMixerGain(m_pMixer, event.muted ? 0.0f : 1.0f);
+        }
+    }
+
+    std::atomic<bool> m_muted{false};
     std::queue<AudioEvent> m_queue;
     std::unordered_map<SoundID, MIX_Audio *> m_audio;
     std::unordered_map<SoundID, MIX_Track *> m_track;
@@ -155,4 +180,12 @@ void bengine::SDLAudioService::PlayAudio(SoundID id, float volume) {
 
 void bengine::SDLAudioService::StopAudio(SoundID id) {
     pImpl->Enqueue(StopEvent{id});
+}
+
+void bengine::SDLAudioService::SetMuted(bool muted) {
+    pImpl->SetMuted(muted);
+}
+
+bool bengine::SDLAudioService::IsMuted() const {
+    return pImpl->IsMuted();
 }

@@ -8,6 +8,7 @@
 #include "Components/HazardComponent.h"
 #include "Components/ExitComponent.h"
 #include "Components/PickupComponent.h"
+#include "Components/GameAudioComponent.h"
 #include "Components/SpriteRendererComponent.h"
 #include "Components/BrickComponent.h"
 #include "Components/RenderComponent.h"
@@ -147,6 +148,10 @@ bengine::Scene &bomberman::BuildLevelScene(std::string_view jsonRelativePath) {
     const auto &tileset = GetTileset();
 
     auto &scene = bengine::SceneManager::GetInstance().CreateScene();
+
+    auto *audioManagerGO = scene.Add(std::make_unique<bengine::GameObject>());
+    audioManagerGO->AddComponent<GameAudioComponent>();
+
     auto *levelGameObject = scene.Add(std::make_unique<bengine::GameObject>());
     auto *levelGridComponent = levelGameObject->AddComponent<LevelGridComponent>(bengine::ResourceManager::GetInstance().GetDataPath() / jsonRelativePath);
 

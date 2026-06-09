@@ -3,6 +3,7 @@
 #include "GameEndState.h"
 #include "GameEvents.h"
 #include "Commands/ChangeSceneCommand.h"
+#include "Commands/MuteCommand.h"
 #include "Level/BuildLevelScene.h"
 
 #include "SceneGraph/Scene.h"
@@ -42,6 +43,11 @@ void bomberman::GameSceneState::OnEnter() {
                 return MakeNextState(paths, index);
             }
         )
+    );
+
+    bengine::InputManager::GetInstance().BindCommand(
+        SDL_SCANCODE_F2, bengine::KeyState::Down,
+        std::make_unique<MuteCommand>()
     );
 
     m_playerDiedSub = bengine::ServiceLocator::GetEventBus().Subscribe<events::PlayerDied>(

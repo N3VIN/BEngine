@@ -17,6 +17,10 @@ namespace bomberman {
             glm::ivec2 cell{};
         };
 
+        struct BombPlaced {
+            glm::ivec2 cell{};
+        };
+
         struct PlayerDied {
             bengine::GameObject *player{nullptr};
         };

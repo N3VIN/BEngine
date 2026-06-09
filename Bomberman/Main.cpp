@@ -6,12 +6,15 @@
 
 #include "Engine/Engine.h"
 #include "SceneGraph/SceneManager.h"
+#include "Patterns/ServiceLocator.h"
+#include "Audio/SDLAudioService.h"
 
 #include "SceneStates/MainMenuState.h"
 
 namespace fs = std::filesystem;
 
 static void load() {
+    bengine::ServiceLocator::RegisterAudioService(std::make_unique<bengine::SDLAudioService>());
     bengine::SceneManager::GetInstance().SetState(std::make_unique<bomberman::MainMenuState>());
 }
 

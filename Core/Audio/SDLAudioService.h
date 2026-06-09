@@ -16,6 +16,9 @@ namespace bengine {
         void PlayAudio(SoundID id, float volume) override;
         void StopAudio(SoundID id) override;
 
+        void SetMuted(bool muted) override;
+        [[nodiscard]] bool IsMuted() const override;
+
     private:
         class SDLAudioImpl;
         std::unique_ptr<SDLAudioImpl> pImpl;

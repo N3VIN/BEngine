@@ -101,6 +101,8 @@ void bomberman::BombManagerComponent::PlaceBomb(glm::ivec2 cell, bengine::GameOb
     const auto idx = BombIndex(cell);
     m_activeBombs.push_back(bomb);
     m_bombAtCell[idx] = bengine::GetActiveScene()->Add(std::move(bombGO));
+
+    bengine::ServiceLocator::GetEventBus().Broadcast(events::BombPlaced{cell});
 }
 
 void bomberman::BombManagerComponent::DetonateBomb(BombComponent *bomb) {
