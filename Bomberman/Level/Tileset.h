@@ -3,6 +3,7 @@
 #include <array>
 #include <glm/vec2.hpp>
 #include "EnemyType.h"
+#include "PickupType.h"
 
 namespace bomberman {
     struct SpriteDefinition {
@@ -49,11 +50,16 @@ namespace bomberman {
         SpriteDefinition explosion{};
         PlayerSprites player{};
         std::array<EnemySprites, EnemyTypeCount> enemies{};
+        std::array<SpriteDefinition, PickupTypeCount> pickups{};
 
         [[nodiscard]] SpriteDefinition GetSpriteDefinition(SpriteType type) const;
 
         [[nodiscard]] const EnemySprites &GetEnemySprites(EnemyType type) const {
             return enemies[static_cast<size_t>(type)];
+        }
+
+        [[nodiscard]] const SpriteDefinition &GetPickupSprite(PickupType type) const {
+            return pickups[static_cast<size_t>(type)];
         }
     };
 

@@ -7,6 +7,7 @@
 #include "Components/EnemyManagerComponent.h"
 #include "Components/HazardComponent.h"
 #include "Components/ExitComponent.h"
+#include "Components/PickupComponent.h"
 #include "Components/SpriteRendererComponent.h"
 #include "Components/BrickComponent.h"
 #include "Components/RenderComponent.h"
@@ -182,6 +183,11 @@ bengine::Scene &bomberman::BuildLevelScene(std::string_view jsonRelativePath) {
     auto *exitManager = exitManagerGO->AddComponent<ExitComponent>(levelGridComponent);
     exitManager->RegisterPlayer(p1);
     exitManager->RegisterPlayer(p2);
+
+    auto *pickupManagerGO = scene.Add(std::make_unique<bengine::GameObject>());
+    auto *pickupManager = pickupManagerGO->AddComponent<PickupComponent>(levelGridComponent);
+    pickupManager->RegisterPlayer(p1);
+    pickupManager->RegisterPlayer(p2);
 
     for (const auto &[type, cell]: spawns.enemies) {
         enemyManager->SpawnEnemy(type, cell);

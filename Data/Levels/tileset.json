@@ -19,6 +19,20 @@
       "row": 3
     }
   },
+  "pickups": {
+    "bombUp": {
+      "col": 0,
+      "row": 14
+    },
+    "flameUp": {
+      "col": 1,
+      "row": 14
+    },
+    "detonator": {
+      "col": 4,
+      "row": 14
+    }
+  },
   "player": {
     "walkLeft": {
       "col": 0,

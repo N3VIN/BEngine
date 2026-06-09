@@ -6,10 +6,16 @@
 #include "Components/Component.h"
 #include "SceneGraph/GameObject.h"
 #include "Level/TileType.h"
+#include "PickupType.h"
 
 namespace fs = std::filesystem;
 
 namespace bomberman {
+    struct PickupSpawn {
+        glm::ivec2 cell{};
+        PickupType type{};
+    };
+
     class LevelGridComponent final : public bengine::Component {
     public:
         explicit LevelGridComponent(bengine::GameObject *parent, const fs::path &levelPath);
@@ -53,6 +59,10 @@ namespace bomberman {
             return m_exitCell;
         }
 
+        [[nodiscard]] const std::vector<PickupSpawn> &GetPickups() const {
+            return m_pickups;
+        }
+
         void SetWall(glm::ivec2 cell, bool isWall);
         bengine::GameObject *DestroyBrick(glm::ivec2 cell);
         void SetTile(bengine::GameObject *tile, glm::ivec2 cell);
@@ -66,6 +76,7 @@ namespace bomberman {
         float m_cellSize{};
         glm::vec2 m_origin{};
         glm::ivec2 m_exitCell{-1, -1};
+        std::vector<PickupSpawn> m_pickups{};
         std::vector<TileType> m_tiles{};
         std::vector<uint8_t> m_walls{};
         std::vector<bengine::GameObject *> m_tileAtCell{};

@@ -1,6 +1,7 @@
 #pragma once
 #include <glm/glm.hpp>
 #include "SceneGraph/GameObject.h"
+#include "PickupType.h"
 
 namespace bomberman {
     namespace events {
@@ -29,5 +30,10 @@ namespace bomberman {
         struct AllEnemiesDefeated {};
 
         struct LevelCompleted {};
+
+        struct PickupCollected {
+            bengine::GameObject *player{nullptr};
+            PickupType type{};
+        };
     }
 }

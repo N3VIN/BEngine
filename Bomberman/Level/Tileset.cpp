@@ -60,6 +60,23 @@ const bomberman::Tileset &bomberman::GetTileset() {
         ts.brick = readSpriteDefinition("brick");
         ts.exit = readSpriteDefinition("exit");
 
+        if (json.contains("pickups")) {
+            const auto &pickups = json.at("pickups");
+            const auto readPickup = [&](const char *key) {
+                SpriteDefinition definition;
+                if (const auto node = pickups.find(key); node != pickups.end()) {
+                    definition.col = node->at("col").get<int>();
+                    definition.row = node->at("row").get<int>();
+                    definition.frameCount = node->value("frameCount", 1);
+                }
+                return definition;
+            };
+
+            ts.pickups[static_cast<size_t>(PickupType::BombUp)] = readPickup("bombUp");
+            ts.pickups[static_cast<size_t>(PickupType::FlameUp)] = readPickup("flameUp");
+            ts.pickups[static_cast<size_t>(PickupType::Detonator)] = readPickup("detonator");
+        }
+
         if (json.contains("bomb")) {
             const auto &node = json.at("bomb");
             ts.bomb.col = node.at("col").get<int>();

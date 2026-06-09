@@ -4,6 +4,7 @@
 #include "BrickComponent.h"
 #include "LevelGridComponent.h"
 #include "SpriteRendererComponent.h"
+#include "HealthComponent.h"
 #include "Level/Tileset.h"
 #include "GameEvents.h"
 #include "Patterns/ServiceLocator.h"
@@ -17,10 +18,51 @@ bomberman::BombManagerComponent::BombManagerComponent(bengine::GameObject *paren
   , m_gridComponent(gridComponent) {
     const auto dims = m_gridComponent->GetDimensions();
     m_bombAtCell.resize(static_cast<size_t>(dims.x) * static_cast<size_t>(dims.y), nullptr);
+
+    m_pickupSub = bengine::ServiceLocator::GetEventBus().Subscribe<events::PickupCollected>(
+        [this](const events::PickupCollected &event) {
+            switch (event.type) {
+                case PickupType::BombUp:
+                    AddBomb(event.player);
+                    break;
+                case PickupType::FlameUp:
+                    AddFlame(event.player);
+                    break;
+                case PickupType::Detonator:
+                    GiveDetonator(event.player);
+                    break;
+            }
+        }
+    );
 }
 
 void bomberman::BombManagerComponent::RegisterPlayer(bengine::GameObject *player) {
-    m_playerBombCount[player] = 0;
+    m_playerStats[player] = {};
+
+    auto *health = player->GetComponent<HealthComponent>();
+    m_damagedSubs.push_back(health->SubscribeDamaged([this, player](int) {
+                m_playerStats[player].hasDetonator = false; // lose detonator on death
+            }
+        )
+    );
+}
+
+void bomberman::BombManagerComponent::Update(float deltaTime) {
+    if (m_activeBombs.empty()) {
+        return;
+    }
+
+    std::vector<BombComponent *> expired;
+    for (auto *bomb: m_activeBombs) {
+        bomb->TickFuse(deltaTime);
+        if (bomb->FuseExpired()) {
+            expired.push_back(bomb);
+        }
+    }
+
+    for (auto *bomb: expired) {
+        DetonateBomb(bomb);
+    }
 }
 
 void bomberman::BombManagerComponent::PlaceBomb(glm::ivec2 cell, bengine::GameObject *owner) {
@@ -36,18 +78,24 @@ void bomberman::BombManagerComponent::PlaceBomb(glm::ivec2 cell, bengine::GameOb
         return;
     }
 
-    if (const auto it = m_playerBombCount.find(owner); it != m_playerBombCount.end() && it->second >= m_maxBombsPerPlayer) {
+    const auto it = m_playerStats.find(owner);
+    if (it == m_playerStats.end()) {
         return;
     }
 
-    ++m_playerBombCount[owner];
+    PlayerBombStats &stats = it->second;
+    if (stats.activeBombs >= stats.maxBombs) {
+        return;
+    }
+
+    ++stats.activeBombs;
 
     auto bombGO = std::make_unique<bengine::GameObject>();
     bombGO->SetLocalPosition(m_gridComponent->CellToWorld(cell));
 
     bombGO->AddComponent<SpriteRendererComponent>(SpriteType::Bomb);
 
-    auto *bomb = bombGO->AddComponent<BombComponent>(cell, m_blastRadius, owner);
+    auto *bomb = bombGO->AddComponent<BombComponent>(cell, stats.blastRadius, owner, BOMB_FUSE_DURATION, stats.hasDetonator);
 
     m_gridComponent->SetWall(cell, true);
     const auto idx = BombIndex(cell);
@@ -72,9 +120,9 @@ void bomberman::BombManagerComponent::DetonateBomb(BombComponent *bomb) {
     m_bombAtCell[idx] = nullptr;
     bengine::GetActiveScene()->Remove(bomb->GetGameObject());
 
-    const auto it = m_playerBombCount.find(owner);
-    if (it != m_playerBombCount.end() && it->second > 0) {
-        --it->second;
+    const auto it = m_playerStats.find(owner);
+    if (it != m_playerStats.end() && it->second.activeBombs > 0) {
+        --it->second.activeBombs;
     }
 
     SpawnExplosionAt(cell);
@@ -90,7 +138,30 @@ void bomberman::BombManagerComponent::DetonateBomb(BombComponent *bomb) {
     ProcessDetonationQueue();
 }
 
+void bomberman::BombManagerComponent::AddBomb(bengine::GameObject *owner) {
+    if (const auto it = m_playerStats.find(owner); it != m_playerStats.end() && it->second.maxBombs < MAX_BOMBS) {
+        ++it->second.maxBombs;
+    }
+}
+
+void bomberman::BombManagerComponent::AddFlame(bengine::GameObject *owner) {
+    if (const auto it = m_playerStats.find(owner); it != m_playerStats.end() && it->second.blastRadius < MAX_BLAST_RADIUS) {
+        ++it->second.blastRadius;
+    }
+}
+
+void bomberman::BombManagerComponent::GiveDetonator(bengine::GameObject *owner) {
+    if (const auto it = m_playerStats.find(owner); it != m_playerStats.end()) {
+        it->second.hasDetonator = true;
+    }
+}
+
 void bomberman::BombManagerComponent::DetonateOldestBomb(bengine::GameObject *owner) {
+    const auto it = m_playerStats.find(owner);
+    if (it == m_playerStats.end() || !it->second.hasDetonator) {
+        return;
+    }
+
     for (auto *bomb: m_activeBombs) {
         if (bomb->GetOwner() == owner) {
             DetonateBomb(bomb);
@@ -137,7 +208,7 @@ void bomberman::BombManagerComponent::SpreadInDirection(glm::ivec2 origin, glm::
     }
 }
 
-void bomberman::BombManagerComponent::SpawnExplosionAt(glm::ivec2 cell) {
+void bomberman::BombManagerComponent::SpawnExplosionAt(glm::ivec2 cell) const {
     if (!m_gridComponent->InBounds(cell)) {
         return;
     }
