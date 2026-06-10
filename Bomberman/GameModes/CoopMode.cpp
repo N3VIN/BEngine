@@ -3,6 +3,8 @@
 #include "PlayerControls.h"
 #include "SceneStates/GameEndState.h"
 #include "Components/CameraComponent.h"
+#include "Components/GridMovementComponent.h"
+#include "SceneGraph/GameObject.h"
 
 int bomberman::CoopMode::PlayerCount() const {
     return 2;
@@ -13,7 +15,13 @@ bool bomberman::CoopMode::SpawnsEnemies() const {
 }
 
 void bomberman::CoopMode::ConfigureCamera(bengine::CameraComponent &camera, const std::vector<bengine::GameObject *> &players) const {
-    camera.SetTarget(players[0]);
+    camera.SetTargets({players[0], players[1]});
+
+    for (const auto *player: players) {
+        if (auto *movement = player->GetComponent<GridMovementComponent>()) {
+            movement->SetViewClamp(&camera);
+        }
+    }
 }
 
 void bomberman::CoopMode::ConfigureInput(bengine::InputManager &input, const std::vector<bengine::GameObject *> &players, BombManagerComponent &bombs) const {

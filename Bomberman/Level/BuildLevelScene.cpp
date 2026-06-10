@@ -45,7 +45,13 @@ bomberman::LevelGridComponent *bomberman::CreateLevelBackground(bengine::Scene &
 bengine::CameraComponent *bomberman::CreateCamera(bengine::Scene &scene, const LevelGridComponent *gridComponent) {
     auto *cameraGo = scene.Add(std::make_unique<bengine::GameObject>());
     auto *cameraComp = cameraGo->AddComponent<bengine::CameraComponent>();
-    cameraComp->SetZoom(2.0f);
+
+    const float levelHeight = static_cast<float>(gridComponent->GetRows()) * gridComponent->GetCellSize();
+    const float windowHeight = bengine::Renderer::GetInstance().GetWindowSize().y;
+    cameraComp->SetZoom(windowHeight / levelHeight);
+
+    cameraComp->SetTargetOffset(glm::vec2{gridComponent->GetCellSize() * 0.5f}); // we do 0.5 to center the camera on the player
+
     cameraComp->SetLevelBounds(
         gridComponent->GetOrigin(),
         glm::vec2(gridComponent->GetColumns(), gridComponent->GetRows()) * gridComponent->GetCellSize()

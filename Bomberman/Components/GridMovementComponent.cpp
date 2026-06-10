@@ -1,5 +1,6 @@
 #include "GridMovementComponent.h"
 #include "LevelGridComponent.h"
+#include "Components/CameraComponent.h"
 #include "SceneGraph/GameObject.h"
 
 bomberman::GridMovementComponent::GridMovementComponent(bengine::GameObject *parent, LevelGridComponent *levelGridComponent, glm::ivec2 startCell, float cellsPerSecond)
@@ -12,6 +13,10 @@ bomberman::GridMovementComponent::GridMovementComponent(bengine::GameObject *par
 
 void bomberman::GridMovementComponent::SetDesiredDirection(glm::ivec2 direction) {
     m_queuedDir = direction;
+}
+
+void bomberman::GridMovementComponent::SetViewClamp(const bengine::CameraComponent *camera) {
+    m_viewClamp = camera;
 }
 
 void bomberman::GridMovementComponent::Respawn(glm::ivec2 cell) {
@@ -51,8 +56,17 @@ bool bomberman::GridMovementComponent::TryStartMoveInQueuedDir() {
         return false;
     }
 
-    if (!m_levelGridComponent->IsWalkable(m_cell + m_queuedDir)) {
+    const glm::ivec2 targetCell = m_cell + m_queuedDir;
+    if (!m_levelGridComponent->IsWalkable(targetCell)) {
         return false;
+    }
+
+    if (m_viewClamp != nullptr) {
+        const float cellSize = m_levelGridComponent->GetCellSize();
+        const auto cellCenter = m_levelGridComponent->CellToWorld(targetCell) + glm::vec2{cellSize * 0.5f};
+        if (!m_viewClamp->IsWorldPointVisible(cellCenter, glm::vec2{cellSize, cellSize})) {
+            return false;
+        }
     }
 
     m_activeDir = m_queuedDir;
@@ -61,7 +75,7 @@ bool bomberman::GridMovementComponent::TryStartMoveInQueuedDir() {
 }
 
 void bomberman::GridMovementComponent::ApplyVisualPosition() const {
-    const glm::vec2 base = m_levelGridComponent->CellToWorld(m_cell);
-    const glm::vec2 offset = glm::vec2(m_activeDir) * m_levelGridComponent->GetCellSize() * m_progress;
+    const auto base = m_levelGridComponent->CellToWorld(m_cell);
+    const auto offset = glm::vec2(m_activeDir) * m_levelGridComponent->GetCellSize() * m_progress;
     GetParent()->SetLocalPosition(base + offset);
 }
