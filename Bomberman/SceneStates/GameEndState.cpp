@@ -12,6 +12,9 @@
 #include "Renderer/ResourceManager.h"
 #include "Input/InputManager.h"
 
+bomberman::GameEndState::GameEndState(std::string title)
+    : m_title(std::move(title)) {}
+
 bomberman::GameEndState::~GameEndState() {
     if (m_scene) {
         bengine::SceneManager::GetInstance().DestroyScene(*m_scene);
@@ -27,7 +30,7 @@ void bomberman::GameEndState::OnEnter() {
     auto *titleText = titleGo->AddComponent<bengine::TextComponent>();
     titleText->SetFont(bengine::ResourceManager::GetInstance().LoadFont("Lingua.otf", 48));
     titleText->SetColor({255, 80, 80, 255});
-    titleText->SetText("GAME OVER");
+    titleText->SetText(m_title);
     titleGo->GetComponent<bengine::RenderComponent>()->SetIgnoreCamera(true);
 
     titleGo->SetLocalPosition(bengine::ScreenFraction(0.5f, 0.35f) + glm::vec2(-170.0f, 0.0f));

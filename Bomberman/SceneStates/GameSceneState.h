@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -7,7 +8,13 @@
 #include "Patterns/MulticastDelegate.h"
 #include "GameMode.h"
 
+namespace bengine {
+    class GameObject;
+}
+
 namespace bomberman {
+    class IGameMode;
+
     std::unique_ptr<bengine::ISceneState> MakeNextState(const std::vector<std::string> &levelPaths, size_t index, GameMode mode);
 
     class GameSceneState final : public bengine::ISceneState {
@@ -18,13 +25,13 @@ namespace bomberman {
         void OnEnter() override;
         void OnExit() override;
 
-        [[nodiscard]] GameMode GetMode() const { return m_mode; }
-
     private:
         std::vector<std::string> m_levelPaths;
         size_t m_currentIndex;
-        GameMode m_mode;
+        GameMode m_modeId;
+        std::unique_ptr<IGameMode> m_mode{};
         bengine::Scene *m_scene{};
+        std::vector<bengine::GameObject *> m_players{};
         bengine::ScopedDelegate m_playerDiedSub;
         bengine::ScopedDelegate m_levelCompletedSub;
     };

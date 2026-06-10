@@ -79,6 +79,10 @@ if (NOT EMSCRIPTEN)
             Bomberman/SceneStates/ModeSelectState.cpp
             Bomberman/SceneStates/GameSceneState.cpp
             Bomberman/SceneStates/GameEndState.cpp
+            Bomberman/PlayerControls.cpp
+            Bomberman/GameModes/SoloMode.cpp
+            Bomberman/GameModes/CoopMode.cpp
+            Bomberman/GameModes/VersusMode.cpp
     )
     target_include_directories(bomberman PRIVATE ${CMAKE_SOURCE_DIR}/Bomberman)
 endif ()

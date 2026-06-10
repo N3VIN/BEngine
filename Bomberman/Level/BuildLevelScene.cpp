@@ -15,9 +15,7 @@
 #include "Components/TextComponent.h"
 #include "Components/FPSComponent.h"
 #include "Components/CameraComponent.h"
-#include "Commands/GridMoveCommand.h"
-#include "Commands/BombPlaceCommand.h"
-#include "Commands/DetonateCommand.h"
+#include "GameModes/IGameMode.h"
 #include "PlayerFactory.h"
 #include "SceneGraph/Scene.h"
 #include "SceneGraph/SceneManager.h"
@@ -25,7 +23,6 @@
 #include "Renderer/ResourceManager.h"
 #include "Renderer/Renderer.h"
 #include "Input/InputManager.h"
-#include "Input/Gamepad.h"
 
 bomberman::LevelGridComponent *bomberman::CreateLevelBackground(bengine::Scene &scene, const Tileset &tileset, LevelGridComponent *gridComponent) {
     const auto levelOrigin = gridComponent->GetOrigin();
@@ -126,25 +123,7 @@ void bomberman::CreateFPSDisplay(bengine::Scene &scene) {
     fpsGo->SetLocalPosition(bengine::ScreenFraction(0.01f, 0.01f));
 }
 
-void bomberman::SetupPlayerInput(bengine::InputManager &input, bengine::GameObject *p1, bengine::GameObject *p2, BombManagerComponent *bombManager) {
-    input.BindCommand(SDL_SCANCODE_W, bengine::KeyState::Pressed, std::make_unique<GridMoveCommand>(p1, glm::ivec2{0, -1}));
-    input.BindCommand(SDL_SCANCODE_S, bengine::KeyState::Pressed, std::make_unique<GridMoveCommand>(p1, glm::ivec2{0, 1}));
-    input.BindCommand(SDL_SCANCODE_A, bengine::KeyState::Pressed, std::make_unique<GridMoveCommand>(p1, glm::ivec2{-1, 0}));
-    input.BindCommand(SDL_SCANCODE_D, bengine::KeyState::Pressed, std::make_unique<GridMoveCommand>(p1, glm::ivec2{1, 0}));
-
-    input.BindCommand(0, bengine::Gamepad::Button::DpadUp, bengine::KeyState::Pressed, std::make_unique<GridMoveCommand>(p2, glm::ivec2{0, -1}));
-    input.BindCommand(0, bengine::Gamepad::Button::DpadDown, bengine::KeyState::Pressed, std::make_unique<GridMoveCommand>(p2, glm::ivec2{0, 1}));
-    input.BindCommand(0, bengine::Gamepad::Button::DpadLeft, bengine::KeyState::Pressed, std::make_unique<GridMoveCommand>(p2, glm::ivec2{-1, 0}));
-    input.BindCommand(0, bengine::Gamepad::Button::DpadRight, bengine::KeyState::Pressed, std::make_unique<GridMoveCommand>(p2, glm::ivec2{1, 0}));
-
-    input.BindCommand(SDL_SCANCODE_SPACE, bengine::KeyState::Down, std::make_unique<BombPlaceCommand>(p1, bombManager));
-    input.BindCommand(0, bengine::Gamepad::Button::A, bengine::KeyState::Down, std::make_unique<BombPlaceCommand>(p2, bombManager));
-
-    input.BindCommand(SDL_SCANCODE_LSHIFT, bengine::KeyState::Down, std::make_unique<DetonateCommand>(p1, bombManager));
-    input.BindCommand(0, bengine::Gamepad::Button::B, bengine::KeyState::Down, std::make_unique<DetonateCommand>(p2, bombManager));
-}
-
-bengine::Scene &bomberman::BuildLevelScene(std::string_view jsonRelativePath) {
+bomberman::LevelScene bomberman::BuildLevelScene(std::string_view jsonRelativePath, const IGameMode &mode) {
     const auto &tileset = GetTileset();
 
     auto &scene = bengine::SceneManager::GetInstance().CreateScene();
@@ -170,39 +149,40 @@ bengine::Scene &bomberman::BuildLevelScene(std::string_view jsonRelativePath) {
     auto *enemyManagerGO = scene.Add(std::make_unique<bengine::GameObject>());
     auto *enemyManager = enemyManagerGO->AddComponent<EnemyManagerComponent>(levelGridComponent, hazardManager);
 
-    auto *p1 = CreatePlayer(scene, {levelGridComponent, spawns.players[0], 4.0f});
-    cameraComponent->SetTarget(p1);
-
-    auto *p2 = CreatePlayer(scene, {levelGridComponent, spawns.players[1], 4.0f});
-
-    bombManager->RegisterPlayer(p1);
-    bombManager->RegisterPlayer(p2);
-
-    enemyManager->RegisterPlayer(p1);
-    enemyManager->RegisterPlayer(p2);
-
-    hazardManager->RegisterPlayer(p1);
-    hazardManager->RegisterPlayer(p2);
-
     auto *exitManagerGO = scene.Add(std::make_unique<bengine::GameObject>());
     auto *exitManager = exitManagerGO->AddComponent<ExitComponent>(levelGridComponent);
-    exitManager->RegisterPlayer(p1);
-    exitManager->RegisterPlayer(p2);
 
     auto *pickupManagerGO = scene.Add(std::make_unique<bengine::GameObject>());
     auto *pickupManager = pickupManagerGO->AddComponent<PickupComponent>(levelGridComponent);
-    pickupManager->RegisterPlayer(p1);
-    pickupManager->RegisterPlayer(p2);
 
-    for (const auto &[type, cell]: spawns.enemies) {
-        enemyManager->SpawnEnemy(type, cell);
+    std::vector<bengine::GameObject *> players;
+    players.push_back(CreatePlayer(scene, {levelGridComponent, spawns.players[0], 4.0f}));
+
+    if (mode.PlayerCount() > 1) {
+        players.push_back(CreatePlayer(scene, {levelGridComponent, spawns.players[1], 4.0f}));
+    }
+
+    for (auto *player: players) {
+        bombManager->RegisterPlayer(player);
+        enemyManager->RegisterPlayer(player);
+        hazardManager->RegisterPlayer(player);
+        exitManager->RegisterPlayer(player);
+        pickupManager->RegisterPlayer(player);
+    }
+
+    mode.ConfigureCamera(*cameraComponent, players);
+
+    if (mode.SpawnsEnemies()) {
+        for (const auto &[type, cell]: spawns.enemies) {
+            enemyManager->SpawnEnemy(type, cell);
+        }
     }
 
     scene.Add(std::move(hazardManagerGO));
 
     CreateFPSDisplay(scene);
 
-    SetupPlayerInput(bengine::InputManager::GetInstance(), p1, p2, bombManager);
+    mode.ConfigureInput(bengine::InputManager::GetInstance(), players, *bombManager);
 
-    return scene;
+    return LevelScene{scene, std::move(players)};
 }
