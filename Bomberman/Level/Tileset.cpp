@@ -92,6 +92,28 @@ const bomberman::Tileset &bomberman::GetTileset() {
             ts.explosion.numRows = node.at("numRows").get<int>();
             ts.explosion.frameCount = node.value("frameCount", 1);
             ts.explosion.frameColumns = node.value("frameColumns", 0);
+
+            // slice the explosion into pieces
+            const auto piece = [&](int defCol, int defRow) {
+                SpriteDefinition definition;
+                definition.col = ts.explosion.col + defCol;
+                definition.row = ts.explosion.row + defRow;
+                definition.frameCount = ts.explosion.frameCount;
+                definition.frameColumns = ts.explosion.frameColumns;
+                definition.frameStrideCols = ts.explosion.numCols;
+                definition.frameStrideRows = ts.explosion.numRows;
+                return definition;
+            };
+
+            const int centerCol = ts.explosion.numCols / 2;
+            const int centerRow = ts.explosion.numRows / 2;
+            ts.explosionPieces.center = piece(centerCol, centerRow);
+            ts.explosionPieces.armHorizontal = piece(centerCol - 1, centerRow);
+            ts.explosionPieces.armVertical = piece(centerCol, centerRow - 1);
+            ts.explosionPieces.tipUp = piece(centerCol, 0);
+            ts.explosionPieces.tipDown = piece(centerCol, ts.explosion.numRows - 1);
+            ts.explosionPieces.tipLeft = piece(0, centerRow);
+            ts.explosionPieces.tipRight = piece(ts.explosion.numCols - 1, centerRow);
         }
 
         if (json.contains("player")) {

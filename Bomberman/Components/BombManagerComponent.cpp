@@ -127,7 +127,7 @@ void bomberman::BombManagerComponent::DetonateBomb(BombComponent *bomb) {
         --it->second.activeBombs;
     }
 
-    SpawnExplosionAt(cell);
+    SpawnFlame(cell, GetTileset().explosionPieces.center);
     bengine::ServiceLocator::GetEventBus().Broadcast(events::ExplosionAt{cell, owner});
 
     SpreadInDirection(cell, {0, -1}, radius, owner);
@@ -174,9 +174,17 @@ void bomberman::BombManagerComponent::DetonateOldestBomb(bengine::GameObject *ow
 
 void bomberman::BombManagerComponent::SpreadInDirection(glm::ivec2 origin, glm::ivec2 direction, int range, bengine::GameObject *owner) {
     auto &bus = bengine::ServiceLocator::GetEventBus();
+    const auto &pieces = GetTileset().explosionPieces;
+
+    // choose the correct sprite for the direction
+    const bool horizontal = direction.x != 0;
+    const SpriteDefinition &arm = horizontal ? pieces.armHorizontal : pieces.armVertical;
+    const SpriteDefinition &tip = horizontal
+                                      ? (direction.x > 0 ? pieces.tipRight : pieces.tipLeft)
+                                      : (direction.y > 0 ? pieces.tipDown : pieces.tipUp);
 
     for (int distance = 1; distance <= range; ++distance) {
-        const glm::ivec2 cell = origin + direction * distance;
+        const auto cell = origin + direction * distance;
 
         if (!m_gridComponent->InBounds(cell)) {
             break;
@@ -203,31 +211,33 @@ void bomberman::BombManagerComponent::SpreadInDirection(glm::ivec2 origin, glm::
                 bus.Broadcast(events::BrickDestroyed{cell});
             }
 
+            SpawnFlame(cell, tip);
             break;
         }
 
         bus.Broadcast(events::ExplosionAt{cell, owner});
+
+        const bool tipHere = distance == range || IsFlameBlocker(origin + direction * (distance + 1));
+        SpawnFlame(cell, tipHere ? tip : arm);
     }
 }
 
-void bomberman::BombManagerComponent::SpawnExplosionAt(glm::ivec2 cell) const {
+void bomberman::BombManagerComponent::SpawnFlame(glm::ivec2 cell, const SpriteDefinition &piece) const {
     if (!m_gridComponent->InBounds(cell)) {
         return;
     }
 
-    const auto &tileset = GetTileset();
-    const float lifetime = tileset.explosionLifetime;
+    auto flameGO = std::make_unique<bengine::GameObject>();
+    flameGO->SetLocalPosition(m_gridComponent->CellToWorld(cell));
 
-    auto explosionGO = std::make_unique<bengine::GameObject>();
-    const float cellSize = m_gridComponent->GetCellSize();
-    const float offsetX = -static_cast<float>(tileset.explosion.numCols / 2) * cellSize;
-    const float offsetY = -static_cast<float>(tileset.explosion.numRows / 2) * cellSize;
-    explosionGO->SetLocalPosition(m_gridComponent->CellToWorld(cell) + glm::vec2{offsetX, offsetY});
+    flameGO->AddComponent<SpriteRendererComponent>()->Play(piece, true);
+    flameGO->AddComponent<ExplosionComponent>(GetTileset().explosionLifetime);
 
-    explosionGO->AddComponent<SpriteRendererComponent>(SpriteType::Explosion);
-    explosionGO->AddComponent<ExplosionComponent>(lifetime);
+    bengine::GetActiveScene()->Add(std::move(flameGO));
+}
 
-    bengine::GetActiveScene()->Add(std::move(explosionGO));
+bool bomberman::BombManagerComponent::IsFlameBlocker(glm::ivec2 cell) const {
+    return !m_gridComponent->InBounds(cell) || m_gridComponent->HasWall(cell) || BombAt(cell) != nullptr;
 }
 
 void bomberman::BombManagerComponent::ProcessDetonationQueue() {

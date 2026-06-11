@@ -10,6 +10,7 @@
 namespace bomberman {
     class BombComponent;
     class LevelGridComponent;
+    struct SpriteDefinition;
 
     class BombManagerComponent final : public bengine::Component {
     public:
@@ -38,11 +39,12 @@ namespace bomberman {
         static constexpr int MAX_BOMBS{9};
         static constexpr int MAX_BLAST_RADIUS{4};
 
-        void SpawnExplosionAt(glm::ivec2 cell) const;
+        void SpawnFlame(glm::ivec2 cell, const SpriteDefinition &piece) const;
         void SpreadInDirection(glm::ivec2 origin, glm::ivec2 direction, int range, bengine::GameObject *owner);
         void ProcessDetonationQueue();
 
         [[nodiscard]] bengine::GameObject *BombAt(glm::ivec2 cell) const;
+        [[nodiscard]] bool IsFlameBlocker(glm::ivec2 cell) const;
         [[nodiscard]] size_t BombIndex(glm::ivec2 cell) const;
 
         LevelGridComponent *m_gridComponent;

@@ -24,7 +24,7 @@ namespace bomberman {
         static constexpr float ANIMATION_FPS = 8.f;
 
     private:
-        void ApplySourceRect(int frame);
+        void ApplySourceRect(int frame) const;
 
         bengine::RenderComponent *m_renderComponent{};
         int m_col{};
@@ -35,6 +35,8 @@ namespace bomberman {
         int m_frameCount{1};
         int m_currentFrame{0};
         int m_frameColumns{1};
+        int m_frameStrideCols{0};
+        int m_frameStrideRows{0};
         bool m_playing{false};
         bool m_looping{true};
         bengine::Timer m_frameTimer{};

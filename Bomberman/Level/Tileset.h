@@ -14,6 +14,8 @@ namespace bomberman {
         int frameCount{1};
         bool autoPlay{false};
         int frameColumns{0};
+        int frameStrideCols{0};
+        int frameStrideRows{0};
     };
 
     enum class SpriteType {
@@ -37,6 +39,16 @@ namespace bomberman {
         SpriteDefinition death{};
     };
 
+    struct ExplosionSprites {
+        SpriteDefinition center{};
+        SpriteDefinition armHorizontal{};
+        SpriteDefinition armVertical{};
+        SpriteDefinition tipUp{};
+        SpriteDefinition tipDown{};
+        SpriteDefinition tipLeft{};
+        SpriteDefinition tipRight{};
+    };
+
     struct Tileset {
         std::string texturePath;
         std::string spriteTexturePath;
@@ -48,6 +60,7 @@ namespace bomberman {
         SpriteDefinition exit{};
         SpriteDefinition bomb{};
         SpriteDefinition explosion{};
+        ExplosionSprites explosionPieces{};
         PlayerSprites player{};
         std::array<EnemySprites, EnemyTypeCount> enemies{};
         std::array<SpriteDefinition, PickupTypeCount> pickups{};

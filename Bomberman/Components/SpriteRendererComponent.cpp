@@ -14,6 +14,8 @@ bomberman::SpriteRendererComponent::SpriteRendererComponent(bengine::GameObject 
     m_tileSize = tileset.tileSize;
     m_frameCount = definition.frameCount;
     m_frameColumns = definition.frameColumns > 0 ? definition.frameColumns : definition.frameCount;
+    m_frameStrideCols = definition.frameStrideCols;
+    m_frameStrideRows = definition.frameStrideRows;
 
     if (definition.autoPlay) {
         m_frameTimer = bengine::Timer{1.f / ANIMATION_FPS};
@@ -67,11 +69,13 @@ void bomberman::SpriteRendererComponent::Update(float deltaTime) {
     }
 }
 
-void bomberman::SpriteRendererComponent::ApplySourceRect(int frame) {
+void bomberman::SpriteRendererComponent::ApplySourceRect(int frame) const {
     const int frameRow = frame / m_frameColumns;
     const int frameCol = frame % m_frameColumns;
-    const int xPos = (m_col + frameCol * m_numCols) * m_tileSize;
-    const int yPos = (m_row + frameRow * m_numRows) * m_tileSize;
+    const int strideCols = m_frameStrideCols > 0 ? m_frameStrideCols : m_numCols;
+    const int strideRows = m_frameStrideRows > 0 ? m_frameStrideRows : m_numRows;
+    const int xPos = (m_col + frameCol * strideCols) * m_tileSize;
+    const int yPos = (m_row + frameRow * strideRows) * m_tileSize;
     const int width = m_numCols * m_tileSize;
     const int height = m_numRows * m_tileSize;
 
@@ -93,6 +97,8 @@ void bomberman::SpriteRendererComponent::Play(const SpriteDefinition &definition
     m_numRows = definition.numRows;
     m_frameCount = definition.frameCount;
     m_frameColumns = definition.frameColumns > 0 ? definition.frameColumns : definition.frameCount;
+    m_frameStrideCols = definition.frameStrideCols;
+    m_frameStrideRows = definition.frameStrideRows;
     m_looping = loop;
     m_currentFrame = 0;
     m_frameTimer = bengine::Timer{1.f / fps};

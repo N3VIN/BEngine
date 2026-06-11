@@ -32,7 +32,7 @@ void bomberman::NameEntryComponent::ChangeLetter(int direction) {
 }
 
 void bomberman::NameEntryComponent::MoveSlot(int direction) {
-    const int count = m_letters.size();
+    const int count = static_cast<int>(m_letters.size());
     if (count == 0) {
         return;
     }
