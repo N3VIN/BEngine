@@ -1,6 +1,8 @@
 #include "GameEndState.h"
 
 #include "Commands/QuitCommand.h"
+#include "Commands/ChangeSceneCommand.h"
+#include "HighScoreState.h"
 #include "ScoreBoard.h"
 
 #include <string>
@@ -14,6 +16,7 @@
 #include "Renderer/Renderer.h"
 #include "Renderer/ResourceManager.h"
 #include "Input/InputManager.h"
+#include "Input/Gamepad.h"
 
 bomberman::GameEndState::GameEndState(std::string title)
     : m_title(std::move(title)) {}
@@ -55,18 +58,29 @@ void bomberman::GameEndState::OnEnter() {
     auto *quitText = quitGo->AddComponent<bengine::TextComponent>();
     quitText->SetFont(bengine::ResourceManager::GetInstance().LoadFont("Lingua.otf", 24));
     quitText->SetColor({200, 200, 200, 255});
-    quitText->SetText("Press ESC to quit");
+    quitText->SetText("ENTER continue   ESC quit");
     quitGo->GetComponent<bengine::RenderComponent>()->SetIgnoreCamera(true);
-    quitGo->SetLocalPosition(bengine::ScreenFraction(0.5f, 0.65f) + glm::vec2(-110.0f, 0.0f));
+    quitGo->SetLocalPosition(bengine::ScreenFraction(0.5f, 0.65f) + glm::vec2(-150.0f, 0.0f));
 
     bengine::SceneManager::GetInstance().SetActiveScene(*m_scene);
 
-    bengine::InputManager::GetInstance().BindCommand(
-        SDL_SCANCODE_ESCAPE, bengine::KeyState::Down,
-        std::make_unique<QuitCommand>()
-    );
+    auto &input = bengine::InputManager::GetInstance();
+    input.BindCommand(SDL_SCANCODE_ESCAPE, bengine::KeyState::Down, std::make_unique<QuitCommand>());
+
+    const auto toHighScores = [] { return std::make_unique<HighScoreState>(GetNewScores()); };
+    input.BindCommand(SDL_SCANCODE_RETURN, bengine::KeyState::Down, std::make_unique<ChangeSceneCommand>(toHighScores));
+    input.BindCommand(SDL_SCANCODE_SPACE, bengine::KeyState::Down, std::make_unique<ChangeSceneCommand>(toHighScores));
+    input.BindCommand(0, bengine::Gamepad::Button::A, bengine::KeyState::Down, std::make_unique<ChangeSceneCommand>(toHighScores));
+    input.BindCommand(0, bengine::Gamepad::Button::Start, bengine::KeyState::Down, std::make_unique<ChangeSceneCommand>(toHighScores));
 }
 
 void bomberman::GameEndState::OnExit() {
     bengine::InputManager::GetInstance().UnbindAll();
+}
+
+void bomberman::GameEndState::Update(float deltaTime) {
+    m_timer.Update(deltaTime);
+    if (m_timer.IsExpired()) {
+        bengine::SceneManager::GetInstance().SetState(std::make_unique<HighScoreState>(GetNewScores()));
+    }
 }

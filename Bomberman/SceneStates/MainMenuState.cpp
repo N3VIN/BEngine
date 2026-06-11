@@ -1,6 +1,7 @@
 #include "MainMenuState.h"
 
 #include "ModeSelectState.h"
+#include "HighScoreState.h"
 #include "MenuUI.h"
 #include "Components/MenuComponent.h"
 #include "Commands/MenuNavigateCommand.h"
@@ -53,7 +54,13 @@ void bomberman::MainMenuState::OnEnter() {
                   }
     );
 
-    menu->AddItem(CreateMenuLabel(*m_scene, "Quit", 28, {180, 180, 180, 255}, bengine::ScreenFraction(0.5f, startY + stepY) + itemOffset),
+    menu->AddItem(CreateMenuLabel(*m_scene, "Highscores", 28, {180, 180, 180, 255}, bengine::ScreenFraction(0.5f, startY + stepY) + itemOffset),
+                  [] {
+                      bengine::SceneManager::GetInstance().SetState(std::make_unique<HighScoreState>());
+                  }
+    );
+
+    menu->AddItem(CreateMenuLabel(*m_scene, "Quit", 28, {180, 180, 180, 255}, bengine::ScreenFraction(0.5f, startY + stepY * 2.0f) + itemOffset),
                   [] {
                       QuitCommand{}.Execute();
                   }

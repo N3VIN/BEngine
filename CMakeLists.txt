@@ -73,15 +73,18 @@ if (NOT EMSCRIPTEN)
             Bomberman/Components/ScoreComponent.cpp
             Bomberman/Components/ScorePopupComponent.cpp
             Bomberman/ScoreBoard.cpp
+            Bomberman/HighScores.cpp
             Bomberman/Pickups.cpp
             Bomberman/Components/BrickComponent.cpp
             Bomberman/Components/ExplosionComponent.cpp
             Bomberman/States/PlayerStates.cpp
             Bomberman/Components/MenuComponent.cpp
+            Bomberman/Components/NameEntryComponent.cpp
             Bomberman/SceneStates/MainMenuState.cpp
             Bomberman/SceneStates/ModeSelectState.cpp
             Bomberman/SceneStates/GameSceneState.cpp
             Bomberman/SceneStates/GameEndState.cpp
+            Bomberman/SceneStates/HighScoreState.cpp
             Bomberman/PlayerControls.cpp
             Bomberman/GameModes/SoloMode.cpp
             Bomberman/GameModes/CoopMode.cpp
