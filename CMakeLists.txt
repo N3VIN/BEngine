@@ -6,14 +6,11 @@ if (EMSCRIPTEN)
 endif ()
 
 if (EMSCRIPTEN)
-    set(TARGET_NAME bomberman_web)
     set(TARGET_PARAM)
-    set(GAME_TARGETS ${TARGET_NAME})
 else ()
-    set(TARGET_NAME demo)
     set(TARGET_PARAM WIN32)
-    set(GAME_TARGETS demo bomberman)
 endif ()
+set(GAME_TARGETS bomberman)
 
 # core static library (engine only)
 add_library(Core STATIC
@@ -36,21 +33,8 @@ add_library(Core STATIC
         Core/Audio/SDLAudioService.cpp
 )
 
-# demo executable (App)
-add_executable(${TARGET_NAME} ${TARGET_PARAM}
-        App/Main.cpp
-        App/Components/CacheBenchmarkComponent.cpp
-        App/Components/HealthComponent.cpp
-        App/Components/LivesDisplayComponent.cpp
-        App/Components/PickupComponent.cpp
-        App/Components/ScoreDisplayComponent.cpp
-        App/Components/SteamAchievementComponent.cpp
-)
-target_include_directories(${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/App)
-
-# native only
-if (NOT EMSCRIPTEN)
-    add_executable(bomberman ${TARGET_PARAM}
+# bomberman executable
+add_executable(bomberman ${TARGET_PARAM}
             Bomberman/Main.cpp
             Bomberman/Level/BuildLevelScene.cpp
             Bomberman/Level/Tileset.cpp
@@ -89,9 +73,8 @@ if (NOT EMSCRIPTEN)
             Bomberman/GameModes/SoloMode.cpp
             Bomberman/GameModes/CoopMode.cpp
             Bomberman/GameModes/VersusMode.cpp
-    )
-    target_include_directories(bomberman PRIVATE ${CMAKE_SOURCE_DIR}/Bomberman)
-endif ()
+)
+target_include_directories(bomberman PRIVATE ${CMAKE_SOURCE_DIR}/Bomberman)
 
 # enable c++23 features
 target_compile_features(Core PUBLIC cxx_std_23)
@@ -307,20 +290,20 @@ if (EMSCRIPTEN)
     set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/cmake/EmscriptenToolchain.cmake)
 
     # Additional settings for Emscripten build
-    set_target_properties(${TARGET_NAME} PROPERTIES
+    set_target_properties(bomberman PROPERTIES
             COMPILE_FLAGS "${EMSCRIPTEN_COMPILE_FLAGS}"
             LINK_FLAGS "${EMSCRIPTEN_LINK_FLAGS}"
     )
 
-    add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
-            COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/web" "$<TARGET_FILE_DIR:${TARGET_NAME}>/"
+    add_custom_command(TARGET bomberman POST_BUILD
+            COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/web" "$<TARGET_FILE_DIR:bomberman>/"
     )
 
     # Have emscripten generate a html page too.
     set(CMAKE_EXECUTABLE_SUFFIX ".html")
 
 elseif (WIN32)
-    # Set the demo as the default startup project (first in GAME_TARGETS)
+    # Set the default startup project (first in GAME_TARGETS)
     list(GET GAME_TARGETS 0 _startup_target)
     set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${_startup_target})
 

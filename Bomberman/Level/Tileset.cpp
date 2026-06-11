@@ -43,7 +43,16 @@ const bomberman::Tileset &bomberman::GetTileset() {
         ts.spriteTexturePath = json.value("spriteTexture", "");
         ts.tileSize = json.at("tileSize").get<int>();
         ts.spriteScale = json.value("spriteScale", 2.0f);
-        ts.explosionLifetime = json.value("explosionLifetime", 0.5f); {
+        ts.explosionLifetime = json.value("explosionLifetime", 0.5f);
+        ts.bombFuseDuration = json.value("bombFuseDuration", 2.5f);
+        ts.maxBombs = json.value("maxBombs", 9);
+        ts.maxBlastRadius = json.value("maxBlastRadius", 4);
+        ts.startingBombs = json.value("startingBombs", 1);
+        ts.startingFlame = json.value("startingFlame", 1);
+        ts.startingLives = json.value("startingLives", 4);
+        ts.iframeDuration = json.value("iframeDuration", 1.0f);
+        ts.animationFps = json.value("animationFps", 8.0f);
+        ts.scorePopupLifetime = json.value("scorePopupLifetime", 0.6f); {
             const auto &background = json.at("tiles").at("background");
             ts.backgroundCoord = glm::ivec2{background.at("x").get<int>(), background.at("y").get<int>()};
         }

@@ -55,6 +55,15 @@ namespace bomberman {
         int tileSize{};
         float spriteScale{};
         float explosionLifetime{};
+        float bombFuseDuration{};
+        int maxBombs{};
+        int maxBlastRadius{};
+        int startingBombs{};
+        int startingFlame{};
+        int startingLives{};
+        float iframeDuration{};
+        float animationFps{};
+        float scorePopupLifetime{};
         glm::ivec2 backgroundCoord{};
         SpriteDefinition brick{};
         SpriteDefinition exit{};

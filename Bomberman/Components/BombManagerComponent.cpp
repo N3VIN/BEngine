@@ -37,7 +37,10 @@ bomberman::BombManagerComponent::BombManagerComponent(bengine::GameObject *paren
 }
 
 void bomberman::BombManagerComponent::RegisterPlayer(bengine::GameObject *player) {
-    m_playerStats[player] = {};
+    const auto &config = GetTileset();
+    auto &stats = m_playerStats[player];
+    stats.maxBombs = config.startingBombs;
+    stats.blastRadius = config.startingFlame;
 
     auto *health = player->GetComponent<HealthComponent>();
     m_damagedSubs.push_back(health->SubscribeDamaged([this, player](int) {
@@ -103,7 +106,7 @@ void bomberman::BombManagerComponent::PlaceBomb(glm::ivec2 cell, bengine::GameOb
 
     bombGO->AddComponent<SpriteRendererComponent>(SpriteType::Bomb);
 
-    auto *bomb = bombGO->AddComponent<BombComponent>(cell, stats.blastRadius, owner, BOMB_FUSE_DURATION, stats.hasDetonator);
+    auto *bomb = bombGO->AddComponent<BombComponent>(cell, stats.blastRadius, owner, GetTileset().bombFuseDuration, stats.hasDetonator);
 
     m_gridComponent->SetWall(cell, true);
     const auto idx = BombIndex(cell);
@@ -149,13 +152,13 @@ void bomberman::BombManagerComponent::DetonateBomb(BombComponent *bomb) {
 }
 
 void bomberman::BombManagerComponent::AddBomb(bengine::GameObject *owner) {
-    if (const auto it = m_playerStats.find(owner); it != m_playerStats.end() && it->second.maxBombs < MAX_BOMBS) {
+    if (const auto it = m_playerStats.find(owner); it != m_playerStats.end() && it->second.maxBombs < GetTileset().maxBombs) {
         ++it->second.maxBombs;
     }
 }
 
 void bomberman::BombManagerComponent::AddFlame(bengine::GameObject *owner) {
-    if (const auto it = m_playerStats.find(owner); it != m_playerStats.end() && it->second.blastRadius < MAX_BLAST_RADIUS) {
+    if (const auto it = m_playerStats.find(owner); it != m_playerStats.end() && it->second.blastRadius < GetTileset().maxBlastRadius) {
         ++it->second.blastRadius;
     }
 }

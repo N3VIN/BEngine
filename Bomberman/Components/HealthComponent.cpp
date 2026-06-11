@@ -1,4 +1,5 @@
 #include "HealthComponent.h"
+#include "Level/Tileset.h"
 
 bomberman::HealthComponent::HealthComponent(bengine::GameObject *parent, int lives)
     : bengine::Component(parent)
@@ -19,7 +20,7 @@ void bomberman::HealthComponent::TakeDamage(int amount, bengine::GameObject *att
         m_lives = 0;
     }
 
-    m_iframes.SetDuration(IFRAME_DURATION);
+    m_iframes.SetDuration(GetTileset().iframeDuration);
     m_onDamaged.Broadcast(m_lives);
 }
 

@@ -50,8 +50,8 @@ void bomberman::SpawnScorePopup(bengine::Scene &scene, glm::vec2 worldPos, float
         return;
     }
 
-    constexpr float lifetime{0.6f};
     const auto &tileset = GetTileset();
+    const float lifetime = tileset.scorePopupLifetime;
 
     auto popup = std::make_unique<bengine::GameObject>();
     auto *render = popup->AddComponent<bengine::RenderComponent>();

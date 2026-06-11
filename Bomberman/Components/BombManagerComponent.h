@@ -30,14 +30,10 @@ namespace bomberman {
 
         struct PlayerBombStats {
             int activeBombs{0};
-            int maxBombs{1};
-            int blastRadius{1};
+            int maxBombs{0};
+            int blastRadius{0};
             bool hasDetonator{false};
         };
-
-        static constexpr float BOMB_FUSE_DURATION{2.5f};
-        static constexpr int MAX_BOMBS{9};
-        static constexpr int MAX_BLAST_RADIUS{4};
 
         void SpawnFlame(glm::ivec2 cell, const SpriteDefinition &piece) const;
         void SpreadInDirection(glm::ivec2 origin, glm::ivec2 direction, int range, bengine::GameObject *owner);

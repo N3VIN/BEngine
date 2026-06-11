@@ -25,7 +25,6 @@ namespace bomberman {
         }
 
     private:
-        static constexpr float IFRAME_DURATION{1.0f};
         int m_lives;
         bengine::GameObject *m_lastAttacker{nullptr};
         bengine::Timer m_iframes{};

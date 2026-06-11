@@ -4,6 +4,15 @@
   "tileSize": 16,
   "spriteScale": 2.0,
   "explosionLifetime": 0.5,
+  "bombFuseDuration": 2.5,
+  "maxBombs": 9,
+  "maxBlastRadius": 4,
+  "startingBombs": 1,
+  "startingFlame": 1,
+  "startingLives": 4,
+  "iframeDuration": 1.0,
+  "animationFps": 8.0,
+  "scorePopupLifetime": 0.6,
   "tiles": {
     "background": {
       "x": 0,

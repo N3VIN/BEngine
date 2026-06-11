@@ -15,13 +15,11 @@ namespace bomberman {
         void SetIgnoreCamera(bool ignore) const;
 
         void PlayOnce(float fps);
-        void Play(const SpriteDefinition &definition, bool loop, float fps = ANIMATION_FPS);
+        void Play(const SpriteDefinition &definition, bool loop, float fps = GetTileset().animationFps);
 
         [[nodiscard]] bool IsPlaying() const {
             return m_playing;
         }
-
-        static constexpr float ANIMATION_FPS = 8.f;
 
     private:
         void ApplySourceRect(int frame) const;

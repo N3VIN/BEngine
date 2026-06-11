@@ -25,7 +25,7 @@ void bomberman::BrickComponent::Destroy() {
     }
 
     if (auto *sprite = GetParent()->GetComponent<SpriteRendererComponent>()) {
-        sprite->PlayOnce(SpriteRendererComponent::ANIMATION_FPS);
+        sprite->PlayOnce(GetTileset().animationFps);
     }
 
     m_timer.Reset();

@@ -18,7 +18,7 @@ bomberman::SpriteRendererComponent::SpriteRendererComponent(bengine::GameObject 
     m_frameStrideRows = definition.frameStrideRows;
 
     if (definition.autoPlay) {
-        m_frameTimer = bengine::Timer{1.f / ANIMATION_FPS};
+        m_frameTimer = bengine::Timer{1.f / tileset.animationFps};
         m_playing = true;
     }
 

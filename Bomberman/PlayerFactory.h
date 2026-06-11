@@ -19,7 +19,7 @@ namespace bomberman {
         auto *player = scene.Add(std::make_unique<bengine::GameObject>());
         player->AddComponent<GridMovementComponent>(config.gridComponent, config.spawnCell, config.cellsPerSecond);
         player->AddComponent<SpriteRendererComponent>();
-        player->AddComponent<HealthComponent>(4);
+        player->AddComponent<HealthComponent>(GetTileset().startingLives);
         player->AddComponent<PlayerControllerComponent>();
 
         return player;
