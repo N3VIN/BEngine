@@ -42,6 +42,14 @@ void bomberman::BombManagerComponent::RegisterPlayer(bengine::GameObject *player
     auto *health = player->GetComponent<HealthComponent>();
     m_damagedSubs.push_back(health->SubscribeDamaged([this, player](int) {
                 m_playerStats[player].hasDetonator = false; // lose detonator on death
+
+                // detonate the bomb when the player dies
+                for (auto *bomb: m_activeBombs) {
+                    if (bomb->GetOwner() == player) {
+                        m_detonationQueue.push_back(bomb);
+                    }
+                }
+                ProcessDetonationQueue();
             }
         )
     );
