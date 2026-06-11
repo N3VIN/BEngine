@@ -6,7 +6,7 @@
 #include "Components/Component.h"
 
 namespace bengine {
-    class TextComponent;
+    class SpriteTextComponent;
 }
 
 namespace bomberman {
@@ -14,13 +14,13 @@ namespace bomberman {
     public:
         explicit MenuComponent(bengine::GameObject *parent);
 
-        void AddItem(bengine::TextComponent *text, std::function<void()> onSelect);
+        void AddItem(bengine::SpriteTextComponent *text, std::function<void()> onSelect);
         void MoveSelection(int direction);
         void Confirm() const;
 
     private:
         struct Item {
-            bengine::TextComponent *text{nullptr};
+            bengine::SpriteTextComponent *text{nullptr};
             std::function<void()> onSelect{};
         };
 

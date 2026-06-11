@@ -2,12 +2,12 @@
 
 #include <string>
 
-#include "Components/TextComponent.h"
+#include "Components/SpriteTextComponent.h"
 
 bomberman::NameEntryComponent::NameEntryComponent(bengine::GameObject *parent)
     : bengine::Component(parent) {}
 
-void bomberman::NameEntryComponent::AddSlot(bengine::TextComponent *label) {
+void bomberman::NameEntryComponent::AddSlot(bengine::SpriteTextComponent *label) {
     m_labels.push_back(label);
     Refresh();
 }

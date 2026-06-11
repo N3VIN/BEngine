@@ -5,18 +5,19 @@
 
 #include "SceneGraph/Scene.h"
 #include "SceneGraph/GameObject.h"
-#include "Components/TextComponent.h"
-#include "Components/RenderComponent.h"
-#include "Renderer/ResourceManager.h"
+#include "Components/SpriteTextComponent.h"
+#include "UIFont.h"
 
 namespace bomberman {
-    inline bengine::TextComponent *CreateMenuLabel(bengine::Scene &scene, std::string_view text, int fontSize, const SDL_Color &color, const glm::vec2 &position) {
+    inline bengine::SpriteTextComponent *CreateMenuLabel(bengine::Scene &scene, std::string_view text, int fontSize, const SDL_Color &color, const glm::vec2 &position) {
         auto *labelGo = scene.Add(std::make_unique<bengine::GameObject>());
-        auto *textComponent = labelGo->AddComponent<bengine::TextComponent>();
-        textComponent->SetFont(bengine::ResourceManager::GetInstance().LoadFont("Lingua.otf", static_cast<uint8_t>(fontSize)));
+        auto *textComponent = labelGo->AddComponent<bengine::SpriteTextComponent>();
+        textComponent->SetFont(GetUIFont());
+        textComponent->SetScale(static_cast<float>(fontSize) / 8.0f);
         textComponent->SetColor(color);
+        textComponent->SetCentered(true);
+        textComponent->SetIgnoreCamera(true);
         textComponent->SetText(text);
-        labelGo->GetComponent<bengine::RenderComponent>()->SetIgnoreCamera(true);
         labelGo->SetLocalPosition(position);
         return textComponent;
     }

@@ -4,7 +4,7 @@
 
 namespace bengine {
     class GameObject;
-    class TextComponent;
+    class SpriteTextComponent;
 }
 
 namespace bomberman {
@@ -17,7 +17,7 @@ namespace bomberman {
 
         bengine::GameObject *m_player{nullptr};
         int m_playerIndex{};
-        bengine::TextComponent *m_text{nullptr};
+        bengine::SpriteTextComponent *m_text{nullptr};
         bengine::ScopedDelegate m_killedSub{};
     };
 }

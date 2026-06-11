@@ -37,30 +37,27 @@ void bomberman::MainMenuState::OnEnter() {
     audio.StopAudio(utils::Hash("title_screen"));
     audio.PlayAudio(utils::Hash("title_screen"), 0.5f, -1);
 
-    CreateMenuLabel(*m_scene, "BOMBERMAN", 48, {255, 255, 255, 255},
-                    bengine::ScreenFraction(0.5f, 0.25f) + glm::vec2(-180.0f, 0.0f)
-    );
+    CreateMenuLabel(*m_scene, "BOMBERMAN", 48, {255, 255, 255, 255}, bengine::ScreenFraction(0.5f, 0.25f));
 
     auto *menuGo = m_scene->Add(std::make_unique<bengine::GameObject>());
     auto *menu = menuGo->AddComponent<MenuComponent>();
 
     constexpr float startY = 0.5f;
     constexpr float stepY = 0.09f;
-    constexpr glm::vec2 itemOffset{-60.0f, 0.0f};
 
-    menu->AddItem(CreateMenuLabel(*m_scene, "Start", 28, {180, 180, 180, 255}, bengine::ScreenFraction(0.5f, startY) + itemOffset),
+    menu->AddItem(CreateMenuLabel(*m_scene, "Start", 28, {180, 180, 180, 255}, bengine::ScreenFraction(0.5f, startY)),
                   [] {
                       bengine::SceneManager::GetInstance().SetState(std::make_unique<ModeSelectState>());
                   }
     );
 
-    menu->AddItem(CreateMenuLabel(*m_scene, "Highscores", 28, {180, 180, 180, 255}, bengine::ScreenFraction(0.5f, startY + stepY) + itemOffset),
+    menu->AddItem(CreateMenuLabel(*m_scene, "Highscores", 28, {180, 180, 180, 255}, bengine::ScreenFraction(0.5f, startY + stepY)),
                   [] {
                       bengine::SceneManager::GetInstance().SetState(std::make_unique<HighScoreState>());
                   }
     );
 
-    menu->AddItem(CreateMenuLabel(*m_scene, "Quit", 28, {180, 180, 180, 255}, bengine::ScreenFraction(0.5f, startY + stepY * 2.0f) + itemOffset),
+    menu->AddItem(CreateMenuLabel(*m_scene, "Quit", 28, {180, 180, 180, 255}, bengine::ScreenFraction(0.5f, startY + stepY * 2.0f)),
                   [] {
                       QuitCommand{}.Execute();
                   }

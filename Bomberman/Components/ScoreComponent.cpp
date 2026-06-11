@@ -5,7 +5,7 @@
 #include "ScoreBoard.h"
 #include "GameEvents.h"
 #include "SceneGraph/GameObject.h"
-#include "Components/TextComponent.h"
+#include "Components/SpriteTextComponent.h"
 #include "Patterns/ServiceLocator.h"
 #include "Patterns/EventBus.h"
 
@@ -13,7 +13,7 @@ bomberman::ScoreComponent::ScoreComponent(bengine::GameObject *owner, bengine::G
     : bengine::Component(owner)
   , m_player(player)
   , m_playerIndex(playerIndex)
-  , m_text(owner->GetComponent<bengine::TextComponent>()) {
+  , m_text(owner->GetComponent<bengine::SpriteTextComponent>()) {
     Refresh();
 
     m_killedSub = bengine::ServiceLocator::GetEventBus().Subscribe<events::EnemyKilled>(

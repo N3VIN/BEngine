@@ -31,7 +31,7 @@ void bomberman::ModeSelectState::OnEnter() {
 
     m_scene = &bengine::SceneManager::GetInstance().CreateScene();
 
-    CreateMenuLabel(*m_scene, "SELECT MODE", 48, {255, 255, 255, 255}, bengine::ScreenFraction(0.5f, 0.25f) + glm::vec2(-180.0f, 0.0f));
+    CreateMenuLabel(*m_scene, "SELECT MODE", 48, {255, 255, 255, 255}, bengine::ScreenFraction(0.5f, 0.25f));
 
     auto *menuGo = m_scene->Add(std::make_unique<bengine::GameObject>());
     auto *menu = menuGo->AddComponent<MenuComponent>();
@@ -43,27 +43,26 @@ void bomberman::ModeSelectState::OnEnter() {
 
     constexpr float startY = 0.45f;
     constexpr float stepY = 0.09f;
-    constexpr glm::vec2 itemOffset{-90.0f, 0.0f};
 
-    menu->AddItem(CreateMenuLabel(*m_scene, "Solo", 28, {180, 180, 180, 255}, bengine::ScreenFraction(0.5f, startY) + itemOffset),
+    menu->AddItem(CreateMenuLabel(*m_scene, "Solo", 28, {180, 180, 180, 255}, bengine::ScreenFraction(0.5f, startY)),
                   [launch] {
                       launch(GameMode::Solo);
                   }
     );
 
-    menu->AddItem(CreateMenuLabel(*m_scene, "Co-op", 28, {180, 180, 180, 255}, bengine::ScreenFraction(0.5f, startY + stepY) + itemOffset),
+    menu->AddItem(CreateMenuLabel(*m_scene, "COOP", 28, {180, 180, 180, 255}, bengine::ScreenFraction(0.5f, startY + stepY)),
                   [launch] {
                       launch(GameMode::Coop);
                   }
     );
 
-    menu->AddItem(CreateMenuLabel(*m_scene, "Versus", 28, {180, 180, 180, 255}, bengine::ScreenFraction(0.5f, startY + stepY * 2.0f) + itemOffset),
+    menu->AddItem(CreateMenuLabel(*m_scene, "Versus", 28, {180, 180, 180, 255}, bengine::ScreenFraction(0.5f, startY + stepY * 2.0f)),
                   [launch] {
                       launch(GameMode::Versus);
                   }
     );
 
-    menu->AddItem(CreateMenuLabel(*m_scene, "Back", 28, {180, 180, 180, 255}, bengine::ScreenFraction(0.5f, startY + stepY * 3.0f) + itemOffset),
+    menu->AddItem(CreateMenuLabel(*m_scene, "Back", 28, {180, 180, 180, 255}, bengine::ScreenFraction(0.5f, startY + stepY * 3.0f)),
                   [] {
                       bengine::SceneManager::GetInstance().SetState(std::make_unique<MainMenuState>());
                   }

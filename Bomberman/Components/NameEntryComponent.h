@@ -8,7 +8,7 @@
 #include "HighScores.h"
 
 namespace bengine {
-    class TextComponent;
+    class SpriteTextComponent;
 }
 
 namespace bomberman {
@@ -16,7 +16,7 @@ namespace bomberman {
     public:
         explicit NameEntryComponent(bengine::GameObject *parent);
 
-        void AddSlot(bengine::TextComponent *label);
+        void AddSlot(bengine::SpriteTextComponent *label);
         void SetOnConfirm(std::function<void(std::array<char, highscores::NameLength>)> onConfirm);
 
         void ChangeLetter(int direction);
@@ -27,7 +27,7 @@ namespace bomberman {
         void Refresh() const;
 
         std::array<char, highscores::NameLength> m_letters{'-', '-', '-'};
-        std::vector<bengine::TextComponent *> m_labels{};
+        std::vector<bengine::SpriteTextComponent *> m_labels{};
         size_t m_slot{0};
         std::function<void(std::array<char, highscores::NameLength>)> m_onConfirm{};
         SDL_Color m_normalColor{180, 180, 180, 255};

@@ -1,11 +1,11 @@
 #include "MenuComponent.h"
 
-#include "Components/TextComponent.h"
+#include "Components/SpriteTextComponent.h"
 
 bomberman::MenuComponent::MenuComponent(bengine::GameObject *parent)
     : bengine::Component(parent) {}
 
-void bomberman::MenuComponent::AddItem(bengine::TextComponent *text, std::function<void()> onSelect) {
+void bomberman::MenuComponent::AddItem(bengine::SpriteTextComponent *text, std::function<void()> onSelect) {
     m_items.push_back({text, std::move(onSelect)});
     Refresh();
 }

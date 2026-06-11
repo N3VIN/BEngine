@@ -27,6 +27,8 @@ add_library(Core STATIC
         Core/SceneGraph/Transform.cpp
         Core/Components/RenderComponent.cpp
         Core/Components/TextComponent.cpp
+        Core/Components/SpriteTextComponent.cpp
+        Core/Renderer/SpriteFont.cpp
         Core/Components/FPSComponent.cpp
         Core/Components/RotatorComponent.cpp
         Core/Components/CameraComponent.cpp

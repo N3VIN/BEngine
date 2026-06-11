@@ -13,7 +13,9 @@
 #include "Components/BrickComponent.h"
 #include "Components/RenderComponent.h"
 #include "Components/TextComponent.h"
+#include "Components/SpriteTextComponent.h"
 #include "Components/ScoreComponent.h"
+#include "UIFont.h"
 #include "Components/FPSComponent.h"
 #include "Components/CameraComponent.h"
 #include "GameModes/IGameMode.h"
@@ -201,10 +203,12 @@ bomberman::LevelScene bomberman::BuildLevelScene(std::string_view jsonRelativePa
     if (mode.ShowsScore()) {
         for (size_t playerIndex = 0; playerIndex < players.size(); ++playerIndex) {
             auto *scoreGameObject = scene.Add(std::make_unique<bengine::GameObject>());
-            auto *scoreText = scoreGameObject->AddComponent<bengine::TextComponent>();
-            scoreGameObject->GetComponent<bengine::RenderComponent>()->SetIgnoreCamera(true);
-            scoreText->SetFont(bengine::ResourceManager::GetInstance().LoadFont("Lingua.otf", 24));
+            auto *scoreText = scoreGameObject->AddComponent<bengine::SpriteTextComponent>();
+            scoreText->SetFont(GetUIFont());
+            scoreText->SetScale(3.0f);
             scoreText->SetColor({255, 255, 255, 255});
+            scoreText->SetIgnoreCamera(true);
+            scoreText->SetCentered(false);
             scoreGameObject->AddComponent<ScoreComponent>(players[playerIndex], static_cast<int>(playerIndex));
 
             const float fractionX = (playerIndex == 0) ? 0.02f : 0.80f; // TODO: this is temp
