@@ -15,6 +15,7 @@
 #include "Components/TextComponent.h"
 #include "Components/SpriteTextComponent.h"
 #include "Components/ScoreComponent.h"
+#include "Components/LivesComponent.h"
 #include "UIFont.h"
 #include "Components/FPSComponent.h"
 #include "Components/CameraComponent.h"
@@ -26,6 +27,10 @@
 #include "Renderer/ResourceManager.h"
 #include "Renderer/Renderer.h"
 #include "Input/InputManager.h"
+
+namespace {
+    constexpr float HudHeight{72.0f}; // top status-bar height (score row + lives row); window is 624 playfield + this
+}
 
 bomberman::LevelGridComponent *bomberman::CreateLevelBackground(bengine::Scene &scene, const Tileset &tileset, LevelGridComponent *gridComponent) {
     const auto levelOrigin = gridComponent->GetOrigin();
@@ -51,7 +56,8 @@ bengine::CameraComponent *bomberman::CreateCamera(bengine::Scene &scene, const L
 
     const float levelHeight = static_cast<float>(gridComponent->GetRows()) * gridComponent->GetCellSize();
     const float windowHeight = bengine::Renderer::GetInstance().GetWindowSize().y;
-    cameraComp->SetZoom(windowHeight / levelHeight);
+    cameraComp->SetZoom((windowHeight - HudHeight) / levelHeight);            // leave room for the top HUD bar
+    bengine::Renderer::GetInstance().SetViewOffset({0.0f, HudHeight * 0.5f}); // push playfield below the bar
 
     cameraComp->SetTargetOffset(glm::vec2{gridComponent->GetCellSize() * 0.5f}); // we do 0.5 to center the camera on the player
 
@@ -129,7 +135,7 @@ void bomberman::CreateFPSDisplay(bengine::Scene &scene) {
     fpsText->SetFont(bengine::ResourceManager::GetInstance().LoadFont("Lingua.otf", 24));
     fpsText->SetColor({0, 255, 0, 255});
     fpsGo->AddComponent<bengine::FPSComponent>();
-    fpsGo->SetLocalPosition(bengine::ScreenFraction(0.01f, 0.01f));
+    fpsGo->SetLocalPosition(bengine::ScreenFraction(0.01f, 0.95f)); // bottom left
 }
 
 bomberman::LevelScene bomberman::BuildLevelScene(std::string_view jsonRelativePath, const IGameMode &mode) {
@@ -198,22 +204,33 @@ bomberman::LevelScene bomberman::BuildLevelScene(std::string_view jsonRelativePa
 
     scene.Add(std::move(hazardManagerGO));
 
-    CreateFPSDisplay(scene);
+    // CreateFPSDisplay(scene);
 
-    if (mode.ShowsScore()) {
-        for (size_t playerIndex = 0; playerIndex < players.size(); ++playerIndex) {
-            auto *scoreGameObject = scene.Add(std::make_unique<bengine::GameObject>());
-            auto *scoreText = scoreGameObject->AddComponent<bengine::SpriteTextComponent>();
-            scoreText->SetFont(GetUIFont());
-            scoreText->SetScale(3.0f);
-            scoreText->SetColor({255, 255, 255, 255});
-            scoreText->SetIgnoreCamera(true);
-            scoreText->SetCentered(false);
-            scoreGameObject->AddComponent<ScoreComponent>(players[playerIndex], static_cast<int>(playerIndex));
+    constexpr float hudTextHeight = 8.0f * 3.0f; // glyph 8px * scale 3
+    constexpr float hudRow1Y = 8.0f;
+    constexpr float hudRow2Y = hudRow1Y + hudTextHeight + 8.0f;
+    const float windowWidth = bengine::Renderer::GetInstance().GetWindowSize().x;
 
-            const float fractionX = (playerIndex == 0) ? 0.02f : 0.80f; // TODO: this is temp
-            scoreGameObject->SetLocalPosition(bengine::ScreenFraction(fractionX, 0.06f));
+    const auto makeHudLabel = [&scene](float positionX, float positionY) {
+        auto *labelGo = scene.Add(std::make_unique<bengine::GameObject>());
+        auto *text = labelGo->AddComponent<bengine::SpriteTextComponent>();
+        text->SetFont(GetUIFont());
+        text->SetScale(3.0f);
+        text->SetColor({255, 255, 255, 255});
+        text->SetIgnoreCamera(true);
+        text->SetCentered(false);
+        labelGo->SetLocalPosition({positionX, positionY});
+        return labelGo;
+    };
+
+    for (size_t playerIndex = 0; playerIndex < players.size(); ++playerIndex) {
+        const float positionX = (playerIndex == 0) ? 16.0f : windowWidth * 0.55f;
+
+        if (mode.ShowsScore()) {
+            makeHudLabel(positionX, hudRow1Y)->AddComponent<ScoreComponent>(players[playerIndex], static_cast<int>(playerIndex));
         }
+
+        makeHudLabel(positionX, hudRow2Y)->AddComponent<LivesComponent>(players[playerIndex]);
     }
 
     mode.ConfigureInput(bengine::InputManager::GetInstance(), players, *bombManager);

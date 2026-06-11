@@ -72,9 +72,9 @@ bengine::Engine::Engine(const fs::path &dataPath) {
     }
 
     g_window = SDL_CreateWindow(
-        "Programming 4 assignment",
+        "Bomberman",
         768,
-        624,
+        696,
         SDL_WINDOW_OPENGL
     );
     if (g_window == nullptr) {

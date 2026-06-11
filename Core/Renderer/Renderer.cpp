@@ -82,6 +82,14 @@ SDL_Renderer *bengine::Renderer::GetSDLRenderer() const {
     return m_renderer;
 }
 
+void bengine::Renderer::SetActiveCamera(const CameraComponent *camera) {
+    m_activeCamera = camera;
+}
+
+const bengine::CameraComponent *bengine::Renderer::GetActiveCamera() const {
+    return m_activeCamera;
+}
+
 glm::vec2 bengine::Renderer::GetWindowSize() const {
     int w{}, h{};
     SDL_GetWindowSize(m_window, &w, &h);
@@ -95,7 +103,19 @@ glm::vec2 bengine::Renderer::WorldToScreen(const glm::vec2 &worldPos) const {
 
     const auto center = m_activeCamera->GetViewCenter();
     const auto zoom = m_activeCamera->GetZoom();
-    const auto screenCenter = GetWindowSize() * 0.5f;
+    const auto screenCenter = GetWindowSize() * 0.5f + m_viewOffset;
 
     return (worldPos - center) * zoom + screenCenter;
+}
+
+const SDL_Color &bengine::Renderer::GetBackgroundColor() const {
+    return m_clearColor;
+}
+
+void bengine::Renderer::SetBackgroundColor(const SDL_Color &color) {
+    m_clearColor = color;
+}
+
+void bengine::Renderer::SetViewOffset(const glm::vec2 &offset) {
+    m_viewOffset = offset;
 }

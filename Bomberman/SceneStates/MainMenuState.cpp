@@ -11,6 +11,7 @@
 #include "SceneGraph/Scene.h"
 #include "SceneGraph/SceneManager.h"
 #include "SceneGraph/GameObject.h"
+#include "Components/RenderComponent.h"
 #include "UIHelpers.h"
 #include "Renderer/Renderer.h"
 #include "Renderer/ResourceManager.h"
@@ -37,12 +38,25 @@ void bomberman::MainMenuState::OnEnter() {
     audio.StopAudio(utils::Hash("title_screen"));
     audio.PlayAudio(utils::Hash("title_screen"), 0.5f, -1);
 
-    CreateMenuLabel(*m_scene, "BOMBERMAN", 48, {255, 255, 255, 255}, bengine::ScreenFraction(0.5f, 0.25f));
+    constexpr int logoX = 16;
+    constexpr int logoY = 8;
+    constexpr int logoWidth = 224;
+    constexpr int logoHeight = 132;
+    constexpr float logoScale = 1.85f;
+
+    const auto windowSize = bengine::Renderer::GetInstance().GetWindowSize();
+    auto *logoGo = m_scene->Add(std::make_unique<bengine::GameObject>());
+    auto *logo = logoGo->AddComponent<bengine::RenderComponent>();
+    logo->SetTexture("Sprites/Title_Text.png");
+    logo->SetSourceRect(logoX, logoY, logoWidth, logoHeight);
+    logo->SetScale(logoScale);
+    logo->SetIgnoreCamera(true);
+    logoGo->SetLocalPosition({(windowSize.x - static_cast<float>(logoWidth) * logoScale) * 0.5f, windowSize.y * 0.12f});
 
     auto *menuGo = m_scene->Add(std::make_unique<bengine::GameObject>());
     auto *menu = menuGo->AddComponent<MenuComponent>();
 
-    constexpr float startY = 0.5f;
+    constexpr float startY = 0.58f;
     constexpr float stepY = 0.09f;
 
     menu->AddItem(CreateMenuLabel(*m_scene, "Start", 28, {180, 180, 180, 255}, bengine::ScreenFraction(0.5f, startY)),

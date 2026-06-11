@@ -9,7 +9,6 @@
 
 #include "SceneGraph/Scene.h"
 #include "SceneGraph/SceneManager.h"
-#include "SceneGraph/GameObject.h"
 #include "MenuUI.h"
 #include "UIHelpers.h"
 #include "Renderer/Renderer.h"
@@ -57,11 +56,4 @@ void bomberman::GameEndState::OnEnter() {
 
 void bomberman::GameEndState::OnExit() {
     bengine::InputManager::GetInstance().UnbindAll();
-}
-
-void bomberman::GameEndState::Update(float deltaTime) {
-    m_timer.Update(deltaTime);
-    if (m_timer.IsExpired()) {
-        bengine::SceneManager::GetInstance().SetState(std::make_unique<HighScoreState>(GetNewScores()));
-    }
 }

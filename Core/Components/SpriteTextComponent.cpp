@@ -43,7 +43,7 @@ void bengine::SpriteTextComponent::Render() const {
 
     for (const char character: m_text) {
         if (const auto *source = m_font->TryGetGlyph(character)) {
-            const auto destination{positionX, worldPos.y, glyphWidth, glyphHeight};
+            const SDL_FRect destination{positionX, worldPos.y, glyphWidth, glyphHeight};
             renderer.RenderTexture(atlas, destination, source, 0.0f);
         }
 

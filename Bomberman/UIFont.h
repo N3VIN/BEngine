@@ -12,7 +12,9 @@ namespace bomberman {
             std::vector<bengine::SpriteFont::GlyphRow>{
                 {"0123456789?", 0, 248},
                 {"ABCDEFGHIJKLMNOPQRSTUVWXYZ", 0, 256},
-            });
+            }
+        );
+
         return font;
     }
 }
