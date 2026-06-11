@@ -66,6 +66,10 @@ void bomberman::EnemyControllerComponent::PlayDeathAnimation() const {
     m_sprite->Play(m_sprites->death, false);
 }
 
+void bomberman::EnemyControllerComponent::StopMovement() const {
+    m_movement->SetMovementEnabled(false);
+}
+
 void bomberman::EnemyControllerComponent::Die() const {
     bengine::ServiceLocator::GetEventBus().Broadcast(events::EnemyKilled{
             .enemy = GetParent(),

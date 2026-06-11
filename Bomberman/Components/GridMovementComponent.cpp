@@ -19,16 +19,29 @@ void bomberman::GridMovementComponent::SetViewClamp(const bengine::CameraCompone
     m_viewClamp = camera;
 }
 
+void bomberman::GridMovementComponent::SetMovementEnabled(bool enabled) {
+    m_movementEnabled = enabled;
+}
+
 void bomberman::GridMovementComponent::Respawn(glm::ivec2 cell) {
     m_cell = cell;
     m_activeDir = {0, 0};
     m_queuedDir = {0, 0};
     m_progress = 0.f;
     m_facing = {0, 1};
+    m_movementEnabled = true;
     ApplyVisualPosition();
 }
 
 void bomberman::GridMovementComponent::Update(float deltaTime) {
+    if (!m_movementEnabled) {
+        m_activeDir = {0, 0};
+        m_queuedDir = {0, 0};
+        m_progress = 0.f;
+        ApplyVisualPosition();
+        return;
+    }
+
     if (!IsMoving()) {
         TryStartMoveInQueuedDir();
     }

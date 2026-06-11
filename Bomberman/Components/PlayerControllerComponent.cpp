@@ -9,11 +9,12 @@
 #include "SceneGraph/GameObject.h"
 #include "utils.h"
 
-bomberman::PlayerControllerComponent::PlayerControllerComponent(bengine::GameObject *parent)
+bomberman::PlayerControllerComponent::PlayerControllerComponent(bengine::GameObject *parent, PlayerSprites sprites)
     : bengine::Component(parent)
   , m_movement(parent->GetComponent<GridMovementComponent>())
   , m_sprite(parent->GetComponent<SpriteRendererComponent>())
   , m_health(parent->GetComponent<HealthComponent>())
+  , m_sprites(sprites)
   , m_spawnCell(m_movement->GetCell()) {
     m_currentState = std::make_unique<IdlePlayerState>();
     m_currentState->OnEnter(*this);
@@ -44,6 +45,10 @@ void bomberman::PlayerControllerComponent::Update(float deltaTime) {
     }
 }
 
+const bomberman::PlayerSprites &bomberman::PlayerControllerComponent::GetSprites() const {
+    return m_sprites;
+}
+
 glm::ivec2 bomberman::PlayerControllerComponent::GetFacing() const {
     return m_movement->GetFacing();
 }
@@ -62,6 +67,10 @@ int bomberman::PlayerControllerComponent::GetLives() const {
 
 void bomberman::PlayerControllerComponent::PlayAnimation(const SpriteDefinition &clip, bool loop) const {
     m_sprite->Play(clip, loop);
+}
+
+void bomberman::PlayerControllerComponent::StopMovement() const {
+    m_movement->SetMovementEnabled(false);
 }
 
 void bomberman::PlayerControllerComponent::Respawn() const {

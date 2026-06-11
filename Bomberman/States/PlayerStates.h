@@ -34,6 +34,6 @@ namespace bomberman {
         [[nodiscard]] bool IsAlive() const override;
     };
 
-    SpriteDefinition GetWalkClip(glm::ivec2 facing);
-    std::unique_ptr<IPlayerState> MakeWalkState(glm::ivec2 facing);
+    SpriteDefinition GetWalkClip(const PlayerSprites &sprites, glm::ivec2 facing);
+    std::unique_ptr<IPlayerState> MakeWalkState(const PlayerSprites &sprites, glm::ivec2 facing);
 }

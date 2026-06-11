@@ -14,8 +14,7 @@ std::unique_ptr<bomberman::IEnemyState> bomberman::EnemyWalkState::Update(EnemyC
         return nullptr;
     }
 
-    const bool facingLeft = facing.x < 0;
-    if (facingLeft == m_facingLeft) {
+    if (facing.x < 0 == m_facingLeft) {
         return nullptr;
     }
 
@@ -23,6 +22,7 @@ std::unique_ptr<bomberman::IEnemyState> bomberman::EnemyWalkState::Update(EnemyC
 }
 
 void bomberman::EnemyDyingState::OnEnter(EnemyControllerComponent &controller) {
+    controller.StopMovement();
     controller.PlayDeathAnimation();
 }
 

@@ -18,6 +18,10 @@ bool bomberman::CoopMode::ShowsScore() const {
     return true;
 }
 
+bool bomberman::CoopMode::Player2IsBalloom() const {
+    return false;
+}
+
 void bomberman::CoopMode::ConfigureCamera(bengine::CameraComponent &camera, const std::vector<bengine::GameObject *> &players) const {
     camera.SetTargets({players[0], players[1]});
 

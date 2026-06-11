@@ -23,6 +23,7 @@ namespace bomberman {
 
         void PlayWalkAnimation(bool facingLeft) const;
         void PlayDeathAnimation() const;
+        void StopMovement() const;
         void Die() const;
 
     private:

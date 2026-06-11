@@ -20,6 +20,9 @@ namespace bomberman {
         [[nodiscard]] virtual bool SpawnsEnemies() const = 0;
         [[nodiscard]] virtual bool ShowsScore() const = 0;
 
+        // player 2 plays as a Balloom
+        [[nodiscard]] virtual bool Player2IsBalloom() const = 0;
+
         virtual void ConfigureCamera(bengine::CameraComponent &camera, const std::vector<bengine::GameObject *> &players) const = 0;
         virtual void ConfigureInput(bengine::InputManager &input, const std::vector<bengine::GameObject *> &players, BombManagerComponent &bombs) const = 0;
 

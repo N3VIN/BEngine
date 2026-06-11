@@ -2,14 +2,14 @@
 #include "Components/PlayerControllerComponent.h"
 
 void bomberman::IdlePlayerState::OnEnter(PlayerControllerComponent &controller) {
-    auto standing = GetWalkClip(controller.GetFacing());
+    auto standing = GetWalkClip(controller.GetSprites(), controller.GetFacing());
     standing.frameCount = 1;
     controller.PlayAnimation(standing, false);
 }
 
 std::unique_ptr<bomberman::IPlayerState> bomberman::IdlePlayerState::Update(PlayerControllerComponent &controller, float /*deltaTime*/) {
     if (controller.IsMoving()) {
-        return MakeWalkState(controller.GetFacing());
+        return MakeWalkState(controller.GetSprites(), controller.GetFacing());
     }
 
     return nullptr;
@@ -29,14 +29,15 @@ std::unique_ptr<bomberman::IPlayerState> bomberman::DirectionalWalkState::Update
     }
 
     if (controller.GetFacing() != m_direction) {
-        return MakeWalkState(controller.GetFacing());
+        return MakeWalkState(controller.GetSprites(), controller.GetFacing());
     }
 
     return nullptr;
 }
 
 void bomberman::DyingPlayerState::OnEnter(PlayerControllerComponent &controller) {
-    controller.PlayAnimation(GetTileset().player.death, false);
+    controller.StopMovement();
+    controller.PlayAnimation(controller.GetSprites().death, false);
 }
 
 std::unique_ptr<bomberman::IPlayerState> bomberman::DyingPlayerState::Update(PlayerControllerComponent &controller, float /*deltaTime*/) {
@@ -61,21 +62,20 @@ bool bomberman::DeadPlayerState::IsAlive() const {
     return false;
 }
 
-bomberman::SpriteDefinition bomberman::GetWalkClip(glm::ivec2 facing) {
-    const auto &player = GetTileset().player;
+bomberman::SpriteDefinition bomberman::GetWalkClip(const PlayerSprites &sprites, glm::ivec2 facing) {
     if (facing.x < 0) {
-        return player.walkLeft;
+        return sprites.walkLeft;
     }
     if (facing.x > 0) {
-        return player.walkRight;
+        return sprites.walkRight;
     }
     if (facing.y < 0) {
-        return player.walkUp;
+        return sprites.walkUp;
     }
 
-    return player.walkDown;
+    return sprites.walkDown;
 }
 
-std::unique_ptr<bomberman::IPlayerState> bomberman::MakeWalkState(glm::ivec2 facing) {
-    return std::make_unique<DirectionalWalkState>(facing, GetWalkClip(facing));
+std::unique_ptr<bomberman::IPlayerState> bomberman::MakeWalkState(const PlayerSprites &sprites, glm::ivec2 facing) {
+    return std::make_unique<DirectionalWalkState>(facing, GetWalkClip(sprites, facing));
 }

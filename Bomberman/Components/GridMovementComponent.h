@@ -15,6 +15,7 @@ namespace bomberman {
         void Update(float deltaTime) override;
         void SetDesiredDirection(glm::ivec2 direction);
         void SetViewClamp(const bengine::CameraComponent *camera);
+        void SetMovementEnabled(bool enabled);
         void Respawn(glm::ivec2 cell);
 
         [[nodiscard]] glm::ivec2 GetCell() const {
@@ -41,5 +42,6 @@ namespace bomberman {
         glm::ivec2 m_facing{0, 1};
         float m_progress{0.f};
         const float m_cellsPerSecond;
+        bool m_movementEnabled{true};
     };
 }

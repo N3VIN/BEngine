@@ -162,14 +162,23 @@ bomberman::LevelScene bomberman::BuildLevelScene(std::string_view jsonRelativePa
     auto *pickupManagerGO = scene.Add(std::make_unique<bengine::GameObject>());
     auto *pickupManager = pickupManagerGO->AddComponent<PickupComponent>(levelGridComponent);
 
+    const bool player2IsBalloom = mode.Player2IsBalloom();
+
     std::vector<bengine::GameObject *> players;
     players.push_back(CreatePlayer(scene, {levelGridComponent, spawns.players[0], 4.0f}));
 
     if (mode.PlayerCount() > 1) {
-        players.push_back(CreatePlayer(scene, {levelGridComponent, spawns.players[1], 4.0f}));
+        const PlayerConfig player2Config{levelGridComponent, spawns.players[1], 4.0f};
+        players.push_back(player2IsBalloom ? CreateBallomPlayer(scene, player2Config) : CreatePlayer(scene, player2Config));
     }
 
-    for (auto *player: players) {
+    for (size_t playerIndex = 0; playerIndex < players.size(); ++playerIndex) {
+        auto *player = players[playerIndex];
+        if (player2IsBalloom && playerIndex == 1) {
+            hazardManager->RegisterEnemy(player); // dies to bombs, kills player 1 on touch
+            continue;
+        }
+
         bombManager->RegisterPlayer(player);
         enemyManager->RegisterPlayer(player);
         hazardManager->RegisterPlayer(player);

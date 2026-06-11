@@ -20,6 +20,10 @@ bool bomberman::VersusMode::ShowsScore() const {
     return false;
 }
 
+bool bomberman::VersusMode::Player2IsBalloom() const {
+    return true;
+}
+
 void bomberman::VersusMode::ConfigureCamera(bengine::CameraComponent &camera, const std::vector<bengine::GameObject *> &players) const {
     camera.SetTargets({players[0], players[1]});
 
@@ -32,7 +36,7 @@ void bomberman::VersusMode::ConfigureCamera(bengine::CameraComponent &camera, co
 
 void bomberman::VersusMode::ConfigureInput(bengine::InputManager &input, const std::vector<bengine::GameObject *> &players, BombManagerComponent &bombs) const {
     BindKeyboardControls(input, players[0], bombs);
-    BindGamepadControls(input, 0, players[1], bombs);
+    BindGamepadMovementOnly(input, 0, players[1]); // the Balloom moves but cannot place bombs
 }
 
 std::unique_ptr<bengine::ISceneState> bomberman::VersusMode::MakeGameOverState(const bengine::GameObject *deadPlayer, const std::vector<bengine::GameObject *> &players) const {
