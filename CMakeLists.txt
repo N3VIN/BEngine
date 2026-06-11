@@ -291,6 +291,7 @@ if (EMSCRIPTEN)
 
     # Additional settings for Emscripten build
     set_target_properties(bomberman PROPERTIES
+            OUTPUT_NAME bomberman_web
             COMPILE_FLAGS "${EMSCRIPTEN_COMPILE_FLAGS}"
             LINK_FLAGS "${EMSCRIPTEN_LINK_FLAGS}"
     )
