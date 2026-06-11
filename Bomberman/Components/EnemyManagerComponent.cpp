@@ -1,10 +1,14 @@
 #include "EnemyManagerComponent.h"
 #include "EnemyFactory.h"
 #include "HazardComponent.h"
+#include "LevelGridComponent.h"
+#include "ScorePopupComponent.h"
 #include "GameEvents.h"
 #include "Patterns/ServiceLocator.h"
 #include "Patterns/EventBus.h"
+#include "SceneGraph/Scene.h"
 #include "SceneGraph/SceneManager.h"
+#include "SceneGraph/GameObject.h"
 
 bomberman::EnemyManagerComponent::EnemyManagerComponent(bengine::GameObject *parent, LevelGridComponent *gridComponent, HazardComponent *hazardComponent)
     : bengine::Component(parent)
@@ -12,6 +16,10 @@ bomberman::EnemyManagerComponent::EnemyManagerComponent(bengine::GameObject *par
   , m_hazardComponent(hazardComponent) {
     m_killedSub = bengine::ServiceLocator::GetEventBus().Subscribe<events::EnemyKilled>(
         [this](const events::EnemyKilled &event) {
+            if (event.enemy) {
+                SpawnScorePopup(*bengine::GetActiveScene(), event.enemy->GetWorldPosition(), m_gridComponent->GetCellSize(), event.points);
+            }
+
             std::erase(m_enemies, event.enemy);
             if (m_enemies.empty()) {
                 bengine::ServiceLocator::GetEventBus().Broadcast(events::AllEnemiesDefeated{});

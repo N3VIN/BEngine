@@ -25,12 +25,17 @@ namespace bomberman {
             HealthComponent *health{nullptr};
         };
 
+        struct HazardCell {
+            float remaining{0.f};                // explosion lifetime left on this cell
+            bengine::GameObject *owner{nullptr}; // bomb owner as the damage source
+        };
+
         [[nodiscard]] bool ExplosionActive(glm::ivec2 cell) const;
         [[nodiscard]] size_t Index(glm::ivec2 cell) const;
 
         LevelGridComponent *m_grid{nullptr};
         float m_explosionLifetime{};
-        std::vector<float> m_hazardTime{}; // easier than a list of cells like m_bombAtCell
+        std::vector<HazardCell> m_hazard{}; // easier than a list of cells like m_bombAtCell
         std::vector<Damageable> m_players{};
         std::vector<Damageable> m_enemies{};
         bengine::ScopedDelegate m_explosionSub;

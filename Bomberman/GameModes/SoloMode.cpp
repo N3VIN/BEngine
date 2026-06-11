@@ -12,6 +12,10 @@ bool bomberman::SoloMode::SpawnsEnemies() const {
     return true;
 }
 
+bool bomberman::SoloMode::ShowsScore() const {
+    return true;
+}
+
 void bomberman::SoloMode::ConfigureCamera(bengine::CameraComponent &camera, const std::vector<bengine::GameObject *> &players) const {
     camera.SetTarget(players[0]);
 }

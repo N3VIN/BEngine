@@ -14,14 +14,16 @@ bomberman::HazardComponent::HazardComponent(bengine::GameObject *parent, LevelGr
   , m_grid(gridComponent)
   , m_explosionLifetime(GetTileset().explosionLifetime) {
     const auto dims = m_grid->GetDimensions();
-    m_hazardTime.resize(static_cast<size_t>(dims.x) * static_cast<size_t>(dims.y), 0.f);
+    m_hazard.resize(static_cast<size_t>(dims.x) * static_cast<size_t>(dims.y));
 
     auto &bus = bengine::ServiceLocator::GetEventBus();
 
     m_explosionSub = bus.Subscribe<events::ExplosionAt>(
         [this](const events::ExplosionAt &event) {
             if (m_grid->InBounds(event.cell)) {
-                m_hazardTime[Index(event.cell)] = m_explosionLifetime;
+                auto &[remaining, owner] = m_hazard[Index(event.cell)];
+                remaining = m_explosionLifetime;
+                owner = event.owner;
             }
         }
     );
@@ -37,9 +39,9 @@ bomberman::HazardComponent::HazardComponent(bengine::GameObject *parent, LevelGr
 }
 
 void bomberman::HazardComponent::Update(float deltaTime) {
-    for (auto &remaining: m_hazardTime) {
-        if (remaining > 0.f) {
-            remaining = std::max(0.f, remaining - deltaTime);
+    for (auto &cell: m_hazard) {
+        if (cell.remaining > 0.f) {
+            cell.remaining = std::max(0.f, cell.remaining - deltaTime);
         }
     }
 
@@ -57,8 +59,9 @@ void bomberman::HazardComponent::Update(float deltaTime) {
     }
 
     for (const auto &enemy: m_enemies) {
-        if (enemy.health->IsAlive() && ExplosionActive(enemy.movement->GetCell())) {
-            enemy.health->TakeDamage(1);
+        const auto cell = enemy.movement->GetCell();
+        if (enemy.health->IsAlive() && ExplosionActive(cell)) {
+            enemy.health->TakeDamage(1, m_hazard[Index(cell)].owner); // bomb owner becomes the enemy last attacker
         }
     }
 }
@@ -82,7 +85,7 @@ void bomberman::HazardComponent::RegisterEnemy(bengine::GameObject *enemy) {
 }
 
 bool bomberman::HazardComponent::ExplosionActive(glm::ivec2 cell) const {
-    return m_grid->InBounds(cell) && m_hazardTime[Index(cell)] > 0.f;
+    return m_grid->InBounds(cell) && m_hazard[Index(cell)].remaining > 0.f;
 }
 
 size_t bomberman::HazardComponent::Index(glm::ivec2 cell) const {

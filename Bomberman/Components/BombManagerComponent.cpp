@@ -128,12 +128,12 @@ void bomberman::BombManagerComponent::DetonateBomb(BombComponent *bomb) {
     }
 
     SpawnExplosionAt(cell);
-    bengine::ServiceLocator::GetEventBus().Broadcast(events::ExplosionAt{cell});
+    bengine::ServiceLocator::GetEventBus().Broadcast(events::ExplosionAt{cell, owner});
 
-    SpreadInDirection(cell, {0, -1}, radius);
-    SpreadInDirection(cell, {0, 1}, radius);
-    SpreadInDirection(cell, {-1, 0}, radius);
-    SpreadInDirection(cell, {1, 0}, radius);
+    SpreadInDirection(cell, {0, -1}, radius, owner);
+    SpreadInDirection(cell, {0, 1}, radius, owner);
+    SpreadInDirection(cell, {-1, 0}, radius, owner);
+    SpreadInDirection(cell, {1, 0}, radius, owner);
 
     bengine::ServiceLocator::GetEventBus().Broadcast(events::BombDetonated{cell});
 
@@ -172,7 +172,7 @@ void bomberman::BombManagerComponent::DetonateOldestBomb(bengine::GameObject *ow
     }
 }
 
-void bomberman::BombManagerComponent::SpreadInDirection(glm::ivec2 origin, glm::ivec2 direction, int range) {
+void bomberman::BombManagerComponent::SpreadInDirection(glm::ivec2 origin, glm::ivec2 direction, int range, bengine::GameObject *owner) {
     auto &bus = bengine::ServiceLocator::GetEventBus();
 
     for (int distance = 1; distance <= range; ++distance) {
@@ -186,7 +186,7 @@ void bomberman::BombManagerComponent::SpreadInDirection(glm::ivec2 origin, glm::
             break;
         }
 
-        if (auto *chainBombGO = BombAt(cell)) {
+        if (const auto *chainBombGO = BombAt(cell)) {
             if (auto *chainBomb = chainBombGO->GetComponent<BombComponent>()) {
                 m_detonationQueue.push_back(chainBomb);
             }
@@ -195,7 +195,7 @@ void bomberman::BombManagerComponent::SpreadInDirection(glm::ivec2 origin, glm::
         }
 
         if (m_gridComponent->IsBrick(cell)) {
-            if (auto *tile = m_gridComponent->DestroyBrick(cell)) {
+            if (const auto *tile = m_gridComponent->DestroyBrick(cell)) {
                 if (auto *brick = tile->GetComponent<BrickComponent>()) {
                     brick->Destroy();
                 }
@@ -206,7 +206,7 @@ void bomberman::BombManagerComponent::SpreadInDirection(glm::ivec2 origin, glm::
             break;
         }
 
-        bus.Broadcast(events::ExplosionAt{cell});
+        bus.Broadcast(events::ExplosionAt{cell, owner});
     }
 }
 

@@ -7,6 +7,7 @@ namespace bomberman {
     namespace events {
         struct ExplosionAt {
             glm::ivec2 cell{};
+            bengine::GameObject *owner{nullptr};
         };
 
         struct BrickDestroyed {
@@ -27,6 +28,7 @@ namespace bomberman {
 
         struct EnemyKilled {
             bengine::GameObject *enemy{nullptr};
+            bengine::GameObject *killer{nullptr};
             glm::ivec2 cell{};
             int points{0};
         };

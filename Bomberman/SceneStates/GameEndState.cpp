@@ -1,6 +1,9 @@
 #include "GameEndState.h"
 
 #include "Commands/QuitCommand.h"
+#include "ScoreBoard.h"
+
+#include <string>
 
 #include "SceneGraph/Scene.h"
 #include "SceneGraph/SceneManager.h"
@@ -35,13 +38,26 @@ void bomberman::GameEndState::OnEnter() {
 
     titleGo->SetLocalPosition(bengine::ScreenFraction(0.5f, 0.35f) + glm::vec2(-170.0f, 0.0f));
 
+    const int playerCount = scoreboard::PlayerCount();
+    for (int playerIndex = 0; playerIndex < playerCount; ++playerIndex) {
+        auto *scoreGo = m_scene->Add(std::make_unique<bengine::GameObject>());
+        auto *scoreText = scoreGo->AddComponent<bengine::TextComponent>();
+        scoreText->SetFont(bengine::ResourceManager::GetInstance().LoadFont("Lingua.otf", 28));
+        scoreText->SetColor({255, 255, 255, 255});
+
+        const auto label = (playerCount > 1) ? "P" + std::to_string(playerIndex + 1) + "  " : "SCORE  ";
+        scoreText->SetText(label + std::to_string(scoreboard::Get(playerIndex)));
+        scoreGo->GetComponent<bengine::RenderComponent>()->SetIgnoreCamera(true);
+        scoreGo->SetLocalPosition(bengine::ScreenFraction(0.5f, 0.45f + static_cast<float>(playerIndex) * 0.06f) + glm::vec2(-90.0f, 0.0f));
+    }
+
     auto *quitGo = m_scene->Add(std::make_unique<bengine::GameObject>());
     auto *quitText = quitGo->AddComponent<bengine::TextComponent>();
     quitText->SetFont(bengine::ResourceManager::GetInstance().LoadFont("Lingua.otf", 24));
     quitText->SetColor({200, 200, 200, 255});
     quitText->SetText("Press ESC to quit");
     quitGo->GetComponent<bengine::RenderComponent>()->SetIgnoreCamera(true);
-    quitGo->SetLocalPosition(bengine::ScreenFraction(0.5f, 0.55f) + glm::vec2(-110.0f, 0.0f));
+    quitGo->SetLocalPosition(bengine::ScreenFraction(0.5f, 0.65f) + glm::vec2(-110.0f, 0.0f));
 
     bengine::SceneManager::GetInstance().SetActiveScene(*m_scene);
 

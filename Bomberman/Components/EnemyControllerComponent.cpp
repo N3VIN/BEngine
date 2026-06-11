@@ -69,6 +69,7 @@ void bomberman::EnemyControllerComponent::PlayDeathAnimation() const {
 void bomberman::EnemyControllerComponent::Die() const {
     bengine::ServiceLocator::GetEventBus().Broadcast(events::EnemyKilled{
             .enemy = GetParent(),
+            .killer = m_health->GetLastAttacker(),
             .cell = m_movement->GetCell(),
             .points = m_points,
         }

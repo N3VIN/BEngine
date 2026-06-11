@@ -13,6 +13,7 @@
 #include "Components/BrickComponent.h"
 #include "Components/RenderComponent.h"
 #include "Components/TextComponent.h"
+#include "Components/ScoreComponent.h"
 #include "Components/FPSComponent.h"
 #include "Components/CameraComponent.h"
 #include "GameModes/IGameMode.h"
@@ -187,6 +188,20 @@ bomberman::LevelScene bomberman::BuildLevelScene(std::string_view jsonRelativePa
     scene.Add(std::move(hazardManagerGO));
 
     CreateFPSDisplay(scene);
+
+    if (mode.ShowsScore()) {
+        for (size_t playerIndex = 0; playerIndex < players.size(); ++playerIndex) {
+            auto *scoreGameObject = scene.Add(std::make_unique<bengine::GameObject>());
+            auto *scoreText = scoreGameObject->AddComponent<bengine::TextComponent>();
+            scoreGameObject->GetComponent<bengine::RenderComponent>()->SetIgnoreCamera(true);
+            scoreText->SetFont(bengine::ResourceManager::GetInstance().LoadFont("Lingua.otf", 24));
+            scoreText->SetColor({255, 255, 255, 255});
+            scoreGameObject->AddComponent<ScoreComponent>(players[playerIndex], static_cast<int>(playerIndex));
+
+            const float fractionX = (playerIndex == 0) ? 0.02f : 0.80f; // TODO: this is temp
+            scoreGameObject->SetLocalPosition(bengine::ScreenFraction(fractionX, 0.06f));
+        }
+    }
 
     mode.ConfigureInput(bengine::InputManager::GetInstance(), players, *bombManager);
 

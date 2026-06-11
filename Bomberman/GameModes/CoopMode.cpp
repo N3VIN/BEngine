@@ -14,6 +14,10 @@ bool bomberman::CoopMode::SpawnsEnemies() const {
     return true;
 }
 
+bool bomberman::CoopMode::ShowsScore() const {
+    return true;
+}
+
 void bomberman::CoopMode::ConfigureCamera(bengine::CameraComponent &camera, const std::vector<bengine::GameObject *> &players) const {
     camera.SetTargets({players[0], players[1]});
 

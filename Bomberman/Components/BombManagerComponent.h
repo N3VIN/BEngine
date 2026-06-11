@@ -39,7 +39,7 @@ namespace bomberman {
         static constexpr int MAX_BLAST_RADIUS{4};
 
         void SpawnExplosionAt(glm::ivec2 cell) const;
-        void SpreadInDirection(glm::ivec2 origin, glm::ivec2 direction, int range);
+        void SpreadInDirection(glm::ivec2 origin, glm::ivec2 direction, int range, bengine::GameObject *owner);
         void ProcessDetonationQueue();
 
         [[nodiscard]] bengine::GameObject *BombAt(glm::ivec2 cell) const;

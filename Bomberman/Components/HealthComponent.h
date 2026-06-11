@@ -12,10 +12,11 @@ namespace bomberman {
         ~HealthComponent() override = default;
 
         void Update(float deltaTime) override;
-        void TakeDamage(int amount);
+        void TakeDamage(int amount, bengine::GameObject *attacker = nullptr);
 
         [[nodiscard]] int GetLives() const;
         [[nodiscard]] bool IsAlive() const;
+        [[nodiscard]] bengine::GameObject *GetLastAttacker() const;
 
         template<typename Fn>
             requires std::invocable<Fn, int>
@@ -26,6 +27,7 @@ namespace bomberman {
     private:
         static constexpr float IFRAME_DURATION{1.0f};
         int m_lives;
+        bengine::GameObject *m_lastAttacker{nullptr};
         bengine::Timer m_iframes{};
         bengine::MulticastDelegate<int> m_onDamaged{};
     };

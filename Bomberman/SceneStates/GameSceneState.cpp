@@ -7,6 +7,7 @@
 #include "Level/BuildLevelScene.h"
 #include "GameModes/GameModeFactory.h"
 #include "GameModes/IGameMode.h"
+#include "ScoreBoard.h"
 
 #include "SceneGraph/Scene.h"
 #include "SceneGraph/SceneManager.h"
@@ -37,6 +38,10 @@ bomberman::GameSceneState::~GameSceneState() {
 
 void bomberman::GameSceneState::OnEnter() {
     m_mode = CreateGameMode(m_modeId);
+
+    if (m_currentIndex == 0) {
+        scoreboard::Reset(m_mode->ShowsScore() ? m_mode->PlayerCount() : 0);
+    }
 
     auto [scene, players] = BuildLevelScene(m_levelPaths[m_currentIndex], *m_mode);
     m_scene = &scene;

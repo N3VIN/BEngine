@@ -16,6 +16,10 @@ bool bomberman::VersusMode::SpawnsEnemies() const {
     return false;
 }
 
+bool bomberman::VersusMode::ShowsScore() const {
+    return false;
+}
+
 void bomberman::VersusMode::ConfigureCamera(bengine::CameraComponent &camera, const std::vector<bengine::GameObject *> &players) const {
     camera.SetTargets({players[0], players[1]});
 
