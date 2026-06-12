@@ -222,7 +222,6 @@ void bomberman::BombManagerComponent::SpreadInDirection(glm::ivec2 origin, glm::
                 bus.Broadcast(events::BrickDestroyed{cell});
             }
 
-            SpawnFlame(cell, tip);
             break;
         }
 
@@ -248,7 +247,7 @@ void bomberman::BombManagerComponent::SpawnFlame(glm::ivec2 cell, const SpriteDe
 }
 
 bool bomberman::BombManagerComponent::IsFlameBlocker(glm::ivec2 cell) const {
-    return !m_gridComponent->InBounds(cell) || m_gridComponent->HasWall(cell) || BombAt(cell) != nullptr;
+    return !m_gridComponent->InBounds(cell) || m_gridComponent->HasWall(cell) || m_gridComponent->IsBrick(cell) || BombAt(cell) != nullptr;
 }
 
 void bomberman::BombManagerComponent::ProcessDetonationQueue() {
