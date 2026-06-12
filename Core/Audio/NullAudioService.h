@@ -10,21 +10,10 @@ namespace bengine {
             std::println("Load Audio but this is null!!");
         }
 
-        void PlayAudio(SoundID /*id*/, float /*volume*/, int /*loops*/) override {
-            std::println("Play Audio but this is null!!");
-        }
-
-        void StopAudio(SoundID /*id*/) override {
-            std::println("Stop Audio but this is null!!");
-        }
-
-        void SetMuted(bool /*muted*/) override {
-            std::println("Set Muted but this is null!!");
-        }
-
-        [[nodiscard]] bool IsMuted() const override {
-            std::println("Is Muted but this is null!!");
-            return true;
-        }
+        // they print nothing since they polute the console
+        void PlayAudio(SoundID /*id*/, float /*volume*/, int /*loops*/) override {}
+        void StopAudio(SoundID /*id*/) override {}
+        void SetMuted(bool /*muted*/) override {}
+        [[nodiscard]] bool IsMuted() const override { return true; }
     };
 }

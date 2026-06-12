@@ -8,6 +8,7 @@
 #include "SceneGraph/SceneManager.h"
 #include "Patterns/ServiceLocator.h"
 #include "Audio/SDLAudioService.h"
+#include "Audio/NullAudioService.h"
 
 #include "HighScores.h"
 #include "SceneStates/MainMenuState.h"
@@ -15,7 +16,11 @@
 namespace fs = std::filesystem;
 
 static void load() {
+#if __EMSCRIPTEN__
+    bengine::ServiceLocator::RegisterAudioService(std::make_unique<bengine::NullAudioService>());
+#else
     bengine::ServiceLocator::RegisterAudioService(std::make_unique<bengine::SDLAudioService>());
+#endif
     bomberman::highscores::Load();
     bengine::SceneManager::GetInstance().SetState(std::make_unique<bomberman::MainMenuState>());
 }
