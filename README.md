@@ -1,88 +1,73 @@
-﻿# Minigin
+# BEngine
 
-Minigin is a very small project using [SDL3](https://www.libsdl.org/) and [glm](https://github.com/g-truc/glm) for 2D c++ game projects. It is in no way a game engine, only a barebone start project where everything sdl related has been set up. It contains glm for vector math, to aleviate the need to write custom vector and matrix classes.
+A small 2D engine built on SDL3. Code lives in `Core/` (namespace `bengine`), every game target links it as a static lib. This README is about the engine and the choices behind it.
 
-[![Build Status](https://github.com/avadae/minigin/actions/workflows/cmake.yml/badge.svg)](https://github.com/avadae/cmake/actions)
-[![Build Status](https://github.com/avadae/minigin/actions/workflows/emscripten.yml/badge.svg)](https://github.com/avadae/emscripten/actions)
-[![GitHub Release](https://img.shields.io/github/v/release/avadae/minigin?logo=github&sort=semver)](https://github.com/avadae/minigin/releases/latest)
+I built NES Bomberman on top of it as a test bed.
 
-# Goal
+## Game Loop
 
-Minigin can/may be used as a start project for the exam assignment in the course [Programming 4](https://youtu.be/j96Oh6vzhmg) at DAE. In that assignment students need to recreate a popular 80's arcade game with a game engine they need to program themselves. During the course we discuss several game programming patterns, using the book '[Game Programming Patterns](https://gameprogrammingpatterns.com/)' by [Robert Nystrom](https://github.com/munificent) as reading material. 
+`Core/Engine/Engine.cpp`, `RunOneFrame()`. Fixed-timestep with a lag accumulator:
 
-# Disclaimer
+- measure real delta, add to `m_lag`
+- drain `m_lag` in a `while`, each step is one `FixedUpdate()` at fixed dt
+- one variable `Update(deltaTime)`, then `Render()`
 
-Minigin is, despite perhaps the suggestion in its name, **not** a game engine. It is just a very simple SDL3 ready project with some of the scaffolding in place to get started. None of the patterns discussed in the course are used yet (except singleton which use we challenge during the course). It is up to the students to implement their own vision for their engine, apply patterns as they see fit, create their game as efficient as possible.
+Deterministic gameplay goes in `FixedUpdate`, frame-rate dependent stuff in `Update`. Native builds sleep to cap the frame, the web build doesn't because the browser drives the loop through `requestAnimationFrame`. Same `RunOneFrame` for both.
 
-# Use
+## Scene Graph and Components
 
-Get the source from this project, or since students need to have their work on github too, they can use this repository as a template. Hit the "Use this template" button on the top right corner of the github page of this project.
+A `Scene` owns its `GameObject`s by `unique_ptr`. Parent/child links are raw non-owning pointers, ownership already lives in the scene so theres no reason to reference-count the hierarchy too.
 
-## Windows version
+Behaviour is components. `AddComponent<T>(...)` constructs in place, `GetComponent<T>()` does a `dynamic_cast`. Both constrained with a `ComponentType` concept (`std::derived_from<T, Component>`) for readable errors at the call site.
 
-Either
-- Open the root folder in Visual Studio 2026; this will be recognized as a cmake project.
-  
-Or
-- Install CMake 
-- Install CMake and CMake Tools extensions in Visual Code
-- Open the root folder in Visual Code,  this will be recognized as a cmake project.
+The `Transform` is **not** a component, its just a plain member. I followed Unity here, since every object always has one. World transforms are cached and recomputed lazily, with a dirty flag that propagates down to the children.
 
-Or
-- Use whatever editor you like :)
+## Patterns
 
-## Emscripten (web) version
+- **Game Loop / Update** - the fixed timestep above.
+- **Command** - input. `InputManager` binds scancode / gamepad button + key-state to an `ICommand`, so rebinds and the keyboard/gamepad split are just different bindings.
+- **Service Locator** - hands out the audio service and the event bus. Audio has a `NullAudioService` fallback so unregistered calls no-op instead of crashing. It is also used for the web build.
+- **Singleton** - long lived managers only (Renderer, SceneManager, ResourceManager, InputManager, Time). The course challenges singletons so I kept them to things that genuinely are global and single.
+- **Observer** - `Subject` / `IObserver`, synchronous, observers register themselves.
 
-### On windows
+## Multicast Delegate
 
-For installing all of the needed tools on Windows I recommend using [Chocolatey](https://chocolatey.org/). You can then run the following in a terminal to install what is needed:
+I have the classic `Subject` / `IObserver` in the engine too, but honestly, after working with C# events and Unreal's `TMulticastDelegate`, the OOP-style observer pattern never really felt right to me. So taking some inspiration from the side notes in the Game Programming Patterns book, I implemented a typed `MulticastDelegate<Args...>` (`Core/Patterns/MulticastDelegate.h`) instead, where you just subscribe a callback and don't have to inherit from anything.
 
-    choco install -y cmake
-    choco install -y emscripten
-    choco install -y ninja
-    choco install -y python
+Then I added RAII unsubscription on top:
 
-In a terminal, navigate to the root folder. Run this: 
+- `Subscribe` returns a `ScopedDelegate` that unsubscribes in its destructor, so a listener can't outlive its subscription.
+- re-entrancy safe: unsubscribing during a `Broadcast` only flags the listener dead, the erase is deferred until the broadcast finishes, so you can't invalidate the vector mid-iteration.
+
+## Event Bus
+
+The delegate made my life a lot easier, but it scaled badly. To subscribe you need a pointer to the object that owns the delegate, so systems that had nothing to do with each other ended up holding references just to wire up a subscription.
+
+So I added an `EventBus` (`Core/Patterns/EventBus.h`) on top of the delegate, not replacing it. It's a type-erased map of `std::type_index` → a `MulticastDelegate<const Event&>` slot. You `Subscribe<SomeEvent>(...)` / `Broadcast(SomeEvent{...})`, and the two sides only share the event *type*, never each other. The delegate still does the real work (RAII handle, re-entrancy safety), the bus is just a typed routing table over it, so the localized one-to-one relations still use a plain delegate.
+
+The bus lives in the `ServiceLocator` instead of being its own singleton, a single known access point without creating another singleton.
+
+
+`Tools/LevelPack` is a tiny offline tool that takes the JSON levels and packs each one into a binary `.bomb` file (a small header + the raw grid), so the game loads them straight from binary instead of parsing JSON at runtime. It also loads the JSON directly if it fails to load the `.bomb`. 
+
+## Build
+
+C++23, MSVC, `/W4 /WX` (warnings as errors). Templates constrained with concepts. `Data/` is copied next to the exe by a CMake post-build step with the SDL dll's.
+
+### Windows
+
+    cmake --preset x64-debug
+    cmake --build out/build/x64-debug
+
+
+### Emscripten (web)
+
+Toolchain via [Chocolatey](https://chocolatey.org/) on Windows: `choco install -y cmake emscripten ninja python`. Then:
 
     mkdir build_web
     cd build_web
     emcmake cmake ..
     emmake ninja
-
-To be able to see the webpage you can start a python webserver in the build_web folder
-
     python -m http.server
 
-Then browse to http://localhost:8000 and you're good to go.
-
-### On OSX
-
-On Mac you can use homebrew
-
-    brew install cmake
-    brew install emscripten
-    brew install python
-
-In a terminal on OSX, navigate to the root folder. Run this: 
-
-    mkdir build_web
-    cd build_web
-    emcmake cmake .. -DCMAKE_OSX_ARCHITECTURES=""
-    emmake make
-
-To be able to see the webpage you can start a python webserver in the build_web folder
-
-    python3 -m http.server
-
-Then browse to http://localhost:8000 and you're good to go.
-
-## Github Actions
-
-This project is build with github actions.
-- The CMake workflow builds the project in Debug and Release for Windows and serves as a check that the project builds on that platform.
-- The Emscripten workflow generates a web version of the project and publishes it as a [github page](https://avadae.github.io/minigin/). 
-  - The url of that page will be `https://<username>.github.io/<repository>/`
-- You can embed this page with 
-
-```<iframe style="position: absolute; top: 0px; left: 0px; width: 1024px; height: 576px;" src="https://<username>.github.io/<repository>/" loading="lazy"></iframe>```
-
+and browse to http://localhost:8000.
