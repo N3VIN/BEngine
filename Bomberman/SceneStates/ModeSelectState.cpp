@@ -6,8 +6,6 @@
 #include "MenuUI.h"
 #include "Level/LevelList.h"
 #include "Components/MenuComponent.h"
-#include "Commands/MenuNavigateCommand.h"
-#include "Commands/MenuConfirmCommand.h"
 
 #include "SceneGraph/Scene.h"
 #include "SceneGraph/SceneManager.h"
@@ -15,7 +13,6 @@
 #include "UIHelpers.h"
 #include "Renderer/Renderer.h"
 #include "Input/InputManager.h"
-#include "Input/Gamepad.h"
 #include "Audio/IAudioService.h"
 #include "Patterns/ServiceLocator.h"
 #include "utils.h"
@@ -70,16 +67,7 @@ void bomberman::ModeSelectState::OnEnter() {
 
     bengine::SceneManager::GetInstance().SetActiveScene(*m_scene);
 
-    auto &input = bengine::InputManager::GetInstance();
-    input.BindCommand(SDL_SCANCODE_UP, bengine::KeyState::Down, std::make_unique<MenuNavigateCommand>(menu, -1));
-    input.BindCommand(SDL_SCANCODE_DOWN, bengine::KeyState::Down, std::make_unique<MenuNavigateCommand>(menu, 1));
-    input.BindCommand(SDL_SCANCODE_RETURN, bengine::KeyState::Down, std::make_unique<MenuConfirmCommand>(menu));
-    input.BindCommand(SDL_SCANCODE_SPACE, bengine::KeyState::Down, std::make_unique<MenuConfirmCommand>(menu));
-
-    input.BindCommand(0, bengine::Gamepad::Button::DpadUp, bengine::KeyState::Down, std::make_unique<MenuNavigateCommand>(menu, -1));
-    input.BindCommand(0, bengine::Gamepad::Button::DpadDown, bengine::KeyState::Down, std::make_unique<MenuNavigateCommand>(menu, 1));
-    input.BindCommand(0, bengine::Gamepad::Button::A, bengine::KeyState::Down, std::make_unique<MenuConfirmCommand>(menu));
-    input.BindCommand(0, bengine::Gamepad::Button::Start, bengine::KeyState::Down, std::make_unique<MenuConfirmCommand>(menu));
+    BindMenuInput(bengine::InputManager::GetInstance(), menu);
 }
 
 void bomberman::ModeSelectState::OnExit() {

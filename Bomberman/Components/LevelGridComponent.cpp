@@ -63,6 +63,7 @@ bomberman::LevelGridComponent::LevelGridComponent(bengine::GameObject *parent, c
                 default:
                     break;
             }
+
             m_tiles.push_back(ParseTile(c));
             ++columnIndex;
         }

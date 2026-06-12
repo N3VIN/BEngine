@@ -58,8 +58,8 @@ void bomberman::HighScoreState::Rebuild() {
         bengine::SceneManager::GetInstance().DestroyScene(*m_scene);
         m_scene = nullptr;
     }
-    m_nameEntry = nullptr;
 
+    m_nameEntry = nullptr;
     m_scene = &bengine::SceneManager::GetInstance().CreateScene();
 
     if (m_newScores.empty()) {
@@ -135,7 +135,7 @@ void bomberman::HighScoreState::BuildEntry(const NewScore &entry) {
         }
     );
 
-    CreateMenuLabel(*m_scene, "UP DOWN LETTER  LEFT RIGHT SLOT  ENTER OK", 16, {160, 160, 160, 255}, Centered(0.7f));
+    CreateMenuLabel(*m_scene, "W S LETTER  A D SLOT  ENTER OK", 16, {160, 160, 160, 255}, Centered(0.7f));
 
     BindEntry();
 }
@@ -147,10 +147,10 @@ void bomberman::HighScoreState::BindEntry() const {
         return std::make_unique<NameEntryNavigateCommand>(m_nameEntry, letterDir, slotDir);
     };
 
-    input.BindCommand(SDL_SCANCODE_UP, bengine::KeyState::Down, navigate(1, 0));
-    input.BindCommand(SDL_SCANCODE_DOWN, bengine::KeyState::Down, navigate(-1, 0));
-    input.BindCommand(SDL_SCANCODE_LEFT, bengine::KeyState::Down, navigate(0, -1));
-    input.BindCommand(SDL_SCANCODE_RIGHT, bengine::KeyState::Down, navigate(0, 1));
+    input.BindCommand(SDL_SCANCODE_W, bengine::KeyState::Down, navigate(1, 0));
+    input.BindCommand(SDL_SCANCODE_S, bengine::KeyState::Down, navigate(-1, 0));
+    input.BindCommand(SDL_SCANCODE_A, bengine::KeyState::Down, navigate(0, -1));
+    input.BindCommand(SDL_SCANCODE_D, bengine::KeyState::Down, navigate(0, 1));
     input.BindCommand(0, bengine::Gamepad::Button::DpadUp, bengine::KeyState::Down, navigate(1, 0));
     input.BindCommand(0, bengine::Gamepad::Button::DpadDown, bengine::KeyState::Down, navigate(-1, 0));
     input.BindCommand(0, bengine::Gamepad::Button::DpadLeft, bengine::KeyState::Down, navigate(0, -1));
@@ -177,10 +177,8 @@ void bomberman::HighScoreState::BindTable() const {
     };
 
     input.BindCommand(SDL_SCANCODE_ESCAPE, bengine::KeyState::Down, toMenu());
-    input.BindCommand(SDL_SCANCODE_RETURN, bengine::KeyState::Down, toMenu());
-    input.BindCommand(SDL_SCANCODE_SPACE, bengine::KeyState::Down, toMenu());
-    input.BindCommand(0, bengine::Gamepad::Button::A, bengine::KeyState::Down, toMenu());
-    input.BindCommand(0, bengine::Gamepad::Button::Start, bengine::KeyState::Down, toMenu());
+    input.BindCommand(0, bengine::Gamepad::Button::B, bengine::KeyState::Down, toMenu());
+    input.BindCommand(0, bengine::Gamepad::Button::Back, bengine::KeyState::Down, toMenu());
 }
 
 std::vector<bomberman::HighScoreState::NewScore> bomberman::GetNewScores() {

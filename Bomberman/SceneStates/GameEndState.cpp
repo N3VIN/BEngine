@@ -1,6 +1,5 @@
 #include "GameEndState.h"
 
-#include "Commands/QuitCommand.h"
 #include "Commands/ChangeSceneCommand.h"
 #include "HighScoreState.h"
 #include "ScoreBoard.h"
@@ -37,12 +36,12 @@ void bomberman::GameEndState::OnEnter() {
         CreateMenuLabel(*m_scene, label + std::to_string(scoreboard::Get(playerIndex)), 28, {255, 255, 255, 255}, bengine::ScreenFraction(0.5f, 0.45f + static_cast<float>(playerIndex) * 0.06f));
     }
 
-    CreateMenuLabel(*m_scene, "ENTER continue   ESC quit", 24, {200, 200, 200, 255}, bengine::ScreenFraction(0.5f, 0.65f));
+    CreateMenuLabel(*m_scene, "ENTER continue", 24, {200, 200, 200, 255}, bengine::ScreenFraction(0.5f, 0.65f));
 
     bengine::SceneManager::GetInstance().SetActiveScene(*m_scene);
 
     auto &input = bengine::InputManager::GetInstance();
-    input.BindCommand(SDL_SCANCODE_ESCAPE, bengine::KeyState::Down, std::make_unique<QuitCommand>());
+    BindMuteToggle(input);
 
     const auto toHighScores = [] {
         return std::make_unique<HighScoreState>(GetNewScores());
