@@ -4,6 +4,7 @@
 #include <SDL3/SDL_pixels.h>
 
 #include "Component.h"
+#include "Colors.h"
 
 namespace bengine {
     class SpriteFont;
@@ -29,7 +30,7 @@ namespace bengine {
 
     private:
         std::string m_text{};
-        SDL_Color m_color{255, 255, 255, 255};
+        SDL_Color m_color{colors::white};
         float m_scale{1.0f};
         bool m_ignoreCamera{true};
         TextAlign m_align{TextAlign::Center};

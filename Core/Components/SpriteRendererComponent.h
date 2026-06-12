@@ -20,9 +20,7 @@ namespace bengine {
         void PlayOnce(float fps);
         void Play(const SpriteDefinition &definition, bool loop, float fps);
 
-        [[nodiscard]] bool IsPlaying() const {
-            return m_playing;
-        }
+        [[nodiscard]] bool IsPlaying() const;
 
     private:
         void ApplySourceRect(int frame) const;

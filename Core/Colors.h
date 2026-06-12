@@ -1,7 +1,7 @@
 #pragma once
 #include <SDL3/SDL_pixels.h>
 
-namespace bomberman::colors {
+namespace bengine::colors {
     inline constexpr SDL_Color white{255, 255, 255, 255};
     inline constexpr SDL_Color menuItem{180, 180, 180, 255};
     inline constexpr SDL_Color highlight{255, 255, 80, 255};

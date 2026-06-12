@@ -1,7 +1,7 @@
 #include "GameAudioComponent.h"
 
 #include "Gameplay/GameEvents.h"
-#include "utils.h"
+#include "Utils.h"
 #include "Audio/IAudioService.h"
 #include "Patterns/ServiceLocator.h"
 #include "Patterns/EventBus.h"
@@ -17,32 +17,32 @@ bomberman::GameAudioComponent::GameAudioComponent(bengine::GameObject *parent)
 
     audio.LoadAudio(bgm.id, dataPath / bgm.file);
     audio.PlayAudio(bgm.id, bgmVolume, -1);
-    Play(utils::Hash("stage_start"));
+    Play(bengine::Hash("stage_start"));
 
     auto &bus = bengine::ServiceLocator::GetEventBus();
 
     m_bombPlacedSub = bus.Subscribe<events::BombPlaced>(
-        [](const events::BombPlaced &) { Play(utils::Hash("bomb_place")); }
+        [](const events::BombPlaced &) { Play(bengine::Hash("bomb_place")); }
     );
 
     m_bombDetonatedSub = bus.Subscribe<events::BombDetonated>(
-        [](const events::BombDetonated &) { Play(utils::Hash("explosion")); }
+        [](const events::BombDetonated &) { Play(bengine::Hash("explosion")); }
     );
 
     m_pickupCollectedSub = bus.Subscribe<events::PickupCollected>(
-        [](const events::PickupCollected &) { Play(utils::Hash("pickup")); }
+        [](const events::PickupCollected &) { Play(bengine::Hash("pickup")); }
     );
 
     m_levelCompletedSub = bus.Subscribe<events::LevelCompleted>(
-        [](const events::LevelCompleted &) { Play(utils::Hash("stage_clear")); }
+        [](const events::LevelCompleted &) { Play(bengine::Hash("stage_clear")); }
     );
 
     m_playerDiedSub = bus.Subscribe<events::PlayerDied>(
-        [](const events::PlayerDied &) { Play(utils::Hash("game_over")); }
+        [](const events::PlayerDied &) { Play(bengine::Hash("game_over")); }
     );
 
     m_timeExpiredSub = bus.Subscribe<events::TimeExpired>(
-        [](const events::TimeExpired &) { Play(utils::Hash("game_over")); }
+        [](const events::TimeExpired &) { Play(bengine::Hash("game_over")); }
     );
 }
 

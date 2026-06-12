@@ -1,7 +1,7 @@
 #include "MenuComponent.h"
 #include "Components/SpriteTextComponent.h"
-#include "UI/UIColors.h"
-#include "utils.h"
+#include "Colors.h"
+#include "Utils.h"
 
 bomberman::MenuComponent::MenuComponent(bengine::GameObject *parent)
     : bengine::Component(parent) {}
@@ -17,7 +17,7 @@ void bomberman::MenuComponent::MoveSelection(int direction) {
     }
 
     const int count = static_cast<int>(m_items.size());
-    m_selected = static_cast<size_t>(utils::Wrap(static_cast<int>(m_selected) + direction, count));
+    m_selected = static_cast<size_t>(bengine::Wrap(static_cast<int>(m_selected) + direction, count));
     Refresh();
 }
 
@@ -33,6 +33,6 @@ void bomberman::MenuComponent::Confirm() const {
 
 void bomberman::MenuComponent::Refresh() const {
     for (size_t i = 0; i < m_items.size(); ++i) {
-        m_items[i].text->SetColor(i == m_selected ? colors::highlight : colors::menuItem); // choose correct color
+        m_items[i].text->SetColor(i == m_selected ? bengine::colors::highlight : bengine::colors::menuItem); // choose correct color
     }
 }

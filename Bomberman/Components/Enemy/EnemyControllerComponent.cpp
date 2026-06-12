@@ -17,7 +17,7 @@ bomberman::EnemyControllerComponent::EnemyControllerComponent(bengine::GameObjec
   , m_sprite(parent->GetComponent<bengine::SpriteRendererComponent>())
   , m_health(parent->GetComponent<HealthComponent>())
   , m_sprites(&GetTileset().GetEnemySprites(type))
-  , m_points(GetEnemyStats(type).points) {
+  , m_stats(&GetEnemyStats(type)) {
     m_currentState = MakeEnemyWalkState(m_movement->GetFacing());
     m_currentState->OnEnter(*this);
 
@@ -75,7 +75,7 @@ void bomberman::EnemyControllerComponent::Die() const {
             .enemy = GetParent(),
             .killer = m_health->GetLastAttacker(),
             .cell = m_movement->GetCell(),
-            .points = m_points,
+            .points = m_stats->points,
         }
     );
 

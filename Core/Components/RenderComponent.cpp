@@ -62,3 +62,7 @@ void bengine::RenderComponent::ClearSourceRect() {
 void bengine::RenderComponent::SetScale(float scale) {
     m_scale = scale;
 }
+
+void bengine::RenderComponent::SetIgnoreCamera(bool ignore) {
+    m_ignoreCamera = ignore;
+}

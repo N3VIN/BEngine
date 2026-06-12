@@ -6,9 +6,9 @@
 #include "SceneGraph/Scene.h"
 #include "SceneGraph/SceneManager.h"
 #include "UI/MenuUI.h"
-#include "UI/UIColors.h"
+#include "Colors.h"
 #include "UI/UISizes.h"
-#include "UIHelpers.h"
+#include "Utils.h"
 #include "Renderer/Renderer.h"
 #include "Input/InputManager.h"
 #include "Input/Gamepad.h"
@@ -27,15 +27,15 @@ void bomberman::GameEndState::OnEnter() {
 
     m_scene = &bengine::SceneManager::GetInstance().CreateScene();
 
-    CreateMenuLabel(*m_scene, m_title, textSize::title, colors::danger, bengine::ScreenFraction(0.5f, 0.35f));
+    CreateMenuLabel(*m_scene, m_title, textSize::title, bengine::colors::danger, bengine::ScreenFraction(0.5f, 0.35f));
 
     const int playerCount = scoreboard::PlayerCount();
     for (int playerIndex = 0; playerIndex < playerCount; ++playerIndex) {
         const auto label = (playerCount > 1) ? "P" + std::to_string(playerIndex + 1) + "  " : "SCORE  ";
-        CreateMenuLabel(*m_scene, label + std::to_string(scoreboard::Get(playerIndex)), textSize::body, colors::white, bengine::ScreenFraction(0.5f, 0.45f + static_cast<float>(playerIndex) * 0.06f));
+        CreateMenuLabel(*m_scene, label + std::to_string(scoreboard::Get(playerIndex)), textSize::body, bengine::colors::white, bengine::ScreenFraction(0.5f, 0.45f + static_cast<float>(playerIndex) * 0.06f));
     }
 
-    CreateMenuLabel(*m_scene, "ENTER continue", textSize::caption, colors::prompt, bengine::ScreenFraction(0.5f, 0.65f));
+    CreateMenuLabel(*m_scene, "ENTER continue", textSize::caption, bengine::colors::prompt, bengine::ScreenFraction(0.5f, 0.65f));
 
     bengine::SceneManager::GetInstance().SetActiveScene(*m_scene);
 

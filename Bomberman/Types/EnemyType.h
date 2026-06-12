@@ -27,7 +27,7 @@ namespace bomberman {
         return (static_cast<uint8_t>(axes) & static_cast<uint8_t>(SightAxes::Vertical)) != 0;
     }
 
-    //type object
+    //type object like where only the data differs and not behaviour
     struct EnemyStats {
         float cellsPerSecond{};
         int points{};

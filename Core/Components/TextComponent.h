@@ -4,6 +4,7 @@
 #include <SDL3/SDL_pixels.h>
 
 #include "Component.h"
+#include "Colors.h"
 
 namespace bengine {
     class Font;
@@ -22,7 +23,7 @@ namespace bengine {
     private:
         bool m_needsUpdate{true};
         std::string m_text{};
-        SDL_Color m_color{255, 255, 255, 255};
+        SDL_Color m_color{colors::white};
         std::shared_ptr<Font> m_font{};
         std::shared_ptr<Texture2D> m_textTexture{};
     };

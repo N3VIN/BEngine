@@ -13,7 +13,7 @@ namespace bengine {
     concept EventType = std::is_object_v<Event>;
 
     // loosely inspired by the immediate event bus https://docs.vulkan.org/tutorial/latest/Building_a_Simple_Engine/Engine_Architecture/06_event_systems.html
-    // and adapted to use our existing MulticastDelegate
+    // and adapted to use our existing MulticastDelegate with a hashmap instead of a vector
     class EventBus final {
     public:
         EventBus() = default;

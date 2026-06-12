@@ -255,8 +255,12 @@ if (WIN32)
 endif ()
 
 # Add steam if available
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/steam")
-find_package(Steamworks QUIET)
+option(ENABLE_STEAMWORKS "Enable Steamworks integration (requires Steamworks SDK)" OFF)
+
+if (ENABLE_STEAMWORKS)
+    list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/steam")
+    find_package(Steamworks QUIET)
+endif ()
 
 if (Steamworks_FOUND)
     target_link_libraries(Core PUBLIC Steamworks::Steamworks)

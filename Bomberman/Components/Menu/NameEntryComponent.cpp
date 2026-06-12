@@ -1,8 +1,8 @@
 #include "NameEntryComponent.h"
 
 #include "Components/SpriteTextComponent.h"
-#include "UI/UIColors.h"
-#include "utils.h"
+#include "Colors.h"
+#include "Utils.h"
 
 bomberman::NameEntryComponent::NameEntryComponent(bengine::GameObject *parent)
     : bengine::Component(parent) {}
@@ -22,7 +22,7 @@ void bomberman::NameEntryComponent::ChangeLetter(int direction) {
     }
 
     static constexpr int alphabet = 26;
-    const int letter = utils::Wrap(m_letters[m_slot] - 'A' + direction, alphabet);
+    const int letter = bengine::Wrap(m_letters[m_slot] - 'A' + direction, alphabet);
     m_letters[m_slot] = static_cast<char>('A' + letter);
     Refresh();
 }
@@ -33,7 +33,7 @@ void bomberman::NameEntryComponent::MoveSlot(int direction) {
         return;
     }
 
-    m_slot = static_cast<size_t>(utils::Wrap(static_cast<int>(m_slot) + direction, count));
+    m_slot = static_cast<size_t>(bengine::Wrap(static_cast<int>(m_slot) + direction, count));
     Refresh();
 }
 
@@ -46,6 +46,6 @@ void bomberman::NameEntryComponent::Confirm() const {
 void bomberman::NameEntryComponent::Refresh() const {
     for (size_t i = 0; i < m_labels.size(); ++i) {
         m_labels[i]->SetText(std::string(1, m_letters[i]));
-        m_labels[i]->SetColor(i == m_slot ? colors::highlight : colors::menuItem);
+        m_labels[i]->SetColor(i == m_slot ? bengine::colors::highlight : bengine::colors::menuItem);
     }
 }

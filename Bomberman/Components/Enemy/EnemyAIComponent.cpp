@@ -3,7 +3,7 @@
 #include "Components/GridMovementComponent.h"
 #include "EnemyControllerComponent.h"
 #include "SceneGraph/GameObject.h"
-#include "Random.h"
+#include "Utils.h"
 
 bomberman::EnemyAIComponent::EnemyAIComponent(bengine::GameObject *parent, LevelGridComponent *grid, EnemyType type, const std::vector<bengine::GameObject *> *players)
     : bengine::Component(parent)

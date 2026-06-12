@@ -20,10 +20,7 @@ namespace bengine {
         void SetSourceRect(const SDL_Rect &rect);
         void ClearSourceRect();
         void SetScale(float scale);
-
-        void SetIgnoreCamera(bool ignore) {
-            m_ignoreCamera = ignore;
-        }
+        void SetIgnoreCamera(bool ignore);
 
     private:
         std::shared_ptr<Texture2D> m_texture{};

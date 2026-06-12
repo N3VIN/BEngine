@@ -53,8 +53,8 @@ void bengine::SpriteTextComponent::Render() const {
         positionX += glyphWidth;
     }
 
-    SDL_SetTextureColorMod(sdlTexture, 255, 255, 255);
-    SDL_SetTextureAlphaMod(sdlTexture, 255);
+    SDL_SetTextureColorMod(sdlTexture, colors::white.r, colors::white.g, colors::white.b);
+    SDL_SetTextureAlphaMod(sdlTexture, colors::white.a);
 }
 
 void bengine::SpriteTextComponent::SetText(std::string_view text) {

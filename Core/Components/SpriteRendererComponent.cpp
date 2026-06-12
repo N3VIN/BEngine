@@ -82,6 +82,10 @@ void bengine::SpriteRendererComponent::Play(const SpriteDefinition &definition, 
     ApplySourceRect(0);
 }
 
+bool bengine::SpriteRendererComponent::IsPlaying() const {
+    return m_playing;
+}
+
 void bengine::SpriteRendererComponent::SetIgnoreCamera(bool ignore) const {
     m_renderComponent->SetIgnoreCamera(ignore);
 }

@@ -7,6 +7,7 @@ namespace bengine {
     class Subject {
     public:
         virtual ~Subject() = default;
+
         void AddObserver(IObserver *observer) {
             m_observers.push_back(observer);
         }
@@ -17,7 +18,7 @@ namespace bengine {
 
     protected:
         void Notify(GameObject *gameObject, GameEvent event) const {
-            for (auto observer : m_observers) {
+            for (auto observer: m_observers) {
                 observer->OnNotify(gameObject, event);
             }
         }

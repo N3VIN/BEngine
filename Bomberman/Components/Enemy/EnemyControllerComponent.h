@@ -34,7 +34,7 @@ namespace bomberman {
         bengine::SpriteRendererComponent *m_sprite{};
         HealthComponent *m_health{};
         const EnemySprites *m_sprites{};
-        int m_points{};
+        const EnemyStats *m_stats{};
         std::unique_ptr<IEnemyState> m_currentState;
         bool m_killed{false};
         bengine::ScopedDelegate m_damagedSub;

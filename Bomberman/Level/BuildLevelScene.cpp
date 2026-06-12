@@ -1,6 +1,6 @@
 #include "BuildLevelScene.h"
 #include "Tileset.h"
-#include "UIHelpers.h"
+#include "Utils.h"
 #include "Components/Level/LevelGridComponent.h"
 #include "Components/Level/GridRenderComponent.h"
 #include "Components/Bomb/BombManagerComponent.h"
@@ -18,7 +18,7 @@
 #include "Components/HUD/LivesComponent.h"
 #include "Components/HUD/TimerComponent.h"
 #include "UI/UIFont.h"
-#include "UI/UIColors.h"
+#include "Colors.h"
 #include "Components/FPSComponent.h"
 #include "Components/CameraComponent.h"
 #include "GameModes/IGameMode.h"
@@ -131,7 +131,7 @@ void bomberman::CreateFPSDisplay(bengine::Scene &scene) {
     auto *fpsText = fpsGo->AddComponent<bengine::TextComponent>();
     fpsGo->GetComponent<bengine::RenderComponent>()->SetIgnoreCamera(true);
     fpsText->SetFont(bengine::ResourceManager::GetInstance().LoadFont("Lingua.otf", 24));
-    fpsText->SetColor(colors::debug);
+    fpsText->SetColor(bengine::colors::debug);
     fpsGo->AddComponent<bengine::FPSComponent>();
     fpsGo->SetLocalPosition(bengine::ScreenFraction(0.01f, 0.95f)); // bottom left
 }
@@ -214,7 +214,7 @@ bomberman::LevelScene bomberman::BuildLevelScene(std::string_view jsonRelativePa
         auto *text = labelGo->AddComponent<bengine::SpriteTextComponent>();
         text->SetFont(GetUIFont());
         text->SetScale(3.0f);
-        text->SetColor(colors::white);
+        text->SetColor(bengine::colors::white);
         text->SetIgnoreCamera(true);
         text->SetAlignment(align);
         labelGo->SetLocalPosition({positionX, positionY});
