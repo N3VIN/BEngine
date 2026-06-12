@@ -28,6 +28,8 @@ namespace bomberman {
         void NotifyDied() const;
 
     private:
+        void PlayStep(glm::ivec2 facing) const;
+
         GridMovementComponent *m_movement{};
         SpriteRendererComponent *m_sprite{};
         HealthComponent *m_health{};
@@ -36,6 +38,7 @@ namespace bomberman {
 
         std::unique_ptr<IPlayerState> m_currentState;
         bool m_damaged{false};
+        glm::ivec2 m_lastStepCell{};
         bengine::ScopedDelegate m_damagedSub;
     };
 }

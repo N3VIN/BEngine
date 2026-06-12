@@ -21,6 +21,8 @@ namespace bomberman {
         SoundEntry{utils::Hash("stage_start"), "Audio/stage_start.wav"},
         SoundEntry{utils::Hash("stage_clear"), "Audio/stage_clear.wav"},
         SoundEntry{utils::Hash("game_over"), "Audio/game_over.wav"},
+        SoundEntry{utils::Hash("step_horizontal"), "Audio/step_horizontal.wav"},
+        SoundEntry{utils::Hash("step_vertical"), "Audio/step_vertical.wav"},
     };
 
     constexpr SoundEntry BGM{utils::Hash("bgm"), "Audio/main_BGM.wav"};

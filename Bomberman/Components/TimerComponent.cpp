@@ -26,7 +26,7 @@ void bomberman::TimerComponent::Update(float deltaTime) {
     const int seconds = static_cast<int>(std::ceil(m_timer.GetRemaining()));
     if (seconds != m_displayedSeconds) {
         m_displayedSeconds = seconds;
-        Refresh(seconds);
+        Refresh(m_displayedSeconds);
     }
 
     if (m_timer.IsExpired()) {

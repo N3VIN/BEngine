@@ -29,11 +29,6 @@
 #include "Renderer/Renderer.h"
 #include "Input/InputManager.h"
 
-namespace {
-    constexpr float HudHeight{72.0f}; // top status-bar height
-    constexpr float LevelTimeSeconds{200.0f};
-}
-
 bomberman::LevelGridComponent *bomberman::CreateLevelBackground(bengine::Scene &scene, const Tileset &tileset, LevelGridComponent *gridComponent) {
     const auto levelOrigin = gridComponent->GetOrigin();
     const int tileSize = tileset.tileSize;

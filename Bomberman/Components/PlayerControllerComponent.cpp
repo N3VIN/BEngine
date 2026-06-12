@@ -43,6 +43,12 @@ void bomberman::PlayerControllerComponent::Update(float deltaTime) {
         m_currentState = std::move(next);
         m_currentState->OnEnter(*this);
     }
+
+    const auto cell = m_movement->GetCell();
+    if (m_currentState->IsAlive() && IsMoving() && cell != m_lastStepCell) {
+        PlayStep(GetFacing());
+    }
+    m_lastStepCell = cell;
 }
 
 const bomberman::PlayerSprites &bomberman::PlayerControllerComponent::GetSprites() const {
@@ -82,4 +88,9 @@ void bomberman::PlayerControllerComponent::NotifyDied() const {
             .player = GetParent(),
         }
     );
+}
+
+void bomberman::PlayerControllerComponent::PlayStep(glm::ivec2 facing) const {
+    const auto step = facing.x != 0 ? utils::Hash("step_horizontal") : utils::Hash("step_vertical");
+    bengine::ServiceLocator::GetAudioService().PlayAudio(step, 1.0f);
 }

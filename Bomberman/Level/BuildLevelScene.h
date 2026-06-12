@@ -24,6 +24,9 @@ namespace bomberman {
         std::vector<bengine::GameObject *> players{};
     };
 
+    constexpr float HudHeight{72.0f}; // top status-bar height
+    constexpr float LevelTimeSeconds{200.0f};
+
     LevelGridComponent *CreateLevelBackground(bengine::Scene &scene, const Tileset &tileset, LevelGridComponent *gridComponent);
     bengine::CameraComponent *CreateCamera(bengine::Scene &scene, const LevelGridComponent *gridComponent);
     LevelSpawns SpawnLevelTiles(bengine::Scene &scene, LevelGridComponent *gridComponent);
