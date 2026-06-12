@@ -3,6 +3,8 @@
 #include "ModeSelectState.h"
 #include "HighScoreState.h"
 #include "UI/MenuUI.h"
+#include "UI/UIColors.h"
+#include "UI/UISizes.h"
 #include "Components/Menu/MenuComponent.h"
 #include "Commands/QuitCommand.h"
 

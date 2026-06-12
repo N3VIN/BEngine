@@ -2,6 +2,8 @@
 
 #include "MainMenuState.h"
 #include "UI/MenuUI.h"
+#include "UI/UIColors.h"
+#include "UI/UISizes.h"
 #include "Score/ScoreBoard.h"
 #include "Score/HighScores.h"
 #include "Components/Menu/NameEntryComponent.h"

@@ -6,6 +6,8 @@
 #include "SceneGraph/Scene.h"
 #include "SceneGraph/SceneManager.h"
 #include "UI/MenuUI.h"
+#include "UI/UIColors.h"
+#include "UI/UISizes.h"
 #include "UIHelpers.h"
 #include "Renderer/Renderer.h"
 #include "Input/InputManager.h"

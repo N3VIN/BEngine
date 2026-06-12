@@ -4,6 +4,8 @@
 #include "GameSceneState.h"
 #include "Gameplay/GameMode.h"
 #include "UI/MenuUI.h"
+#include "UI/UIColors.h"
+#include "UI/UISizes.h"
 #include "Level/LevelList.h"
 #include "Components/Menu/MenuComponent.h"
 
