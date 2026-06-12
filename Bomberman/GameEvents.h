@@ -37,6 +37,8 @@ namespace bomberman {
 
         struct LevelCompleted {};
 
+        struct TimeExpired {};
+
         struct PickupCollected {
             bengine::GameObject *player{nullptr};
             PickupType type{};

@@ -27,5 +27,5 @@ bomberman::ScoreComponent::ScoreComponent(bengine::GameObject *owner, bengine::G
 }
 
 void bomberman::ScoreComponent::Refresh() const {
-    m_text->SetText("SCORE  " + std::to_string(scoreboard::Get(m_playerIndex)));
+    m_text->SetText("SCORE " + std::to_string(scoreboard::Get(m_playerIndex)));
 }

@@ -34,5 +34,6 @@ namespace bomberman {
         std::vector<bengine::GameObject *> m_players{};
         bengine::ScopedDelegate m_playerDiedSub;
         bengine::ScopedDelegate m_levelCompletedSub;
+        bengine::ScopedDelegate m_timeExpiredSub;
     };
 }

@@ -58,6 +58,7 @@ add_executable(bomberman ${TARGET_PARAM}
             Bomberman/Components/GameAudioComponent.cpp
             Bomberman/Components/ScoreComponent.cpp
             Bomberman/Components/LivesComponent.cpp
+            Bomberman/Components/TimerComponent.cpp
             Bomberman/Components/ScorePopupComponent.cpp
             Bomberman/ScoreBoard.cpp
             Bomberman/HighScores.cpp

@@ -40,5 +40,6 @@ namespace bomberman {
         bengine::ScopedDelegate m_pickupCollectedSub;
         bengine::ScopedDelegate m_levelCompletedSub;
         bengine::ScopedDelegate m_playerDiedSub;
+        bengine::ScopedDelegate m_timeExpiredSub;
     };
 }

@@ -40,6 +40,10 @@ bomberman::GameAudioComponent::GameAudioComponent(bengine::GameObject *parent)
     m_playerDiedSub = bus.Subscribe<events::PlayerDied>(
         [](const events::PlayerDied &) { Play(utils::Hash("game_over")); }
     );
+
+    m_timeExpiredSub = bus.Subscribe<events::TimeExpired>(
+        [](const events::TimeExpired &) { Play(utils::Hash("game_over")); }
+    );
 }
 
 bomberman::GameAudioComponent::~GameAudioComponent() {

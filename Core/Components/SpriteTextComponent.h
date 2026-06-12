@@ -8,6 +8,12 @@
 namespace bengine {
     class SpriteFont;
 
+    enum class TextAlign {
+        Left,
+        Center,
+        Right
+    };
+
     class SpriteTextComponent final : public Component {
     public:
         explicit SpriteTextComponent(GameObject *owner);
@@ -19,14 +25,14 @@ namespace bengine {
         void SetColor(const SDL_Color &color);
         void SetScale(float scale);
         void SetIgnoreCamera(bool ignore);
-        void SetCentered(bool centered);
+        void SetAlignment(TextAlign align);
 
     private:
         std::string m_text{};
         SDL_Color m_color{255, 255, 255, 255};
         float m_scale{1.0f};
         bool m_ignoreCamera{true};
-        bool m_centered{true};
+        TextAlign m_align{TextAlign::Center};
         std::shared_ptr<SpriteFont> m_font{};
     };
 } // bengine

@@ -19,5 +19,5 @@ bomberman::LivesComponent::LivesComponent(bengine::GameObject *owner, bengine::G
 }
 
 void bomberman::LivesComponent::Refresh(int lives) const {
-    m_text->SetText("LEFT  " + std::to_string(lives));
+    m_text->SetText("LEFT " + std::to_string(lives));
 }

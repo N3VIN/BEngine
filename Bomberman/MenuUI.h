@@ -15,7 +15,7 @@ namespace bomberman {
         textComponent->SetFont(GetUIFont());
         textComponent->SetScale(static_cast<float>(fontSize) / 8.0f);
         textComponent->SetColor(color);
-        textComponent->SetCentered(true);
+        textComponent->SetAlignment(bengine::TextAlign::Center);
         textComponent->SetIgnoreCamera(true);
         textComponent->SetText(text);
         labelGo->SetLocalPosition(position);

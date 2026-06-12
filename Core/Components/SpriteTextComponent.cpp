@@ -32,8 +32,11 @@ void bengine::SpriteTextComponent::Render() const {
     const float glyphHeight = static_cast<float>(glyphSize.y) * scale;
 
     float positionX = worldPos.x;
-    if (m_centered) {
+    if (m_align == TextAlign::Center) {
         positionX -= 0.5f * static_cast<float>(m_text.size()) * glyphWidth;
+    }
+    else if (m_align == TextAlign::Right) {
+        positionX -= static_cast<float>(m_text.size()) * glyphWidth;
     }
 
     const auto &atlas = m_font->GetAtlas();
@@ -74,6 +77,6 @@ void bengine::SpriteTextComponent::SetIgnoreCamera(bool ignore) {
     m_ignoreCamera = ignore;
 }
 
-void bengine::SpriteTextComponent::SetCentered(bool centered) {
-    m_centered = centered;
+void bengine::SpriteTextComponent::SetAlignment(TextAlign align) {
+    m_align = align;
 }

@@ -73,6 +73,12 @@ void bomberman::GameSceneState::OnEnter() {
             bengine::SceneManager::GetInstance().SetState(MakeNextState(paths, index, mode));
         }
     );
+
+    m_timeExpiredSub = bengine::ServiceLocator::GetEventBus().Subscribe<events::TimeExpired>(
+        [](const events::TimeExpired &) {
+            bengine::SceneManager::GetInstance().SetState(std::make_unique<GameEndState>("TIME UP"));
+        }
+    );
 }
 
 void bomberman::GameSceneState::OnExit() {

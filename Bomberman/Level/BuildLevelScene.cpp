@@ -16,6 +16,7 @@
 #include "Components/SpriteTextComponent.h"
 #include "Components/ScoreComponent.h"
 #include "Components/LivesComponent.h"
+#include "Components/TimerComponent.h"
 #include "UIFont.h"
 #include "Components/FPSComponent.h"
 #include "Components/CameraComponent.h"
@@ -29,7 +30,8 @@
 #include "Input/InputManager.h"
 
 namespace {
-    constexpr float HudHeight{72.0f}; // top status-bar height (score row + lives row); window is 624 playfield + this
+    constexpr float HudHeight{72.0f}; // top status-bar height
+    constexpr float LevelTimeSeconds{200.0f};
 }
 
 bomberman::LevelGridComponent *bomberman::CreateLevelBackground(bengine::Scene &scene, const Tileset &tileset, LevelGridComponent *gridComponent) {
@@ -56,7 +58,7 @@ bengine::CameraComponent *bomberman::CreateCamera(bengine::Scene &scene, const L
 
     const float levelHeight = static_cast<float>(gridComponent->GetRows()) * gridComponent->GetCellSize();
     const float windowHeight = bengine::Renderer::GetInstance().GetWindowSize().y;
-    cameraComp->SetZoom((windowHeight - HudHeight) / levelHeight);            // leave room for the top HUD bar
+    cameraComp->SetZoom((windowHeight - HudHeight) / levelHeight);
     bengine::Renderer::GetInstance().SetViewOffset({0.0f, HudHeight * 0.5f}); // push playfield below the bar
 
     cameraComp->SetTargetOffset(glm::vec2{gridComponent->GetCellSize() * 0.5f}); // we do 0.5 to center the camera on the player
@@ -211,26 +213,30 @@ bomberman::LevelScene bomberman::BuildLevelScene(std::string_view jsonRelativePa
     constexpr float hudRow2Y = hudRow1Y + hudTextHeight + 8.0f;
     const float windowWidth = bengine::Renderer::GetInstance().GetWindowSize().x;
 
-    const auto makeHudLabel = [&scene](float positionX, float positionY) {
+    const auto makeHudLabel = [&scene](float positionX, float positionY, bengine::TextAlign align = bengine::TextAlign::Left) {
         auto *labelGo = scene.Add(std::make_unique<bengine::GameObject>());
         auto *text = labelGo->AddComponent<bengine::SpriteTextComponent>();
         text->SetFont(GetUIFont());
         text->SetScale(3.0f);
         text->SetColor({255, 255, 255, 255});
         text->SetIgnoreCamera(true);
-        text->SetCentered(false);
+        text->SetAlignment(align);
         labelGo->SetLocalPosition({positionX, positionY});
         return labelGo;
     };
 
+    makeHudLabel(windowWidth * 0.5f, hudRow1Y, bengine::TextAlign::Center)->AddComponent<TimerComponent>(LevelTimeSeconds);
+
     for (size_t playerIndex = 0; playerIndex < players.size(); ++playerIndex) {
-        const float positionX = (playerIndex == 0) ? 16.0f : windowWidth * 0.55f;
+        const bool isPlayer1 = playerIndex == 0;
+        const float positionX = isPlayer1 ? 16.0f : windowWidth - 16.0f; // choose left or right side of screen
+        const auto align = isPlayer1 ? bengine::TextAlign::Left : bengine::TextAlign::Right;
 
         if (mode.ShowsScore()) {
-            makeHudLabel(positionX, hudRow1Y)->AddComponent<ScoreComponent>(players[playerIndex], static_cast<int>(playerIndex));
+            makeHudLabel(positionX, hudRow1Y, align)->AddComponent<ScoreComponent>(players[playerIndex], static_cast<int>(playerIndex));
         }
 
-        makeHudLabel(positionX, hudRow2Y)->AddComponent<LivesComponent>(players[playerIndex]);
+        makeHudLabel(positionX, hudRow2Y, align)->AddComponent<LivesComponent>(players[playerIndex]);
     }
 
     mode.ConfigureInput(bengine::InputManager::GetInstance(), players, *bombManager);
