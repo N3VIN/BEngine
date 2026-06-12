@@ -5,21 +5,6 @@
 #include "Components/RenderComponent.h"
 #include "Level/Tileset.h"
 
-int bomberman::PointSpriteIndex(int points) {
-    switch (points) {
-        case 100:
-            return 0;
-        case 200:
-            return 1;
-        case 400:
-            return 2;
-        case 800:
-            return 3;
-        default:
-            return -1;
-    }
-}
-
 bomberman::ScorePopupComponent::ScorePopupComponent(bengine::GameObject *owner, float lifetime, float riseDistance)
     : bengine::Component(owner)
   , m_timer(lifetime)
@@ -37,7 +22,22 @@ void bomberman::ScorePopupComponent::Update(float deltaTime) {
 }
 
 void bomberman::SpawnScorePopup(bengine::Scene &scene, glm::vec2 worldPos, float cellSize, int points) {
-    const int index = PointSpriteIndex(points);
+    const auto pointSpriteIndex = [](int value) {
+        switch (value) {
+            case 100:
+                return 0;
+            case 200:
+                return 1;
+            case 400:
+                return 2;
+            case 800:
+                return 3;
+            default:
+                return -1;
+        }
+    };
+
+    const int index = pointSpriteIndex(points);
     if (index < 0) {
         return;
     }

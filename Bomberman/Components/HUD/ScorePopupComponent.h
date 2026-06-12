@@ -9,12 +9,10 @@ namespace bengine {
 }
 
 namespace bomberman {
-    static constexpr int pointSpriteX{112};
-    static constexpr int pointSpriteY{336};
-    static constexpr int pointSpriteWidth{16};
-    static constexpr int pointSpriteHeight{8};
-
-    [[nodiscard]] static int PointSpriteIndex(int points);
+    constexpr int pointSpriteX{112};
+    constexpr int pointSpriteY{336};
+    constexpr int pointSpriteWidth{16};
+    constexpr int pointSpriteHeight{8};
 
     class ScorePopupComponent final : public bengine::Component {
     public:
