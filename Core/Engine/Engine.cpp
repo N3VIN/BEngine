@@ -16,6 +16,7 @@
 #include <thread>
 
 #include "Input/InputManager.h"
+#include "Patterns/ServiceLocator.h"
 #include "SceneGraph/SceneManager.h"
 #include "Renderer/Renderer.h"
 #include "Renderer/ResourceManager.h"
@@ -86,6 +87,7 @@ bengine::Engine::Engine(const fs::path &dataPath) {
 }
 
 bengine::Engine::~Engine() {
+    ServiceLocator::Shutdown(); // tear down audio (MIX_Quit) before SDL_Quit, else static-dtor UAF
     Renderer::GetInstance().Destroy();
     SDL_DestroyWindow(g_window);
     g_window = nullptr;

@@ -28,6 +28,11 @@ namespace bengine {
             return *s_eventBus;
         }
 
+        static void Shutdown() {
+            s_audio.reset();
+            s_eventBus.reset();
+        }
+
     private:
         inline static std::unique_ptr<IAudioService> s_audio;
         inline static std::unique_ptr<EventBus> s_eventBus; // I know this might be a weird place but I just wanted to avoid it as a singleton
