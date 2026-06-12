@@ -28,7 +28,7 @@ namespace bengine {
     private:
         SDL_Renderer *m_renderer{};
         SDL_Window *m_window{};
-        SDL_Color m_clearColor{};
+        SDL_Color m_clearColor{0, 0, 0, 255};
         const CameraComponent *m_activeCamera{nullptr};
         glm::vec2 m_viewOffset{};
     };
