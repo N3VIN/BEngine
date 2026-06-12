@@ -1,7 +1,6 @@
 #include "LevelGridComponent.h"
-#include <fstream>
 #include <stdexcept>
-#include <nlohmann/json.hpp>
+#include "Level/LevelData.h"
 
 bomberman::TileType bomberman::LevelGridComponent::ParseTile(char tile) {
     switch (tile) {
@@ -34,35 +33,19 @@ bomberman::TileType bomberman::LevelGridComponent::ParseTile(char tile) {
 
 bomberman::LevelGridComponent::LevelGridComponent(bengine::GameObject *parent, const fs::path &levelPath)
     : bengine::Component(parent) {
-    if (!fs::exists(levelPath)) {
-        throw std::runtime_error("Level file not found: " + levelPath.string());
-    }
+    const LevelData data = LoadLevel(levelPath);
+    m_columns = data.columns;
+    m_rows = data.rows;
+    m_cellSize = data.cellSize;
+    m_origin = data.origin;
 
-    std::ifstream file(levelPath);
-    if (!file.is_open()) {
-        throw std::runtime_error("Failed to open level file: " + levelPath.string());
-    }
-
-    nlohmann::json json;
-    file >> json;
-
-    const auto &grid = json.at("grid");
-    m_columns = grid.at("columns").get<int>();
-    m_rows = grid.at("rows").get<int>();
-    m_cellSize = grid.at("cellSize").get<float>();
-
-    const auto &origin = json.at("origin");
-    m_origin.x = origin.at("x").get<float>();
-    m_origin.y = origin.at("y").get<float>();
-
-    const auto &tiles = json.at("tiles");
     const size_t expectedSize = static_cast<size_t>(m_columns) * static_cast<size_t>(m_rows);
     m_tiles.reserve(expectedSize);
 
     int rowIndex = 0;
-    for (const auto &row: tiles) {
+    for (const auto &rowString: data.grid) {
         int columnIndex = 0;
-        for (const std::string rowString = row.get<std::string>(); const char c: rowString) {
+        for (const char c: rowString) {
             const glm::ivec2 cell{columnIndex, rowIndex};
             switch (c) {
                 case 'X':
@@ -90,9 +73,8 @@ bomberman::LevelGridComponent::LevelGridComponent(bengine::GameObject *parent, c
         throw std::runtime_error("Level tile count does not match grid dimensions");
     }
 
-    const size_t cellCount = static_cast<size_t>(m_columns) * static_cast<size_t>(m_rows);
-    m_walls.resize(cellCount, 0);
-    m_tileAtCell.resize(cellCount, nullptr);
+    m_walls.resize(expectedSize, 0);
+    m_tileAtCell.resize(expectedSize, nullptr);
 }
 
 bool bomberman::LevelGridComponent::IsWalkable(glm::ivec2 cell) const {

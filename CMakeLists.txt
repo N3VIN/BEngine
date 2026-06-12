@@ -37,46 +37,47 @@ add_library(Core STATIC
 
 # bomberman executable
 add_executable(bomberman ${TARGET_PARAM}
-            Bomberman/Main.cpp
-            Bomberman/Level/BuildLevelScene.cpp
-            Bomberman/Level/Tileset.cpp
-            Bomberman/Components/EnemyManagerComponent.cpp
-            Bomberman/Components/EnemyAIComponent.cpp
-            Bomberman/Components/EnemyControllerComponent.cpp
-            Bomberman/States/EnemyStates.cpp
-            Bomberman/Components/LevelGridComponent.cpp
-            Bomberman/Components/GridMovementComponent.cpp
-            Bomberman/Components/GridRenderComponent.cpp
-            Bomberman/Components/SpriteRendererComponent.cpp
-            Bomberman/Components/HealthComponent.cpp
-            Bomberman/Components/PlayerControllerComponent.cpp
-            Bomberman/Components/BombComponent.cpp
-            Bomberman/Components/BombManagerComponent.cpp
-            Bomberman/Components/HazardComponent.cpp
-            Bomberman/Components/ExitComponent.cpp
-            Bomberman/Components/PickupComponent.cpp
-            Bomberman/Components/GameAudioComponent.cpp
-            Bomberman/Components/ScoreComponent.cpp
-            Bomberman/Components/LivesComponent.cpp
-            Bomberman/Components/TimerComponent.cpp
-            Bomberman/Components/ScorePopupComponent.cpp
-            Bomberman/ScoreBoard.cpp
-            Bomberman/HighScores.cpp
-            Bomberman/Pickups.cpp
-            Bomberman/Components/BrickComponent.cpp
-            Bomberman/Components/ExplosionComponent.cpp
-            Bomberman/States/PlayerStates.cpp
-            Bomberman/Components/MenuComponent.cpp
-            Bomberman/Components/NameEntryComponent.cpp
-            Bomberman/SceneStates/MainMenuState.cpp
-            Bomberman/SceneStates/ModeSelectState.cpp
-            Bomberman/SceneStates/GameSceneState.cpp
-            Bomberman/SceneStates/GameEndState.cpp
-            Bomberman/SceneStates/HighScoreState.cpp
-            Bomberman/PlayerControls.cpp
-            Bomberman/GameModes/SoloMode.cpp
-            Bomberman/GameModes/CoopMode.cpp
-            Bomberman/GameModes/VersusMode.cpp
+        Bomberman/Main.cpp
+        Bomberman/Level/BuildLevelScene.cpp
+        Bomberman/Level/LevelData.cpp
+        Bomberman/Level/Tileset.cpp
+        Bomberman/Components/EnemyManagerComponent.cpp
+        Bomberman/Components/EnemyAIComponent.cpp
+        Bomberman/Components/EnemyControllerComponent.cpp
+        Bomberman/States/EnemyStates.cpp
+        Bomberman/Components/LevelGridComponent.cpp
+        Bomberman/Components/GridMovementComponent.cpp
+        Bomberman/Components/GridRenderComponent.cpp
+        Bomberman/Components/SpriteRendererComponent.cpp
+        Bomberman/Components/HealthComponent.cpp
+        Bomberman/Components/PlayerControllerComponent.cpp
+        Bomberman/Components/BombComponent.cpp
+        Bomberman/Components/BombManagerComponent.cpp
+        Bomberman/Components/HazardComponent.cpp
+        Bomberman/Components/ExitComponent.cpp
+        Bomberman/Components/PickupComponent.cpp
+        Bomberman/Components/GameAudioComponent.cpp
+        Bomberman/Components/ScoreComponent.cpp
+        Bomberman/Components/LivesComponent.cpp
+        Bomberman/Components/TimerComponent.cpp
+        Bomberman/Components/ScorePopupComponent.cpp
+        Bomberman/ScoreBoard.cpp
+        Bomberman/HighScores.cpp
+        Bomberman/Pickups.cpp
+        Bomberman/Components/BrickComponent.cpp
+        Bomberman/Components/ExplosionComponent.cpp
+        Bomberman/States/PlayerStates.cpp
+        Bomberman/Components/MenuComponent.cpp
+        Bomberman/Components/NameEntryComponent.cpp
+        Bomberman/SceneStates/MainMenuState.cpp
+        Bomberman/SceneStates/ModeSelectState.cpp
+        Bomberman/SceneStates/GameSceneState.cpp
+        Bomberman/SceneStates/GameEndState.cpp
+        Bomberman/SceneStates/HighScoreState.cpp
+        Bomberman/PlayerControls.cpp
+        Bomberman/GameModes/SoloMode.cpp
+        Bomberman/GameModes/CoopMode.cpp
+        Bomberman/GameModes/VersusMode.cpp
 )
 target_include_directories(bomberman PRIVATE ${CMAKE_SOURCE_DIR}/Bomberman)
 
@@ -201,6 +202,20 @@ FetchContent_Declare(
         DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/downloads
 )
 FetchContent_MakeAvailable(nlohmann_json)
+
+# level binary packer
+if (NOT EMSCRIPTEN)
+    add_executable(levelpack Tools/LevelPack/Main.cpp Bomberman/Level/LevelData.cpp)
+    target_include_directories(levelpack PRIVATE ${CMAKE_SOURCE_DIR}/Bomberman)
+    target_link_libraries(levelpack PRIVATE nlohmann_json::nlohmann_json glm::glm)
+    target_compile_features(levelpack PRIVATE cxx_std_23)
+    if (MSVC)
+        target_compile_options(levelpack PRIVATE /W4 /WX)
+    else ()
+        target_compile_options(levelpack PRIVATE -Wall -Wextra -Werror)
+    endif ()
+    add_dependencies(bomberman levelpack)
+endif ()
 
 # Add Dear ImGui
 FetchContent_Declare(
@@ -346,6 +361,11 @@ elseif (WIN32)
         add_custom_command(TARGET ${game_target} POST_BUILD
                 COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/Data" "$<TARGET_FILE_DIR:${game_target}>/Data"
         )
+
+        add_custom_command(TARGET ${game_target} POST_BUILD
+                COMMAND "$<TARGET_FILE:levelpack>" "$<TARGET_FILE_DIR:${game_target}>/Data/Levels"
+                COMMENT "Packing levels to .bomb"
+        )
     endforeach ()
 elseif (APPLE)
     foreach (game_target IN LISTS GAME_TARGETS)
@@ -377,6 +397,11 @@ elseif (APPLE)
         add_custom_command(TARGET ${game_target} POST_BUILD
                 COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/Data" "$<TARGET_FILE_DIR:${game_target}>/Data"
         )
+
+        add_custom_command(TARGET ${game_target} POST_BUILD
+                COMMAND "$<TARGET_FILE:levelpack>" "$<TARGET_FILE_DIR:${game_target}>/Data/Levels"
+                COMMENT "Packing levels to .bomb"
+        )
     endforeach ()
 else ()
     foreach (game_target IN LISTS GAME_TARGETS)
@@ -394,6 +419,11 @@ else ()
 
         add_custom_command(TARGET ${game_target} POST_BUILD
                 COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/Data" "$<TARGET_FILE_DIR:${game_target}>/Data"
+        )
+
+        add_custom_command(TARGET ${game_target} POST_BUILD
+                COMMAND "$<TARGET_FILE:levelpack>" "$<TARGET_FILE_DIR:${game_target}>/Data/Levels"
+                COMMENT "Packing levels to .bomb"
         )
     endforeach ()
 endif ()
