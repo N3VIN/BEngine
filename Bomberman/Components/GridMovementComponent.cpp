@@ -1,5 +1,5 @@
 #include "GridMovementComponent.h"
-#include "LevelGridComponent.h"
+#include "Level/LevelGridComponent.h"
 #include "Components/CameraComponent.h"
 #include "SceneGraph/GameObject.h"
 
@@ -33,6 +33,18 @@ void bomberman::GridMovementComponent::Respawn(glm::ivec2 cell) {
     ApplyVisualPosition();
 }
 
+glm::ivec2 bomberman::GridMovementComponent::GetCell() const {
+    return m_cell;
+}
+
+glm::ivec2 bomberman::GridMovementComponent::GetFacing() const {
+    return m_facing;
+}
+
+bool bomberman::GridMovementComponent::IsMoving() const {
+    return m_activeDir != glm::ivec2{0, 0};
+}
+
 void bomberman::GridMovementComponent::Update(float deltaTime) {
     if (!m_movementEnabled) {
         m_activeDir = {0, 0};
@@ -46,6 +58,7 @@ void bomberman::GridMovementComponent::Update(float deltaTime) {
         TryStartMoveInQueuedDir();
     }
 
+    // interpolate between cells
     if (IsMoving()) {
         m_progress += m_cellsPerSecond * deltaTime;
         while (m_progress >= 1.f) {
@@ -77,7 +90,7 @@ bool bomberman::GridMovementComponent::TryStartMoveInQueuedDir() {
     if (m_viewClamp != nullptr) {
         const float cellSize = m_levelGridComponent->GetCellSize();
         const auto cellCenter = m_levelGridComponent->CellToWorld(targetCell) + glm::vec2{cellSize * 0.5f};
-        if (!m_viewClamp->IsWorldPointVisible(cellCenter, glm::vec2{cellSize, cellSize})) {
+        if (!m_viewClamp->IsWorldPointVisible(cellCenter, glm::vec2{cellSize, cellSize})) { // check if valid
             return false;
         }
     }

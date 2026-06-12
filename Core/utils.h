@@ -19,4 +19,8 @@ namespace utils {
         return FNV1a(s);
     }
 
+    constexpr int Wrap(int value, int modulus) {
+        const int result = value % modulus;
+        return result < 0 ? result + modulus : result;
+    }
 }

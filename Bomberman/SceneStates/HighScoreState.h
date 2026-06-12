@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <glm/vec2.hpp>
 
 #include "SceneGraph/ISceneState.h"
 
@@ -27,6 +28,8 @@ namespace bomberman {
         void Update(float deltaTime) override;
 
     private:
+        [[nodiscard]] static glm::vec2 Centered(float fractionY);
+
         void Rebuild();
         void BuildTable() const;
         void BuildEntry(const NewScore &entry);

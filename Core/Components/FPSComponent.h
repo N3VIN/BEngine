@@ -3,7 +3,7 @@
 #include "TextComponent.h"
 
 namespace bengine {
-    constexpr float UPDATE_INTERVAL = 1.0f;
+    constexpr float updateInterval = 1.0f;
 
     class FPSComponent final : public Component {
     public:
@@ -14,7 +14,7 @@ namespace bengine {
     private:
         int m_frameCount{};
         int m_cachedFps{};
-        float m_elapsedTime{UPDATE_INTERVAL};
+        float m_elapsedTime{updateInterval};
 
         TextComponent *m_text{nullptr};
     };

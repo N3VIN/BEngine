@@ -2,21 +2,12 @@
 #include <string>
 #include <array>
 #include <glm/vec2.hpp>
-#include "EnemyType.h"
-#include "PickupType.h"
+#include "Types/EnemyType.h"
+#include "Types/PickupType.h"
+#include "Components/SpriteDefinition.h"
 
 namespace bomberman {
-    struct SpriteDefinition {
-        int col{};
-        int row{};
-        int numCols{1};
-        int numRows{1};
-        int frameCount{1};
-        bool autoPlay{false};
-        int frameColumns{0};
-        int frameStrideCols{0};
-        int frameStrideRows{0};
-    };
+    using bengine::SpriteDefinition;
 
     enum class SpriteType {
         Brick,
@@ -72,7 +63,7 @@ namespace bomberman {
         ExplosionSprites explosionPieces{};
         PlayerSprites player{};
         std::array<EnemySprites, EnemyTypeCount> enemies{};
-        std::array<SpriteDefinition, PickupTypeCount> pickups{};
+        std::array<SpriteDefinition, pickupTypeCount> pickups{};
 
         [[nodiscard]] SpriteDefinition GetSpriteDefinition(SpriteType type) const;
 

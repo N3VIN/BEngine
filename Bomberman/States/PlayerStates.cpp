@@ -1,5 +1,5 @@
 #include "PlayerStates.h"
-#include "Components/PlayerControllerComponent.h"
+#include "Components/Player/PlayerControllerComponent.h"
 
 void bomberman::IdlePlayerState::OnEnter(PlayerControllerComponent &controller) {
     auto standing = GetWalkClip(controller.GetSprites(), controller.GetFacing());

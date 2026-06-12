@@ -1,6 +1,6 @@
 #include "GameModes/SoloMode.h"
 
-#include "PlayerControls.h"
+#include "Gameplay/PlayerControls.h"
 #include "SceneStates/GameEndState.h"
 #include "Components/CameraComponent.h"
 

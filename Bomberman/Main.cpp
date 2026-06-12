@@ -10,7 +10,7 @@
 #include "Audio/SDLAudioService.h"
 #include "Audio/NullAudioService.h"
 
-#include "HighScores.h"
+#include "Score/HighScores.h"
 #include "SceneStates/MainMenuState.h"
 
 namespace fs = std::filesystem;

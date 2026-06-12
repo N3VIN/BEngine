@@ -2,7 +2,7 @@
 #include <memory>
 
 #include "CoopMode.h"
-#include "GameMode.h"
+#include "Gameplay/GameMode.h"
 #include "SoloMode.h"
 #include "VersusMode.h"
 

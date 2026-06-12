@@ -1,6 +1,6 @@
 #include "GameAudioComponent.h"
 
-#include "GameEvents.h"
+#include "Gameplay/GameEvents.h"
 #include "utils.h"
 #include "Audio/IAudioService.h"
 #include "Patterns/ServiceLocator.h"
@@ -11,12 +11,12 @@ bomberman::GameAudioComponent::GameAudioComponent(bengine::GameObject *parent)
     : bengine::Component(parent) {
     auto &audio = bengine::ServiceLocator::GetAudioService();
     const auto &dataPath = bengine::ResourceManager::GetInstance().GetDataPath();
-    for (const auto &[id, file]: SOUNDS) {
+    for (const auto &[id, file]: sounds) {
         audio.LoadAudio(id, dataPath / file);
     }
 
-    audio.LoadAudio(BGM.id, dataPath / BGM.file);
-    audio.PlayAudio(BGM.id, BGM_VOLUME, -1);
+    audio.LoadAudio(bgm.id, dataPath / bgm.file);
+    audio.PlayAudio(bgm.id, bgmVolume, -1);
     Play(utils::Hash("stage_start"));
 
     auto &bus = bengine::ServiceLocator::GetEventBus();
@@ -47,5 +47,5 @@ bomberman::GameAudioComponent::GameAudioComponent(bengine::GameObject *parent)
 }
 
 bomberman::GameAudioComponent::~GameAudioComponent() {
-    bengine::ServiceLocator::GetAudioService().StopAudio(BGM.id);
+    bengine::ServiceLocator::GetAudioService().StopAudio(bgm.id);
 }

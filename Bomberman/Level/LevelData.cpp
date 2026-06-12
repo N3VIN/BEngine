@@ -44,7 +44,7 @@ bomberman::LevelData bomberman::LoadLevelBinary(const fs::path &path) {
 
     LevelBinaryHeader header{};
     file.read(reinterpret_cast<char *>(&header), sizeof(header));
-    if (std::string_view(header.magic, sizeof(header.magic)) != "BOMB") {
+    if (std::string_view(header.header, sizeof(header.header)) != "BOMB") {
         throw std::runtime_error("Invalid level binary: " + path.string()); // wrong file
     }
 

@@ -1,6 +1,6 @@
 #pragma once
 #include "Patterns/ICommand.h"
-#include "Components/MenuComponent.h"
+#include "Components/Menu/MenuComponent.h"
 
 namespace bomberman {
     class MenuConfirmCommand final : public bengine::ICommand {

@@ -13,13 +13,13 @@ namespace bengine {
         ++m_frameCount;
         m_elapsedTime += deltaTime;
 
-        if (m_elapsedTime >= UPDATE_INTERVAL) {
+        if (m_elapsedTime >= updateInterval) {
             if (const int fps = static_cast<int>(m_frameCount / m_elapsedTime); fps != m_cachedFps) {
                 m_cachedFps = fps;
                 m_text->SetText(std::to_string(fps) + " FPS");
             }
             m_frameCount = 0;
-            m_elapsedTime -= UPDATE_INTERVAL;
+            m_elapsedTime -= updateInterval;
         }
     }
 }

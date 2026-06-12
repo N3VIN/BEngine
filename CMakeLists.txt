@@ -28,6 +28,7 @@ add_library(Core STATIC
         Core/Components/RenderComponent.cpp
         Core/Components/TextComponent.cpp
         Core/Components/SpriteTextComponent.cpp
+        Core/Components/SpriteRendererComponent.cpp
         Core/Renderer/SpriteFont.cpp
         Core/Components/FPSComponent.cpp
         Core/Components/RotatorComponent.cpp
@@ -41,40 +42,39 @@ add_executable(bomberman ${TARGET_PARAM}
         Bomberman/Level/BuildLevelScene.cpp
         Bomberman/Level/LevelData.cpp
         Bomberman/Level/Tileset.cpp
-        Bomberman/Components/EnemyManagerComponent.cpp
-        Bomberman/Components/EnemyAIComponent.cpp
-        Bomberman/Components/EnemyControllerComponent.cpp
-        Bomberman/States/EnemyStates.cpp
-        Bomberman/Components/LevelGridComponent.cpp
+        Bomberman/Components/Bomb/BombComponent.cpp
+        Bomberman/Components/Bomb/BombManagerComponent.cpp
+        Bomberman/Components/Bomb/ExplosionComponent.cpp
+        Bomberman/Components/Bomb/HazardComponent.cpp
+        Bomberman/Components/Enemy/EnemyManagerComponent.cpp
+        Bomberman/Components/Enemy/EnemyAIComponent.cpp
+        Bomberman/Components/Enemy/EnemyControllerComponent.cpp
+        Bomberman/Components/Player/PlayerControllerComponent.cpp
+        Bomberman/Components/Level/LevelGridComponent.cpp
+        Bomberman/Components/Level/GridRenderComponent.cpp
+        Bomberman/Components/Level/BrickComponent.cpp
+        Bomberman/Components/Level/ExitComponent.cpp
+        Bomberman/Components/Level/PickupComponent.cpp
+        Bomberman/Components/HUD/ScoreComponent.cpp
+        Bomberman/Components/HUD/ScorePopupComponent.cpp
+        Bomberman/Components/HUD/LivesComponent.cpp
+        Bomberman/Components/HUD/TimerComponent.cpp
+        Bomberman/Components/Menu/MenuComponent.cpp
+        Bomberman/Components/Menu/NameEntryComponent.cpp
         Bomberman/Components/GridMovementComponent.cpp
-        Bomberman/Components/GridRenderComponent.cpp
-        Bomberman/Components/SpriteRendererComponent.cpp
         Bomberman/Components/HealthComponent.cpp
-        Bomberman/Components/PlayerControllerComponent.cpp
-        Bomberman/Components/BombComponent.cpp
-        Bomberman/Components/BombManagerComponent.cpp
-        Bomberman/Components/HazardComponent.cpp
-        Bomberman/Components/ExitComponent.cpp
-        Bomberman/Components/PickupComponent.cpp
         Bomberman/Components/GameAudioComponent.cpp
-        Bomberman/Components/ScoreComponent.cpp
-        Bomberman/Components/LivesComponent.cpp
-        Bomberman/Components/TimerComponent.cpp
-        Bomberman/Components/ScorePopupComponent.cpp
-        Bomberman/ScoreBoard.cpp
-        Bomberman/HighScores.cpp
-        Bomberman/Pickups.cpp
-        Bomberman/Components/BrickComponent.cpp
-        Bomberman/Components/ExplosionComponent.cpp
+        Bomberman/States/EnemyStates.cpp
         Bomberman/States/PlayerStates.cpp
-        Bomberman/Components/MenuComponent.cpp
-        Bomberman/Components/NameEntryComponent.cpp
+        Bomberman/Gameplay/Pickups.cpp
+        Bomberman/Gameplay/PlayerControls.cpp
+        Bomberman/Score/ScoreBoard.cpp
+        Bomberman/Score/HighScores.cpp
         Bomberman/SceneStates/MainMenuState.cpp
         Bomberman/SceneStates/ModeSelectState.cpp
         Bomberman/SceneStates/GameSceneState.cpp
         Bomberman/SceneStates/GameEndState.cpp
         Bomberman/SceneStates/HighScoreState.cpp
-        Bomberman/PlayerControls.cpp
         Bomberman/GameModes/SoloMode.cpp
         Bomberman/GameModes/CoopMode.cpp
         Bomberman/GameModes/VersusMode.cpp

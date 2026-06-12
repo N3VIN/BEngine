@@ -1,5 +1,5 @@
 #include "EnemyStates.h"
-#include "Components/EnemyControllerComponent.h"
+#include "Components/Enemy/EnemyControllerComponent.h"
 
 bomberman::EnemyWalkState::EnemyWalkState(bool facingLeft)
     : m_facingLeft(facingLeft) {}

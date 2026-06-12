@@ -1,12 +1,10 @@
 #include "GameModes/VersusMode.h"
 
-#include "PlayerControls.h"
+#include "Gameplay/PlayerControls.h"
 #include "SceneStates/GameEndState.h"
 #include "Components/CameraComponent.h"
 #include "Components/GridMovementComponent.h"
 #include "SceneGraph/GameObject.h"
-
-#include <string>
 
 int bomberman::VersusMode::PlayerCount() const {
     return 2;

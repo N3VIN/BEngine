@@ -25,21 +25,25 @@
     },
     "exit": {
       "col": 11,
-      "row": 3
+      "row": 3,
+      "frameCount": 1
     }
   },
   "pickups": {
     "bombUp": {
       "col": 0,
-      "row": 14
+      "row": 14,
+      "frameCount": 1
     },
     "flameUp": {
       "col": 1,
-      "row": 14
+      "row": 14,
+      "frameCount": 1
     },
     "detonator": {
       "col": 4,
-      "row": 14
+      "row": 14,
+      "frameCount": 1
     }
   },
   "player": {

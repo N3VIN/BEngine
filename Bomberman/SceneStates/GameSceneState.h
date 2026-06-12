@@ -6,13 +6,13 @@
 #include "SceneGraph/ISceneState.h"
 #include "SceneGraph/Scene.h"
 #include "Patterns/MulticastDelegate.h"
-#include "GameMode.h"
 
 namespace bengine {
     class GameObject;
 }
 
 namespace bomberman {
+    enum class GameMode;
     class IGameMode;
 
     std::unique_ptr<bengine::ISceneState> MakeNextState(const std::vector<std::string> &levelPaths, size_t index, GameMode mode);

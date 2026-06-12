@@ -2,7 +2,7 @@
 #include "Patterns/ICommand.h"
 #include "SceneGraph/GameObject.h"
 #include "Components/GridMovementComponent.h"
-#include "Components/BombManagerComponent.h"
+#include "Components/Bomb/BombManagerComponent.h"
 
 namespace bomberman {
     class BombPlaceCommand final : public bengine::GameObjectCommand {

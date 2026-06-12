@@ -1,16 +1,13 @@
 #include "HighScoreState.h"
 
 #include "MainMenuState.h"
-#include "MenuUI.h"
-#include "ScoreBoard.h"
-#include "HighScores.h"
-#include "Components/NameEntryComponent.h"
+#include "UI/MenuUI.h"
+#include "Score/ScoreBoard.h"
+#include "Score/HighScores.h"
+#include "Components/Menu/NameEntryComponent.h"
 #include "Commands/ChangeSceneCommand.h"
 #include "Commands/NameEntryNavigateCommand.h"
 #include "Commands/NameEntryConfirmCommand.h"
-
-#include <algorithm>
-#include <string>
 
 #include "SceneGraph/Scene.h"
 #include "SceneGraph/SceneManager.h"
@@ -20,10 +17,8 @@
 #include "Input/InputManager.h"
 #include "Input/Gamepad.h"
 
-namespace {
-    glm::vec2 Centered(float fractionY) {
-        return bengine::ScreenFraction(0.5f, fractionY);
-    }
+glm::vec2 bomberman::HighScoreState::Centered(float fractionY) {
+    return bengine::ScreenFraction(0.5f, fractionY);
 }
 
 bomberman::HighScoreState::HighScoreState(std::vector<NewScore> newScores)
@@ -73,11 +68,11 @@ void bomberman::HighScoreState::Rebuild() {
 }
 
 void bomberman::HighScoreState::BuildTable() const {
-    CreateMenuLabel(*m_scene, "HIGH SCORES", 48, {255, 255, 255, 255}, Centered(0.15f));
+    CreateMenuLabel(*m_scene, "HIGH SCORES", textSize::title, colors::white, Centered(0.15f));
 
     const auto &table = highscores::Table();
     if (table.empty()) {
-        CreateMenuLabel(*m_scene, "NO SCORES YET", 28, {180, 180, 180, 255}, Centered(0.45f));
+        CreateMenuLabel(*m_scene, "NO SCORES YET", textSize::body, colors::menuItem, Centered(0.45f));
     }
     else {
         const auto padLeft = [](std::string value, size_t width) {
@@ -92,36 +87,38 @@ void bomberman::HighScoreState::BuildTable() const {
             scoreWidth = std::max(scoreWidth, std::to_string(record.score).size());
         }
 
-        constexpr float startY = 0.3f;
-        constexpr float stepY = 0.06f;
+        static constexpr float startY = 0.3f;
+        static constexpr float stepY = 0.06f;
+
         for (size_t rank = 0; rank < table.size(); ++rank) {
             const std::string name(table[rank].name.begin(), table[rank].name.end());
             const std::string line = padLeft(std::to_string(rank + 1), 2) + "  " + name + "  " + padLeft(std::to_string(table[rank].score), scoreWidth);
-            CreateMenuLabel(*m_scene, line, 24, {220, 220, 220, 255}, Centered(startY + static_cast<float>(rank) * stepY));
+            CreateMenuLabel(*m_scene, line, textSize::caption, colors::scoreEntry, Centered(startY + static_cast<float>(rank) * stepY));
         }
     }
 
-    CreateMenuLabel(*m_scene, "PRESS ESC", 24, {160, 160, 160, 255}, Centered(0.85f));
+    CreateMenuLabel(*m_scene, "PRESS ESC", textSize::caption, colors::hint, Centered(0.85f));
 
     BindTable();
 }
 
 void bomberman::HighScoreState::BuildEntry(const NewScore &entry) {
-    CreateMenuLabel(*m_scene, "NEW HIGH SCORE", 40, {255, 255, 255, 255}, Centered(0.18f));
+    CreateMenuLabel(*m_scene, "NEW HIGH SCORE", textSize::subtitle, colors::white, Centered(0.18f));
 
     if (!entry.label.empty()) {
-        CreateMenuLabel(*m_scene, entry.label, 28, {255, 255, 80, 255}, Centered(0.3f));
+        CreateMenuLabel(*m_scene, entry.label, textSize::body, colors::highlight, Centered(0.3f));
     }
 
-    CreateMenuLabel(*m_scene, "SCORE  " + std::to_string(entry.score), 28, {255, 255, 255, 255}, Centered(0.37f));
+    CreateMenuLabel(*m_scene, "SCORE  " + std::to_string(entry.score), textSize::body, colors::white, Centered(0.37f));
 
     auto *entryGo = m_scene->Add(std::make_unique<bengine::GameObject>());
     m_nameEntry = entryGo->AddComponent<NameEntryComponent>();
 
-    constexpr float slotStartX = 0.42f;
-    constexpr float slotStepX = 0.08f;
+    static constexpr float slotStartX = 0.42f;
+    static constexpr float slotStepX = 0.08f;
+
     for (int slot = 0; slot < highscores::NameLength; ++slot) {
-        auto *slotLabel = CreateMenuLabel(*m_scene, "A", 48, {180, 180, 180, 255}, bengine::ScreenFraction(slotStartX + static_cast<float>(slot) * slotStepX, 0.5f));
+        auto *slotLabel = CreateMenuLabel(*m_scene, "A", textSize::title, colors::menuItem, bengine::ScreenFraction(slotStartX + static_cast<float>(slot) * slotStepX, 0.5f));
         m_nameEntry->AddSlot(slotLabel);
     }
 
@@ -135,7 +132,7 @@ void bomberman::HighScoreState::BuildEntry(const NewScore &entry) {
         }
     );
 
-    CreateMenuLabel(*m_scene, "W S LETTER  A D SLOT  ENTER OK", 16, {160, 160, 160, 255}, Centered(0.7f));
+    CreateMenuLabel(*m_scene, "W S LETTER  A D SLOT  ENTER OK", textSize::footnote, colors::hint, Centered(0.7f));
 
     BindEntry();
 }

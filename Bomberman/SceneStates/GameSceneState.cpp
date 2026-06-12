@@ -1,14 +1,13 @@
 #include "GameSceneState.h"
 
 #include "GameEndState.h"
-#include "GameEvents.h"
+#include "Gameplay/GameEvents.h"
 #include "Commands/ChangeSceneCommand.h"
 #include "Commands/MuteCommand.h"
 #include "Level/BuildLevelScene.h"
 #include "GameModes/GameModeFactory.h"
 #include "GameModes/IGameMode.h"
-#include "ScoreBoard.h"
-
+#include "Score/ScoreBoard.h"
 #include "SceneGraph/Scene.h"
 #include "SceneGraph/SceneManager.h"
 #include "Renderer/Renderer.h"

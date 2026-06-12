@@ -1,27 +1,28 @@
 #include "BuildLevelScene.h"
 #include "Tileset.h"
 #include "UIHelpers.h"
-#include "Components/LevelGridComponent.h"
-#include "Components/GridRenderComponent.h"
-#include "Components/BombManagerComponent.h"
-#include "Components/EnemyManagerComponent.h"
-#include "Components/HazardComponent.h"
-#include "Components/ExitComponent.h"
-#include "Components/PickupComponent.h"
+#include "Components/Level/LevelGridComponent.h"
+#include "Components/Level/GridRenderComponent.h"
+#include "Components/Bomb/BombManagerComponent.h"
+#include "Components/Enemy/EnemyManagerComponent.h"
+#include "Components/Bomb/HazardComponent.h"
+#include "Components/Level/ExitComponent.h"
+#include "Components/Level/PickupComponent.h"
 #include "Components/GameAudioComponent.h"
-#include "Components/SpriteRendererComponent.h"
-#include "Components/BrickComponent.h"
+#include "Components/SpriteSetup.h"
+#include "Components/Level/BrickComponent.h"
 #include "Components/RenderComponent.h"
 #include "Components/TextComponent.h"
 #include "Components/SpriteTextComponent.h"
-#include "Components/ScoreComponent.h"
-#include "Components/LivesComponent.h"
-#include "Components/TimerComponent.h"
-#include "UIFont.h"
+#include "Components/HUD/ScoreComponent.h"
+#include "Components/HUD/LivesComponent.h"
+#include "Components/HUD/TimerComponent.h"
+#include "UI/UIFont.h"
+#include "UI/UIColors.h"
 #include "Components/FPSComponent.h"
 #include "Components/CameraComponent.h"
 #include "GameModes/IGameMode.h"
-#include "PlayerFactory.h"
+#include "Factories/PlayerFactory.h"
 #include "SceneGraph/Scene.h"
 #include "SceneGraph/SceneManager.h"
 #include "SceneGraph/GameObject.h"
@@ -53,8 +54,8 @@ bengine::CameraComponent *bomberman::CreateCamera(bengine::Scene &scene, const L
 
     const float levelHeight = static_cast<float>(gridComponent->GetRows()) * gridComponent->GetCellSize();
     const float windowHeight = bengine::Renderer::GetInstance().GetWindowSize().y;
-    cameraComp->SetZoom((windowHeight - HudHeight) / levelHeight);
-    bengine::Renderer::GetInstance().SetViewOffset({0.0f, HudHeight * 0.5f}); // push playfield below the bar
+    cameraComp->SetZoom((windowHeight - hudHeight) / levelHeight);
+    bengine::Renderer::GetInstance().SetViewOffset({0.0f, hudHeight * 0.5f}); // push playfield below the bar
 
     cameraComp->SetTargetOffset(glm::vec2{gridComponent->GetCellSize() * 0.5f}); // we do 0.5 to center the camera on the player
 
@@ -73,7 +74,7 @@ bomberman::LevelSpawns bomberman::SpawnLevelTiles(bengine::Scene &scene, LevelGr
     const auto spawnTile = [&scene, gridComponent](glm::ivec2 cell, SpriteType spriteType) {
         auto *tile = scene.Add(std::make_unique<bengine::GameObject>());
         tile->SetLocalPosition(gridComponent->CellToWorld(cell));
-        tile->AddComponent<SpriteRendererComponent>(spriteType);
+        AddSprite(*tile, spriteType);
 
         return tile;
     };
@@ -130,7 +131,7 @@ void bomberman::CreateFPSDisplay(bengine::Scene &scene) {
     auto *fpsText = fpsGo->AddComponent<bengine::TextComponent>();
     fpsGo->GetComponent<bengine::RenderComponent>()->SetIgnoreCamera(true);
     fpsText->SetFont(bengine::ResourceManager::GetInstance().LoadFont("Lingua.otf", 24));
-    fpsText->SetColor({0, 255, 0, 255});
+    fpsText->SetColor(colors::debug);
     fpsGo->AddComponent<bengine::FPSComponent>();
     fpsGo->SetLocalPosition(bengine::ScreenFraction(0.01f, 0.95f)); // bottom left
 }
@@ -213,14 +214,14 @@ bomberman::LevelScene bomberman::BuildLevelScene(std::string_view jsonRelativePa
         auto *text = labelGo->AddComponent<bengine::SpriteTextComponent>();
         text->SetFont(GetUIFont());
         text->SetScale(3.0f);
-        text->SetColor({255, 255, 255, 255});
+        text->SetColor(colors::white);
         text->SetIgnoreCamera(true);
         text->SetAlignment(align);
         labelGo->SetLocalPosition({positionX, positionY});
         return labelGo;
     };
 
-    makeHudLabel(windowWidth * 0.5f, hudRow1Y, bengine::TextAlign::Center)->AddComponent<TimerComponent>(LevelTimeSeconds);
+    makeHudLabel(windowWidth * 0.5f, hudRow1Y, bengine::TextAlign::Center)->AddComponent<TimerComponent>(levelTimeSeconds);
 
     for (size_t playerIndex = 0; playerIndex < players.size(); ++playerIndex) {
         const bool isPlayer1 = playerIndex == 0;

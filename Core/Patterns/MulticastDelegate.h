@@ -7,7 +7,7 @@
 #include <vector>
 
 namespace bengine {
-    inline constexpr uint64_t INVALID_ID = 0;
+    inline constexpr uint64_t invalidID = 0;
 
     template<typename T>
     concept DelegateArg = std::is_object_v<std::remove_reference_t<T> >;
@@ -18,11 +18,11 @@ namespace bengine {
         constexpr bool operator==(const DelegateHandle &other) const noexcept = default;
 
         [[nodiscard]] constexpr bool IsValid() const noexcept {
-            return m_id != INVALID_ID;
+            return m_id != invalidID;
         }
 
     private:
-        uint64_t m_id{INVALID_ID};
+        uint64_t m_id{invalidID};
 
         template<DelegateArg...>
         friend class MulticastDelegate;
@@ -168,7 +168,7 @@ namespace bengine {
             bool isAlive{};
         };
 
-        uint64_t m_handleID{INVALID_ID};
+        uint64_t m_handleID{invalidID};
         std::vector<ListenerHandle> m_listeners{};
         int m_depth{0};
         bool m_isDirty{false};

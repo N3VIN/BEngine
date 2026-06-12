@@ -6,9 +6,9 @@
 #include <glm/glm.hpp>
 #include "SceneGraph/Scene.h"
 #include "Components/CameraComponent.h"
-#include "EnemyType.h"
 
 namespace bomberman {
+    enum class EnemyType : uint8_t;
     class LevelGridComponent;
     class BombManagerComponent;
     class IGameMode;
@@ -24,8 +24,8 @@ namespace bomberman {
         std::vector<bengine::GameObject *> players{};
     };
 
-    constexpr float HudHeight{72.0f}; // top status-bar height
-    constexpr float LevelTimeSeconds{200.0f};
+    constexpr float hudHeight{72.0f}; // top status-bar height
+    constexpr float levelTimeSeconds{200.0f};
 
     LevelGridComponent *CreateLevelBackground(bengine::Scene &scene, const Tileset &tileset, LevelGridComponent *gridComponent);
     bengine::CameraComponent *CreateCamera(bengine::Scene &scene, const LevelGridComponent *gridComponent);

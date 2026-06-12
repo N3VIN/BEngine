@@ -1,7 +1,7 @@
 #pragma once
 #include "Patterns/ICommand.h"
 #include "SceneGraph/GameObject.h"
-#include "Components/BombManagerComponent.h"
+#include "Components/Bomb/BombManagerComponent.h"
 
 namespace bomberman {
     class DetonateCommand final : public bengine::GameObjectCommand {

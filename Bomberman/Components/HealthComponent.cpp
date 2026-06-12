@@ -20,7 +20,7 @@ void bomberman::HealthComponent::TakeDamage(int amount, bengine::GameObject *att
         m_lives = 0;
     }
 
-    m_iframes.SetDuration(GetTileset().iframeDuration);
+    m_iframes.SetDuration(GetTileset().iframeDuration); // this timer makes sure we only take damage once
     m_onDamaged.Broadcast(m_lives);
 }
 

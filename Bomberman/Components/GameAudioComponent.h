@@ -5,15 +5,15 @@
 #include "Patterns/ServiceLocator.h"
 
 namespace bomberman {
-    constexpr float SFX_VOLUME{1.0f};
-    constexpr float BGM_VOLUME{0.5f};
+    constexpr float sfxVolume{1.0f};
+    constexpr float bgmVolume{0.5f};
 
     struct SoundEntry {
         bengine::SoundID id{};
         std::string_view file{};
     };
 
-    constexpr std::array SOUNDS{
+    constexpr std::array sounds{
         SoundEntry{utils::Hash("bomb_place"), "Audio/bomb_lay.wav"},
         SoundEntry{utils::Hash("explosion"), "Audio/bomb_explosion.wav"},
         SoundEntry{utils::Hash("pickup"), "Audio/powerup.wav"},
@@ -25,10 +25,10 @@ namespace bomberman {
         SoundEntry{utils::Hash("step_vertical"), "Audio/step_vertical.wav"},
     };
 
-    constexpr SoundEntry BGM{utils::Hash("bgm"), "Audio/main_BGM.wav"};
+    constexpr SoundEntry bgm{utils::Hash("bgm"), "Audio/main_BGM.wav"};
 
     inline void Play(bengine::SoundID id) {
-        bengine::ServiceLocator::GetAudioService().PlayAudio(id, SFX_VOLUME);
+        bengine::ServiceLocator::GetAudioService().PlayAudio(id, sfxVolume);
     }
 
     class GameAudioComponent final : public bengine::Component {

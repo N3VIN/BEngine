@@ -18,17 +18,9 @@ namespace bomberman {
         void SetMovementEnabled(bool enabled);
         void Respawn(glm::ivec2 cell);
 
-        [[nodiscard]] glm::ivec2 GetCell() const {
-            return m_cell;
-        }
-
-        [[nodiscard]] glm::ivec2 GetFacing() const {
-            return m_facing;
-        }
-
-        [[nodiscard]] bool IsMoving() const {
-            return m_activeDir != glm::ivec2{0, 0};
-        }
+        [[nodiscard]] glm::ivec2 GetCell() const;
+        [[nodiscard]] glm::ivec2 GetFacing() const;
+        [[nodiscard]] bool IsMoving() const;
 
     private:
         void ApplyVisualPosition() const;

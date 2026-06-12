@@ -16,9 +16,9 @@ namespace bomberman {
         std::vector<std::string> grid{};
     };
 
-#pragma pack(push, 1)
+#pragma pack(push, 1) // no padding
     struct LevelBinaryHeader {
-        char magic[4]{'B', 'O', 'M', 'B'};
+        char header[4]{'B', 'O', 'M', 'B'};
         int32_t columns{};
         int32_t rows{};
         float cellSize{};

@@ -40,19 +40,19 @@ const bomberman::Tileset &bomberman::GetTileset() {
 
         Tileset ts;
         ts.texturePath = json.at("texture").get<std::string>();
-        ts.spriteTexturePath = json.value("spriteTexture", "");
+        ts.spriteTexturePath = json.at("spriteTexture").get<std::string>();
         ts.tileSize = json.at("tileSize").get<int>();
-        ts.spriteScale = json.value("spriteScale", 2.0f);
-        ts.explosionLifetime = json.value("explosionLifetime", 0.5f);
-        ts.bombFuseDuration = json.value("bombFuseDuration", 2.5f);
-        ts.maxBombs = json.value("maxBombs", 9);
-        ts.maxBlastRadius = json.value("maxBlastRadius", 4);
-        ts.startingBombs = json.value("startingBombs", 1);
-        ts.startingFlame = json.value("startingFlame", 1);
-        ts.startingLives = json.value("startingLives", 4);
-        ts.iframeDuration = json.value("iframeDuration", 1.0f);
-        ts.animationFps = json.value("animationFps", 8.0f);
-        ts.scorePopupLifetime = json.value("scorePopupLifetime", 0.6f); {
+        ts.spriteScale = json.at("spriteScale").get<float>();
+        ts.explosionLifetime = json.at("explosionLifetime").get<float>();
+        ts.bombFuseDuration = json.at("bombFuseDuration").get<float>();
+        ts.maxBombs = json.at("maxBombs").get<int>();
+        ts.maxBlastRadius = json.at("maxBlastRadius").get<int>();
+        ts.startingBombs = json.at("startingBombs").get<int>();
+        ts.startingFlame = json.at("startingFlame").get<int>();
+        ts.startingLives = json.at("startingLives").get<int>();
+        ts.iframeDuration = json.at("iframeDuration").get<float>();
+        ts.animationFps = json.at("animationFps").get<float>();
+        ts.scorePopupLifetime = json.at("scorePopupLifetime").get<float>(); {
             const auto &background = json.at("tiles").at("background");
             ts.backgroundCoord = glm::ivec2{background.at("x").get<int>(), background.at("y").get<int>()};
         }
@@ -62,22 +62,21 @@ const bomberman::Tileset &bomberman::GetTileset() {
             SpriteDefinition definition;
             definition.col = node.at("col").get<int>();
             definition.row = node.at("row").get<int>();
-            definition.frameCount = node.value("frameCount", 1);
+            definition.frameCount = node.at("frameCount").get<int>();
             return definition;
         };
 
         ts.brick = readSpriteDefinition("brick");
         ts.exit = readSpriteDefinition("exit");
 
-        if (json.contains("pickups")) {
+        {
             const auto &pickups = json.at("pickups");
             const auto readPickup = [&](const char *key) {
+                const auto &node = pickups.at(key);
                 SpriteDefinition definition;
-                if (const auto node = pickups.find(key); node != pickups.end()) {
-                    definition.col = node->at("col").get<int>();
-                    definition.row = node->at("row").get<int>();
-                    definition.frameCount = node->value("frameCount", 1);
-                }
+                definition.col = node.at("col").get<int>();
+                definition.row = node.at("row").get<int>();
+                definition.frameCount = node.at("frameCount").get<int>();
                 return definition;
             };
 
@@ -86,21 +85,21 @@ const bomberman::Tileset &bomberman::GetTileset() {
             ts.pickups[static_cast<size_t>(PickupType::Detonator)] = readPickup("detonator");
         }
 
-        if (json.contains("bomb")) {
+        {
             const auto &node = json.at("bomb");
             ts.bomb.col = node.at("col").get<int>();
             ts.bomb.row = node.at("row").get<int>();
-            ts.bomb.frameCount = node.value("frameCount", 1);
+            ts.bomb.frameCount = node.at("frameCount").get<int>();
         }
 
-        if (json.contains("explosion")) {
+        {
             const auto &node = json.at("explosion");
             ts.explosion.col = node.at("col").get<int>();
             ts.explosion.row = node.at("row").get<int>();
             ts.explosion.numCols = node.at("numCols").get<int>();
             ts.explosion.numRows = node.at("numRows").get<int>();
-            ts.explosion.frameCount = node.value("frameCount", 1);
-            ts.explosion.frameColumns = node.value("frameColumns", 0);
+            ts.explosion.frameCount = node.at("frameCount").get<int>();
+            ts.explosion.frameColumns = node.at("frameColumns").get<int>();
 
             // slice the explosion into pieces
             const auto piece = [&](int defCol, int defRow) {
@@ -125,14 +124,14 @@ const bomberman::Tileset &bomberman::GetTileset() {
             ts.explosionPieces.tipRight = piece(ts.explosion.numCols - 1, centerRow);
         }
 
-        if (json.contains("player")) {
+        {
             const auto &player = json.at("player");
             const auto readPlayerClip = [&](const char *key) {
                 const auto &node = player.at(key);
                 SpriteDefinition definition;
                 definition.col = node.at("col").get<int>();
                 definition.row = node.at("row").get<int>();
-                definition.frameCount = node.value("frameCount", 1);
+                definition.frameCount = node.at("frameCount").get<int>();
                 return definition;
             };
 
@@ -143,21 +142,17 @@ const bomberman::Tileset &bomberman::GetTileset() {
             ts.player.death = readPlayerClip("death");
         }
 
-        if (json.contains("enemies")) {
+        {
             const auto &enemies = json.at("enemies");
             const auto readEnemy = [&](const char *key) {
                 EnemySprites sprites;
-                if (!enemies.contains(key)) {
-                    return sprites;
-                }
-
                 const auto &node = enemies.at(key);
                 const auto readClip = [&](const char *clipKey) {
                     const auto &clip = node.at(clipKey);
                     SpriteDefinition definition;
                     definition.col = clip.at("col").get<int>();
                     definition.row = clip.at("row").get<int>();
-                    definition.frameCount = clip.value("frameCount", 1);
+                    definition.frameCount = clip.at("frameCount").get<int>();
                     return definition;
                 };
 

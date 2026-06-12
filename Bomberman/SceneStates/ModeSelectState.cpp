@@ -2,10 +2,10 @@
 
 #include "MainMenuState.h"
 #include "GameSceneState.h"
-#include "GameMode.h"
-#include "MenuUI.h"
+#include "Gameplay/GameMode.h"
+#include "UI/MenuUI.h"
 #include "Level/LevelList.h"
-#include "Components/MenuComponent.h"
+#include "Components/Menu/MenuComponent.h"
 
 #include "SceneGraph/Scene.h"
 #include "SceneGraph/SceneManager.h"
@@ -28,7 +28,7 @@ void bomberman::ModeSelectState::OnEnter() {
 
     m_scene = &bengine::SceneManager::GetInstance().CreateScene();
 
-    CreateMenuLabel(*m_scene, "SELECT MODE", 48, {255, 255, 255, 255}, bengine::ScreenFraction(0.5f, 0.25f));
+    CreateMenuLabel(*m_scene, "SELECT MODE", textSize::title, colors::white, bengine::ScreenFraction(0.5f, 0.25f));
 
     auto *menuGo = m_scene->Add(std::make_unique<bengine::GameObject>());
     auto *menu = menuGo->AddComponent<MenuComponent>();
@@ -38,28 +38,28 @@ void bomberman::ModeSelectState::OnEnter() {
         bengine::SceneManager::GetInstance().SetState(std::make_unique<GameSceneState>(GetLevelList(), 0, mode));
     };
 
-    constexpr float startY = 0.45f;
-    constexpr float stepY = 0.09f;
+    static constexpr float startY = 0.45f;
+    static constexpr float stepY = 0.09f;
 
-    menu->AddItem(CreateMenuLabel(*m_scene, "Solo", 28, {180, 180, 180, 255}, bengine::ScreenFraction(0.5f, startY)),
+    menu->AddItem(CreateMenuLabel(*m_scene, "Solo", textSize::body, colors::menuItem, bengine::ScreenFraction(0.5f, startY)),
                   [launch] {
                       launch(GameMode::Solo);
                   }
     );
 
-    menu->AddItem(CreateMenuLabel(*m_scene, "COOP", 28, {180, 180, 180, 255}, bengine::ScreenFraction(0.5f, startY + stepY)),
+    menu->AddItem(CreateMenuLabel(*m_scene, "COOP", textSize::body, colors::menuItem, bengine::ScreenFraction(0.5f, startY + stepY)),
                   [launch] {
                       launch(GameMode::Coop);
                   }
     );
 
-    menu->AddItem(CreateMenuLabel(*m_scene, "Versus", 28, {180, 180, 180, 255}, bengine::ScreenFraction(0.5f, startY + stepY * 2.0f)),
+    menu->AddItem(CreateMenuLabel(*m_scene, "Versus", textSize::body, colors::menuItem, bengine::ScreenFraction(0.5f, startY + stepY * 2.0f)),
                   [launch] {
                       launch(GameMode::Versus);
                   }
     );
 
-    menu->AddItem(CreateMenuLabel(*m_scene, "Back", 28, {180, 180, 180, 255}, bengine::ScreenFraction(0.5f, startY + stepY * 3.0f)),
+    menu->AddItem(CreateMenuLabel(*m_scene, "Back", textSize::body, colors::menuItem, bengine::ScreenFraction(0.5f, startY + stepY * 3.0f)),
                   [] {
                       bengine::SceneManager::GetInstance().SetState(std::make_unique<MainMenuState>());
                   }
