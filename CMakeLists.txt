@@ -362,10 +362,12 @@ elseif (WIN32)
                 COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/Data" "$<TARGET_FILE_DIR:${game_target}>/Data"
         )
 
-        add_custom_command(TARGET ${game_target} POST_BUILD
-                COMMAND "$<TARGET_FILE:levelpack>" "$<TARGET_FILE_DIR:${game_target}>/Data/Levels"
-                COMMENT "Packing levels to .bomb"
-        )
+        if (NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+            add_custom_command(TARGET ${game_target} POST_BUILD
+                    COMMAND "$<TARGET_FILE:levelpack>" "$<TARGET_FILE_DIR:${game_target}>/Data/Levels"
+                    COMMENT "Packing levels to .bomb"
+            )
+        endif ()
     endforeach ()
 elseif (APPLE)
     foreach (game_target IN LISTS GAME_TARGETS)
@@ -398,10 +400,12 @@ elseif (APPLE)
                 COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/Data" "$<TARGET_FILE_DIR:${game_target}>/Data"
         )
 
-        add_custom_command(TARGET ${game_target} POST_BUILD
-                COMMAND "$<TARGET_FILE:levelpack>" "$<TARGET_FILE_DIR:${game_target}>/Data/Levels"
-                COMMENT "Packing levels to .bomb"
-        )
+        if (NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+            add_custom_command(TARGET ${game_target} POST_BUILD
+                    COMMAND "$<TARGET_FILE:levelpack>" "$<TARGET_FILE_DIR:${game_target}>/Data/Levels"
+                    COMMENT "Packing levels to .bomb"
+            )
+        endif ()
     endforeach ()
 else ()
     foreach (game_target IN LISTS GAME_TARGETS)
@@ -421,9 +425,11 @@ else ()
                 COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/Data" "$<TARGET_FILE_DIR:${game_target}>/Data"
         )
 
-        add_custom_command(TARGET ${game_target} POST_BUILD
-                COMMAND "$<TARGET_FILE:levelpack>" "$<TARGET_FILE_DIR:${game_target}>/Data/Levels"
-                COMMENT "Packing levels to .bomb"
-        )
+        if (NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+            add_custom_command(TARGET ${game_target} POST_BUILD
+                    COMMAND "$<TARGET_FILE:levelpack>" "$<TARGET_FILE_DIR:${game_target}>/Data/Levels"
+                    COMMENT "Packing levels to .bomb"
+            )
+        endif ()
     endforeach ()
 endif ()
